@@ -1,8 +1,6 @@
 # AGENTS.md
 
-This file gives coding agents practical instructions for working in this
-repository. Product behavior and feature requirements belong in `SPEC.md`; do
-not duplicate detailed specs here.
+This file gives coding agents practical instructions for working in this repository. Product behavior and feature requirements belong in `SPEC.md`; do not duplicate detailed specs here.
 
 ## Project Overview
 
@@ -46,34 +44,27 @@ Use npm, not pnpm or yarn.
 
 ## Naming Conventions
 
-- Slide files use a three-digit numeric prefix and kebab-case topic:
-  `src/slides/001-title.tsx`, `src/slides/004-agent-flow.tsx`.
-- Slide components use PascalCase with the slide number and topic:
-  `Slide001Title`, `Slide004AgentFlow`.
+- Slide files use a three-digit numeric prefix and kebab-case topic: `src/slides/001-title.tsx`, `src/slides/004-agent-flow.tsx`.
+- Slide components use PascalCase with the slide number and topic: `Slide001Title`, `Slide004AgentFlow`.
 - Register slides in order in `src/slides.ts`.
 - Keep the `file` field in `src/slides.ts` aligned with the actual slide path.
-- Use `data-ai-id` values in kebab-case for major editable regions:
-  `main-title`, `workflow-summary`, `runtime-flow-title`.
+- Use `data-ai-id` values in kebab-case for major editable regions: `main-title`, `workflow-summary`, `runtime-flow-title`.
 - Prefer descriptive local constants and helper names over abbreviations.
 
 ## Coding Guidelines
 
 - Prefer direct React, TypeScript, and Tailwind classes over new abstractions.
-- Keep runtime code small and focused; avoid introducing a slide framework, DSL,
-  or broad configuration layer unless explicitly requested.
+- Keep runtime code small and focused; avoid introducing a slide framework, DSL, or broad configuration layer unless explicitly requested.
 - Put slide-specific layout and visual fixes in the relevant slide file.
-- Use `src/styles/global.css` only for app-wide base styling, font setup, and
-  runtime-level behavior.
-- Do not solve a single slide's visual issue by changing runtime components or
-  global CSS.
+- Use `src/styles/global.css` only for app-wide base styling, font setup, and runtime-level behavior.
+- Do not solve a single slide's visual issue by changing runtime components or global CSS.
 - Do not store a selected design guide in code or config.
 - Use `public/assets/` for static assets that need stable browser URLs.
 - Keep comments sparse and useful; prefer readable JSX and small helpers.
 
 ## Slide Editing Workflow
 
-- For new slides or broad visual redesigns, ask for or use an explicit design
-  guide from `designs/`.
+- For new slides or broad visual redesigns, ask for or use an explicit design guide from `designs/`.
 - For small text edits and bug fixes, preserve the current slide style.
 - Keep slide roots full-stage with `h-full w-full`.
 - Keep each slide inside the fixed 16:9 stage; do not rely on viewport reflow.
@@ -83,17 +74,13 @@ Use npm, not pnpm or yarn.
 ## Runtime And Edit-Mode Work
 
 - Treat `SPEC.md` as the source of truth for runtime behavior.
-- Keep navigation, scaling, stage rendering, and edit inspect code separated by
-  existing module boundaries under `src/runtime/` and `src/edit-mode/`.
-- When changing hit-testing or copied edit references, verify behavior in the
-  browser because viewport scaling affects coordinates.
-- Avoid clipboard assertions in automated tests; validate visible UI feedback
-  instead.
+- Keep navigation, scaling, stage rendering, and edit inspect code separated by existing module boundaries under `src/runtime/` and `src/edit-mode/`.
+- When changing hit-testing or copied edit references, verify behavior in the browser because viewport scaling affects coordinates.
+- Avoid clipboard assertions in automated tests; validate visible UI feedback instead.
 
 ## Verification
 
 - Run the narrowest command that gives confidence for the change.
 - For TypeScript or runtime changes, run `npm run typecheck` at minimum.
-- For visual slide changes, run the relevant screenshot capture command when a
-  dev server is available.
+- For visual slide changes, run the relevant screenshot capture command when a dev server is available.
 - For docs-only changes, `git diff --check` is usually sufficient.
