@@ -138,7 +138,6 @@ vibe-sliding/
     capture-all-slides.ts
 
   public/
-    assets/
 
   screenshots/
     .gitkeep
@@ -799,11 +798,13 @@ Monospace should be reserved for:
 
 ## 21. Asset Handling
 
-Static assets must be placed under:
+When static assets are needed, place them under:
 
 ```txt
 public/assets/
 ```
+
+Create this directory only when assets are actually needed.
 
 Slide files should reference assets using stable public paths.
 
