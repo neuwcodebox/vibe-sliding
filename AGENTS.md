@@ -55,6 +55,7 @@ Use npm, not pnpm or yarn.
 
 - Prefer direct React, TypeScript, and Tailwind classes over new abstractions.
 - Keep runtime code small and focused; avoid introducing a slide framework, DSL, or broad configuration layer unless explicitly requested.
+- Keep code outside `src/slides/` generic and reusable across decks; it should not encode assumptions for one specific slide, deck, visual theme, or presentation.
 - Put slide-specific layout and visual fixes in the relevant slide file.
 - Use `src/styles/global.css` only for app-wide base styling, font setup, and runtime-level behavior.
 - Do not solve a single slide's visual issue by changing runtime components or global CSS.
