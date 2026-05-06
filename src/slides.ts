@@ -2,6 +2,7 @@ import type { ComponentType } from 'react'
 import Slide001 from './slides/001-title'
 import Slide002 from './slides/002-agenda'
 import Slide003 from './slides/003-content'
+import Slide004 from './slides/004-demo-summary'
 
 export type SlideDefinition = {
   component: ComponentType
@@ -20,5 +21,9 @@ export const slides: SlideDefinition[] = [
   {
     component: Slide003,
     file: 'src/slides/003-content.tsx',
+  },
+  {
+    component: Slide004,
+    file: 'src/slides/004-demo-summary.tsx',
   },
 ]
