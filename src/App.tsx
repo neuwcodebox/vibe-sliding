@@ -15,7 +15,6 @@ function App() {
     currentIndex,
     currentSlide,
     nextSlide,
-    slideCount,
   } = useSlideNavigation(slides.length)
 
   const setEditMode = useCallback((enabled: boolean) => {
@@ -82,11 +81,6 @@ function App() {
         slideNumber={currentIndex + 1}
         stageRef={stageRef}
       />
-      {slideCount > 0 ? (
-        <div className="pointer-events-none absolute bottom-8 right-10 rounded bg-black/45 px-4 py-2 font-mono text-xl text-white/70">
-          {currentIndex + 1} / {slideCount}
-        </div>
-      ) : null}
     </SlideStage>
   )
 }
