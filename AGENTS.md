@@ -1,31 +1,99 @@
 # AGENTS.md
 
-This is a React-based slide deck workspace for AI-assisted slide authoring.
+This file gives coding agents practical instructions for working in this
+repository. Product behavior and feature requirements belong in `SPEC.md`; do
+not duplicate detailed specs here.
 
-## Core Rules
+## Project Overview
 
-- Use npm, not pnpm.
-- Slides are plain React components under `src/slides/`.
-- Register slide order in `src/slides.ts`.
-- Keep the runtime minimal.
-- Do not introduce a slide framework, DSL, or heavy abstraction unless explicitly requested.
-- Prefer direct JSX and Tailwind classes.
-- Keep each slide within the fixed 16:9 slide stage.
-- Solve slide-specific visual issues in slide files, not in runtime or global CSS.
-- Do not add persistent runtime chrome such as page numbers, logos, progress bars, or decorative overlays on top of every slide. If a deck needs those, render them in the slide components.
-- Use `public/assets/` for static assets.
-- Do not store the selected design guide in a config file.
-- For new slides or broad visual edits, the user must explicitly choose a file under `designs/`.
-- If the user does not choose a design guide, ask them to choose one.
-- For small text edits or bug fixes, preserve the current visual style.
-- When creating complex slides, add `data-ai-id` to major editable elements.
-- After visual changes, capture screenshots and review the result when possible.
+Vibe Sliding is a local React slide deck workspace.
 
-## Runtime Notes
+- Vite provides the preview and presentation surface.
+- Slides are plain React components.
+- Source files are the editing surface.
+- Design guidance lives in Markdown files under `designs/`.
+- Screenshot tooling lives under `scripts/`.
 
-- The logical slide stage is `1920 x 1080`.
-- Browser viewport changes must scale the stage, not reflow slide layout.
-- URL slide numbers are 1-based: `?slide=1`.
-- Advancing beyond the final slide opens an end-of-slide-show screen at `?slide=end`.
-- Edit Inspect Mode is enabled with `?edit=1` and copies one-line `@element(...)` references.
-- Screenshot capture waits briefly after page load so animations and charts can settle.
+## Project Structure
+
+```txt
+src/
+  App.tsx                  # app shell and route-level composition
+  main.tsx                 # React entrypoint
+  slides.ts                # ordered slide registry
+  runtime/                 # slide stage, scaling, navigation runtime
+  edit-mode/               # browser edit inspect helpers
+  slides/                  # individual slide components
+  styles/global.css        # app-wide CSS and Tailwind import
+designs/                   # reusable slide design guides
+skills/                    # promptable authoring guidance
+scripts/                   # screenshot capture scripts
+public/                    # static assets served by Vite
+screenshots/               # generated captures, ignored by git
+```
+
+## Commands
+
+- Install dependencies with `npm install`.
+- Start local preview with `npm run dev`.
+- Type-check with `npm run typecheck`.
+- Build with `npm run build`.
+- Lint with `npm run lint`.
+- Capture one slide with `npm run capture:slide -- N`.
+- Capture all slides with `npm run capture:all`.
+
+Use npm, not pnpm or yarn.
+
+## Naming Conventions
+
+- Slide files use a three-digit numeric prefix and kebab-case topic:
+  `src/slides/001-title.tsx`, `src/slides/004-agent-flow.tsx`.
+- Slide components use PascalCase with the slide number and topic:
+  `Slide001Title`, `Slide004AgentFlow`.
+- Register slides in order in `src/slides.ts`.
+- Keep the `file` field in `src/slides.ts` aligned with the actual slide path.
+- Use `data-ai-id` values in kebab-case for major editable regions:
+  `main-title`, `workflow-summary`, `runtime-flow-title`.
+- Prefer descriptive local constants and helper names over abbreviations.
+
+## Coding Guidelines
+
+- Prefer direct React, TypeScript, and Tailwind classes over new abstractions.
+- Keep runtime code small and focused; avoid introducing a slide framework, DSL,
+  or broad configuration layer unless explicitly requested.
+- Put slide-specific layout and visual fixes in the relevant slide file.
+- Use `src/styles/global.css` only for app-wide base styling, font setup, and
+  runtime-level behavior.
+- Do not solve a single slide's visual issue by changing runtime components or
+  global CSS.
+- Do not store a selected design guide in code or config.
+- Use `public/assets/` for static assets that need stable browser URLs.
+- Keep comments sparse and useful; prefer readable JSX and small helpers.
+
+## Slide Editing Workflow
+
+- For new slides or broad visual redesigns, ask for or use an explicit design
+  guide from `designs/`.
+- For small text edits and bug fixes, preserve the current slide style.
+- Keep slide roots full-stage with `h-full w-full`.
+- Keep each slide inside the fixed 16:9 stage; do not rely on viewport reflow.
+- Add `data-ai-id` to important editable elements, especially on complex slides.
+- After visual edits, capture screenshots and inspect the result when possible.
+
+## Runtime And Edit-Mode Work
+
+- Treat `SPEC.md` as the source of truth for runtime behavior.
+- Keep navigation, scaling, stage rendering, and edit inspect code separated by
+  existing module boundaries under `src/runtime/` and `src/edit-mode/`.
+- When changing hit-testing or copied edit references, verify behavior in the
+  browser because viewport scaling affects coordinates.
+- Avoid clipboard assertions in automated tests; validate visible UI feedback
+  instead.
+
+## Verification
+
+- Run the narrowest command that gives confidence for the change.
+- For TypeScript or runtime changes, run `npm run typecheck` at minimum.
+- For visual slide changes, run the relevant screenshot capture command when a
+  dev server is available.
+- For docs-only changes, `git diff --check` is usually sufficient.
