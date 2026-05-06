@@ -92,6 +92,7 @@ The project must follow this structure unless there is a strong implementation r
 ```txt
 vibe-sliding/
   README.md
+  README.ko.md
   SPEC.md
   AGENTS.md
 
@@ -978,6 +979,8 @@ It should include this core guidance after Agent Skills frontmatter:
 ## 24. README Requirements
 
 The project must include a user-facing `README.md`.
+
+`README.md` should be written in English. Korean documentation should live in a separate file such as `README.ko.md`, linked from the English README.
 
 The README must explain:
 
