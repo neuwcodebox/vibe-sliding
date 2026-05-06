@@ -27,8 +27,8 @@ The intended workflow is: you describe the slide show, the agent edits the sourc
 
 ## Controls
 
-- Right arrow, Space, or click: next slide
-- Left arrow: previous slide
+- Right arrow, Down arrow, Space, or click: next slide
+- Left arrow or Up arrow: previous slide
 - Home: first slide
 - End: last slide
 - `?slide=N`: open slide N directly

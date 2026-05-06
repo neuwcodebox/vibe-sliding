@@ -77,12 +77,21 @@ export function useSlideNavigation(slideCount: number) {
         return
       }
 
-      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+      if (
+        event.key === 'ArrowRight' ||
+        event.key === 'ArrowDown' ||
+        event.key === 'PageDown' ||
+        event.key === ' '
+      ) {
         event.preventDefault()
         nextSlide()
       }
 
-      if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+      if (
+        event.key === 'ArrowLeft' ||
+        event.key === 'ArrowUp' ||
+        event.key === 'PageUp'
+      ) {
         event.preventDefault()
         previousSlide()
       }

@@ -73,7 +73,7 @@ function App() {
             슬라이드 쇼가 끝났습니다
           </h1>
           <p className="mt-8 text-[34px] text-white/60">
-            왼쪽 방향키를 누르면 마지막 슬라이드로 돌아갑니다.
+            왼쪽 또는 위쪽 방향키를 누르면 마지막 슬라이드로 돌아갑니다.
           </p>
         </div>
       ) : CurrentSlide ? (

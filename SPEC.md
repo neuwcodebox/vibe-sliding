@@ -709,8 +709,8 @@ Slides should be optimized for presentation readability, not dense document read
 
 Required navigation:
 
-* right arrow: next slide
-* left arrow: previous slide
+* right arrow or down arrow: next slide
+* left arrow or up arrow: previous slide
 * space: next slide
 * click: next slide
 * direct URL access: `?slide=N`
