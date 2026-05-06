@@ -987,12 +987,12 @@ The README must explain:
 * project purpose
 * installation
 * local development
-* slide creation workflow
+* how users ask an AI agent to generate or revise a slide show
 * design guide selection
 * screenshot capture
 * edit inspect mode
 * adding a new design guide
-* adding a new slide
+* which files the AI agent edits when adding slides
 
 The README must use npm commands only.
 
@@ -1007,7 +1007,7 @@ npm run capture:slide -- 3
 npm run capture:all
 ```
 
-The README must tell users that new slide creation and broad visual changes should explicitly choose a design file under `designs/`.
+The README must tell users to name a design file under `designs/` when asking an AI agent for new slide creation or broad visual changes.
 
 ## 25. Example Slides
 

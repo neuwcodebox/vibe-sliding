@@ -2,9 +2,9 @@
 
 [English README](README.md)
 
-Vibe Sliding은 React 컴포넌트로 자신만의 슬라이드 쇼를 만드는 로컬 작업공간입니다. PPT처럼 GUI에서 모든 것을 편집하는 도구가 아니라, 브라우저는 미리보기와 발표 화면으로 쓰고 `src/slides/`의 소스 코드를 직접 편집하는 방식입니다.
+Vibe Sliding은 AI 코딩 에이전트에게 슬라이드 쇼 생성, 수정, 검토를 맡기기 위한 로컬 작업공간입니다. 사용자가 직접 슬라이드 React 코드를 작성하는 것이 기본 흐름은 아닙니다. 사용자는 미리보기 서버를 실행하고, 디자인 가이드를 고르고, 원하는 발표 자료를 설명하면 됩니다. 실제 `src/slides/`의 React 컴포넌트 작성은 AI Agent가 담당합니다.
 
-슬라이드는 일반 React 컴포넌트라서 AI 코딩 에이전트가 수정하기 쉽고, 디자인 가이드는 `designs/`에 Markdown으로 분리되어 있어 발표마다 일관된 시각 방향을 줄 수 있습니다.
+이 프로젝트는 GUI 중심의 PowerPoint 대체제가 아닙니다. 브라우저는 미리보기와 발표 화면이고, `src/slides/` 아래 파일들은 AI Agent가 사용자를 대신해 수정하는 소스 파일입니다.
 
 ## 빠른 시작
 
@@ -14,6 +14,16 @@ npm run dev
 ```
 
 Vite가 출력한 로컬 URL을 브라우저에서 열면 슬라이드 쇼를 볼 수 있습니다. 보통 `http://localhost:5173/` 형태입니다.
+
+## 이 프로젝트로 얻는 것
+
+- 로컬 브라우저 기반 슬라이드 뷰어
+- AI Agent가 안정적으로 수정할 수 있는 React 슬라이드 코드베이스
+- `designs/` 아래의 재사용 가능한 디자인 가이드
+- 슬라이드 요소를 가리켜 정확한 수정 참조를 복사하는 Edit Inspect Mode
+- 생성된 슬라이드를 이미지로 검토하는 screenshot capture 스크립트
+
+의도된 흐름은 “사용자가 슬라이드 쇼를 설명하고, Agent가 소스를 수정하고, 사용자가 브라우저에서 결과를 검토하는 방식”입니다.
 
 ## 조작 방법
 
@@ -31,15 +41,21 @@ http://localhost:5173/?slide=3
 http://localhost:5173/?slide=3&edit=1
 ```
 
-## 내 슬라이드 쇼 만들기
+## Agent에게 슬라이드 쇼 생성 요청하기
 
 1. `designs/`에서 발표에 맞는 디자인 가이드를 고릅니다.
-2. `src/slides/`에 슬라이드 컴포넌트를 만들거나 기존 예시 슬라이드를 수정합니다.
-3. `src/slides.ts`에 슬라이드 순서를 등록합니다.
+2. 주제, 청중, 슬라이드 수, 톤, 반드시 포함할 내용을 Agent에게 설명합니다.
+3. Agent에게 슬라이드 컴포넌트를 생성하거나 수정해 달라고 요청합니다.
 4. 브라우저에서 결과를 확인합니다.
-5. 필요하면 screenshot capture로 이미지를 저장해 레이아웃을 검토합니다.
+5. 스크린샷이나 Edit Inspect Mode를 사용해 구체적인 수정 요청을 이어갑니다.
 
-새 슬라이드 쇼를 만들 때는 기존 예시 파일을 복사해서 시작하는 편이 가장 빠릅니다. 슬라이드는 고정 16:9 스테이지 안에서 렌더링되므로, 웹페이지처럼 세로로 스크롤되는 레이아웃이 아니라 한 장의 발표 화면을 만든다고 생각하면 됩니다.
+예시 프롬프트:
+
+```txt
+Use designs/technical-grid.md. Create a 5-slide deck about our internal AI agent platform for an engineering leadership audience. Keep the style technical, structured, and presentation-ready.
+```
+
+전체 스타일을 크게 바꿀 때는 디자인 가이드를 명시하세요. 작은 문구 수정, 오타 수정, 좁은 버그 수정은 기존 슬라이드 스타일을 유지하라고 요청하면 됩니다.
 
 ## 디자인 가이드 고르기
 
@@ -50,23 +66,17 @@ http://localhost:5173/?slide=3&edit=1
 - `designs/technical-grid.md`
 - `designs/startup-pitch.md`
 
-새 슬라이드를 만들거나 전체 스타일을 크게 바꿀 때는 사용할 디자인 가이드를 명시하세요. 예를 들어 AI 에이전트에게 이렇게 요청할 수 있습니다.
+디자인 가이드는 Agent에게 주는 시각 지침입니다. 생성될 슬라이드의 비주얼 언어, 밀도, 타이포그래피, 색상, 차트 처리, 모션 등을 설명합니다.
 
-```txt
-Use designs/technical-grid.md. Create a 5-slide deck about our internal AI agent platform.
-```
+## Agent가 수정하는 파일
 
-작은 문구 수정, 오타 수정, 좁은 버그 수정은 기존 슬라이드의 스타일을 유지하면 됩니다.
+슬라이드 생성을 요청하면 Agent는 보통 다음 파일을 수정합니다.
 
-## 슬라이드 추가하기
+- `src/slides/`: 생성된 슬라이드 컴포넌트
+- `src/slides.ts`: 슬라이드 등록 순서
+- `designs/`: 새 디자인 가이드나 기존 가이드 수정이 필요할 때만
 
-새 파일을 만듭니다.
-
-```txt
-src/slides/004-topic.tsx
-```
-
-슬라이드 컴포넌트는 default export로 작성하고, 루트 요소가 전체 스테이지를 채우도록 `h-full w-full`을 사용합니다.
+생성되는 슬라이드는 고정 16:9 스테이지를 채우는 default-export React 컴포넌트입니다.
 
 ```tsx
 export default function Slide004Topic() {
@@ -74,7 +84,7 @@ export default function Slide004Topic() {
 }
 ```
 
-그 다음 `src/slides.ts`에 등록합니다.
+Agent는 해당 슬라이드를 `src/slides.ts`에도 등록해야 합니다.
 
 ```ts
 import Slide004 from './slides/004-topic'
@@ -88,11 +98,11 @@ export const slides = [
 ]
 ```
 
-파일명은 `004-topic.tsx`처럼 세 자리 숫자와 짧은 주제를 사용하고, 컴포넌트명은 `Slide004Topic`처럼 PascalCase를 사용하세요.
+사용자가 이 패턴을 외울 필요는 없지만, Agent가 어떤 작업을 해야 하는지 이해하는 데 도움이 됩니다.
 
-## AI가 수정하기 쉽게 만들기
+## Agent가 정확히 수정할 수 있게 만들기
 
-중요한 제목, 카드, 차트, 섹션에는 `data-ai-id`를 붙이면 나중에 AI에게 정확히 지시하기 쉽습니다.
+중요한 제목, 카드, 차트, 섹션에는 `data-ai-id`가 붙어 있으면 이후 수정 요청을 정확히 할 수 있습니다.
 
 ```tsx
 <h1 data-ai-id="main-title">Quarterly Roadmap</h1>
@@ -112,7 +122,7 @@ export const slides = [
 
 ## Edit Inspect Mode
 
-수정하고 싶은 요소를 브라우저에서 직접 가리켜 참조를 얻고 싶다면 Edit Inspect Mode를 사용합니다.
+브라우저에서 특정 요소를 직접 가리킨 뒤 Agent에게 “이 요소를 수정해 달라”고 요청하고 싶을 때 사용합니다.
 
 ```txt
 http://localhost:5173/?slide=3&edit=1
@@ -124,7 +134,13 @@ http://localhost:5173/?slide=3&edit=1
 @element(slide=3 file="src/slides/003-content.tsx" target="data-ai-id=runtime-flow-title" text="Runtime flow")
 ```
 
-이 참조를 AI 에이전트에게 붙여 넣으면 “3번 슬라이드의 이 요소를 수정해줘”처럼 좌표 설명 없이 요청할 수 있습니다. 클립보드 접근이 실패하면 화면에 참조가 표시됩니다.
+이 참조를 다음 Agent 요청에 붙여 넣으세요.
+
+```txt
+Change @element(slide=3 file="src/slides/003-content.tsx" target="data-ai-id=runtime-flow-title" text="Runtime flow") to make the heading shorter and align it with the chart below.
+```
+
+클립보드 접근이 실패하면 화면에 참조가 표시됩니다.
 
 ## 스크린샷으로 검토하기
 
@@ -154,14 +170,17 @@ npm run capture:all
 SLIDE_CAPTURE_SETTLE_MS=2000 npm run capture:slide -- 3
 ```
 
-## 새 디자인 가이드 만들기
+## Agent에게 새 디자인 가이드 요청하기
 
-새로운 발표 톤이 필요하면 `designs/` 아래에 디자인 가이드를 추가합니다.
+새로운 발표 톤이 필요하면 Agent에게 `designs/` 아래에 새 디자인 가이드를 만들라고 요청하세요.
 
-1. `skills/design-guide-authoring/assets/design-guide-template.md`의 구조를 사용합니다.
-2. 완성 예시는 `skills/design-guide-authoring/assets/design-guide-example.md`를 참고합니다.
-3. 새 파일을 `designs/my-design.md`처럼 저장합니다.
-4. 색상, 타이포그래피, 레이아웃, 시각 요소, 모션, Do/Don't, Agent Prompt Guide를 구체적으로 작성합니다.
+예시 프롬프트:
+
+```txt
+Create a new design guide under designs/ for executive product strategy reviews. Use a restrained, high-density style with strong chart readability.
+```
+
+Agent는 `skills/design-guide-authoring/assets/design-guide-template.md`를 구조로 사용하고, `skills/design-guide-authoring/assets/design-guide-example.md`를 완성 예시로 참고해야 합니다.
 
 디자인 가이드는 특정 한 장의 슬라이드 내용이 아니라 여러 슬라이드에 반복 적용할 수 있는 시각 규칙이어야 합니다.
 
@@ -202,11 +221,17 @@ public/
 screenshots/
 ```
 
-자주 수정하는 위치:
+공유 인프라:
 
-- `src/slides/`: 실제 슬라이드 컴포넌트
+- `src/runtime/`: 뷰어 런타임, 스케일링, 내비게이션
+- `src/edit-mode/`: 요소 검사와 복사되는 참조
+- `src/styles/global.css`: 앱 전역 기본 스타일
+
+덱별 콘텐츠:
+
+- `src/slides/`: Agent가 생성하는 슬라이드 컴포넌트
 - `src/slides.ts`: 슬라이드 등록 순서
-- `designs/`: 발표 스타일 가이드
-- `screenshots/`: 캡처 결과
+- `designs/`: Agent에게 주는 시각 지침
+- `screenshots/`: 캡처된 슬라이드 이미지
 
-대부분의 발표 내용과 시각 수정은 `src/slides/` 안에서 해결하는 것이 좋습니다. `runtime/`, `edit-mode/`, `styles/global.css`는 여러 슬라이드 쇼에서 공통으로 쓰는 일반 기능을 위한 코드입니다.
+대부분의 발표 내용과 시각 수정은 `src/slides/` 안에서 해결해야 합니다. `runtime/`, `edit-mode/`, `styles/global.css`는 여러 슬라이드 쇼에서 재사용되는 일반 인프라로 유지해야 합니다.

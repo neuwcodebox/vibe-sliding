@@ -2,9 +2,9 @@
 
 [Korean README](README.ko.md)
 
-Vibe Sliding is a local workspace for building your own slide show with React components. It is not a GUI-first PowerPoint replacement. The browser is the preview and presentation surface, while the files under `src/slides/` are the editing surface.
+Vibe Sliding is a local workspace for asking an AI coding agent to generate, edit, and review a slide show. You do not normally hand-author the slide source yourself. Instead, you run the preview server, choose a design guide, describe the deck you want, and let the agent write the React slide components.
 
-Slides are plain React components, which makes them easy for AI coding agents to inspect and modify. Design guides live as Markdown files under `designs/`, so each deck can have a concrete visual direction.
+This is not a GUI-first PowerPoint replacement. The browser is the preview and presentation surface. The files under `src/slides/` are the source files that the AI agent edits on your behalf.
 
 ## Quick Start
 
@@ -14,6 +14,16 @@ npm run dev
 ```
 
 Open the local URL printed by Vite. It is usually something like `http://localhost:5173/`.
+
+## What This Project Gives You
+
+- A local browser-based slide viewer.
+- A React slide codebase that AI agents can edit reliably.
+- Reusable design guides under `designs/`.
+- Edit Inspect Mode for pointing at slide elements and copying precise references.
+- Screenshot capture scripts for reviewing generated slides.
+
+The intended workflow is: you describe the slide show, the agent edits the source, and you review the result in the browser.
 
 ## Controls
 
@@ -31,15 +41,21 @@ http://localhost:5173/?slide=3
 http://localhost:5173/?slide=3&edit=1
 ```
 
-## Build Your Slide Show
+## Ask An Agent To Create A Deck
 
 1. Choose a design guide from `designs/`.
-2. Create slide components under `src/slides/`, or modify the example slides.
-3. Register the slide order in `src/slides.ts`.
+2. Tell the agent what deck you want: topic, audience, number of slides, tone, and any required content.
+3. Ask the agent to create or revise the slide components.
 4. Preview the result in the browser.
-5. Capture screenshots when you need to review layout details.
+5. Use screenshots or Edit Inspect Mode to request targeted fixes.
 
-The fastest way to start a new deck is to copy and adapt the existing example slides. Slides render inside a fixed 16:9 stage, so think of each component as one presentation screen, not a vertically scrolling webpage.
+Example prompt:
+
+```txt
+Use designs/technical-grid.md. Create a 5-slide deck about our internal AI agent platform for an engineering leadership audience. Keep the style technical, structured, and presentation-ready.
+```
+
+For broad visual changes, name the design guide explicitly. For small copy edits, typo fixes, or narrow bug fixes, ask the agent to preserve the current slide style.
 
 ## Choose A Design Guide
 
@@ -50,23 +66,17 @@ Built-in guides:
 - `designs/technical-grid.md`
 - `designs/startup-pitch.md`
 
-When creating new slides or making broad visual changes, explicitly name the guide you want to use. For example, you can ask an AI coding agent:
+Design guides are instructions for the agent. They describe visual language, density, typography, color, chart treatment, motion, and other style rules the generated slides should follow.
 
-```txt
-Use designs/technical-grid.md. Create a 5-slide deck about our internal AI agent platform.
-```
+## What The Agent Edits
 
-For small copy edits, typo fixes, or narrow bug fixes, preserve the current slide style.
+When you ask for slides, the agent usually changes these files:
 
-## Add A Slide
+- `src/slides/`: generated slide components
+- `src/slides.ts`: slide registration order
+- `designs/`: reusable visual guides, only when you ask for a new or revised guide
 
-Create a new slide file:
-
-```txt
-src/slides/004-topic.tsx
-```
-
-Default-export a slide component and make the root fill the stage with `h-full w-full`.
+A generated slide is a default-exported React component whose root fills the fixed 16:9 stage.
 
 ```tsx
 export default function Slide004Topic() {
@@ -74,7 +84,7 @@ export default function Slide004Topic() {
 }
 ```
 
-Register it in `src/slides.ts`.
+The agent should register that slide in `src/slides.ts`.
 
 ```ts
 import Slide004 from './slides/004-topic'
@@ -88,11 +98,11 @@ export const slides = [
 ]
 ```
 
-Use three-digit numeric prefixes for slide files, such as `004-topic.tsx`, and PascalCase component names, such as `Slide004Topic`.
+You do not need to memorize this pattern, but it helps to know what the agent is expected to change.
 
-## Make Slides Easy For AI To Edit
+## Make Agent Edits Precise
 
-Add `data-ai-id` to important titles, cards, charts, and sections so you or an AI agent can refer to them precisely later.
+Important titles, cards, charts, and sections should have `data-ai-id` attributes so future edits can target them clearly.
 
 ```tsx
 <h1 data-ai-id="main-title">Quarterly Roadmap</h1>
@@ -112,7 +122,7 @@ Avoid names like:
 
 ## Edit Inspect Mode
 
-Use Edit Inspect Mode when you want to point at an element in the browser and get a source-oriented reference for it.
+Use Edit Inspect Mode when you want to point at an element in the browser and ask the agent to change exactly that element.
 
 ```txt
 http://localhost:5173/?slide=3&edit=1
@@ -124,7 +134,13 @@ When it is active, the element under the cursor is highlighted. Clicking a visib
 @element(slide=3 file="src/slides/003-content.tsx" target="data-ai-id=runtime-flow-title" text="Runtime flow")
 ```
 
-Paste that reference into an AI coding prompt to ask for a precise edit without describing coordinates. If clipboard access fails, the reference is shown on screen.
+Paste that reference into your next agent prompt. For example:
+
+```txt
+Change @element(slide=3 file="src/slides/003-content.tsx" target="data-ai-id=runtime-flow-title" text="Runtime flow") to make the heading shorter and align it with the chart below.
+```
+
+If clipboard access fails, the reference is shown on screen.
 
 ## Review With Screenshots
 
@@ -154,14 +170,17 @@ Slides with charts or animations wait briefly before capture. You can adjust the
 SLIDE_CAPTURE_SETTLE_MS=2000 npm run capture:slide -- 3
 ```
 
-## Add A Design Guide
+## Ask An Agent To Add A Design Guide
 
-Add a design guide under `designs/` when you need a new presentation tone.
+Ask for a new design guide when you need a new presentation tone. The agent should create a Markdown file under `designs/`.
 
-1. Use the structure from `skills/design-guide-authoring/assets/design-guide-template.md`.
-2. Use `skills/design-guide-authoring/assets/design-guide-example.md` as a completed reference.
-3. Save the new file as something like `designs/my-design.md`.
-4. Be concrete about colors, typography, layout, visual elements, motion, Do/Don't rules, and the Agent Prompt Guide.
+Useful prompt:
+
+```txt
+Create a new design guide under designs/ for executive product strategy reviews. Use a restrained, high-density style with strong chart readability.
+```
+
+The agent should use `skills/design-guide-authoring/assets/design-guide-template.md` as the structure and `skills/design-guide-authoring/assets/design-guide-example.md` as a completed reference.
 
 A design guide should define reusable visual rules across slides. It should not be a single-slide outline.
 
@@ -202,11 +221,17 @@ public/
 screenshots/
 ```
 
-Commonly edited locations:
+Shared infrastructure:
 
-- `src/slides/`: slide components
+- `src/runtime/`: viewer runtime, scaling, navigation
+- `src/edit-mode/`: element inspection and copied references
+- `src/styles/global.css`: app-wide base styling
+
+Deck-specific content:
+
+- `src/slides/`: slide components generated by the agent
 - `src/slides.ts`: slide registration order
-- `designs/`: presentation style guides
+- `designs/`: visual instructions for the agent
 - `screenshots/`: captured slide images
 
-Most deck content and visual changes should live under `src/slides/`. `runtime/`, `edit-mode/`, and `styles/global.css` are shared infrastructure for many slide shows.
+Most deck content and visual changes should live under `src/slides/`. `runtime/`, `edit-mode/`, and `styles/global.css` should stay generic across many slide shows.
