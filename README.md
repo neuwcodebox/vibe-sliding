@@ -96,7 +96,7 @@ If clipboard access fails, the reference is shown on screen for manual copying.
 
 ## Adding a New Design Guide
 
-1. Copy the structure from `designs/_template.md`.
+1. Use the structure from `skills/design-guide-authoring/assets/design-guide-template.md`.
 2. Save the new guide under `designs/`.
 3. Include concrete color, typography, layout, visual element, motion, do, don't, responsive behavior, and agent prompt guidance.
 4. Keep guidance reusable and specific enough for a coding agent to implement.

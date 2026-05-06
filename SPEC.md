@@ -96,7 +96,6 @@ vibe-sliding/
   AGENTS.md
 
   designs/
-    _template.md
     minimal-dark.md
     executive-clean.md
     technical-grid.md
@@ -107,6 +106,8 @@ vibe-sliding/
       SKILL.md
     design-guide-authoring/
       SKILL.md
+      assets/
+        design-guide-template.md
 
   src/
     main.tsx
@@ -327,8 +328,10 @@ For small text edits, typo fixes, bug fixes, or narrow corrections, the agent ma
 The project must include:
 
 ```txt
-designs/_template.md
+skills/design-guide-authoring/assets/design-guide-template.md
 ```
+
+The design guide template is a bundled asset of the design guide authoring skill, not a user-selectable design guide. Files under `designs/` should be usable design guides.
 
 Design guides should follow this structure:
 
@@ -1138,7 +1141,7 @@ The MVP is complete when all of the following are true:
 * `npm run capture:all` captures all registered slides
 * `npm run typecheck` passes
 * `npm run build` passes
-* `designs/_template.md` exists
+* `skills/design-guide-authoring/assets/design-guide-template.md` exists
 * at least four usable design guides exist
 * `AGENTS.md` exists
 * required skill files exist

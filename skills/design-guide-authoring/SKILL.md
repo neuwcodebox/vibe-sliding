@@ -8,12 +8,13 @@ description: Use this skill when the user asks to create, revise, extend, audit,
 ## Workflow
 
 1. Understand the target audience, mood, use case, and presentation context.
-2. Create or edit one Markdown file under `designs/`.
-3. Keep the guide reusable across decks, not tailored to one specific slide.
-4. Give concrete implementation guidance that a coding agent can apply in React and Tailwind.
-5. Avoid vague-only direction such as "make it modern" or "make it beautiful."
-6. Avoid repository implementation clutter unless it materially affects visual execution.
-7. Validate that all required sections are present before finishing.
+2. For new guides, use `assets/design-guide-template.md` as the starting structure.
+3. Create or edit one Markdown file under `designs/`.
+4. Keep the guide reusable across decks, not tailored to one specific slide.
+5. Give concrete implementation guidance that a coding agent can apply in React and Tailwind.
+6. Avoid vague-only direction such as "make it modern" or "make it beautiful."
+7. Avoid repository implementation clutter unless it materially affects visual execution.
+8. Validate that all required sections are present before finishing.
 
 ## Required Sections
 
