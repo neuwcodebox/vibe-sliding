@@ -41,11 +41,9 @@ const findContextElement = (element: Element, root: HTMLElement) => {
 
   while (current && current !== root) {
     const aiId = current.getAttribute('data-ai-id')
-    const ariaLabel = current.getAttribute('aria-label')
-    const text = compactText(getElementText(current), 48)
 
-    if (aiId || ariaLabel || text) {
-      return { aiId, ariaLabel, text, tag: current.tagName.toLowerCase() }
+    if (aiId) {
+      return { aiId }
     }
 
     current = current.parentElement
@@ -116,13 +114,7 @@ export function createEditReference({
   }
 
   if (!aiId && context) {
-    if (context.aiId) {
-      parts.push(`@within:data-ai-id=${context.aiId}`)
-    } else if (context.ariaLabel) {
-      parts.push(`@within:${context.tag}[aria-label=${quote(context.ariaLabel)}]`)
-    } else if (context.text) {
-      parts.push(`@within:${context.tag} @within-text:${quote(context.text)}`)
-    }
+    parts.push(`@within:data-ai-id=${context.aiId}`)
   }
 
   return parts.join(' ')
