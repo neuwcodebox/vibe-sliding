@@ -175,12 +175,15 @@ Required runtime features:
 * support left/right keyboard navigation
 * support click-to-next-slide navigation
 * support direct slide access with `?slide=N`
+* support an end-of-slide-show screen after advancing beyond the final slide
 * support edit inspect mode with `?edit=1`
 * render slides inside a fixed 16:9 logical stage
 * scale the stage to fit the current viewport
 * prevent scrolling during normal presentation mode
 
 The runtime must not introduce a heavy slide abstraction, slide DSL, or framework-like API.
+
+The runtime must not render persistent slide chrome such as page numbers, progress bars, headers, footers, logos, or design-specific overlays on top of every slide. If a deck needs those elements, individual slide components should render them directly.
 
 ## 8. Slide Stage and Scaling
 
@@ -523,28 +526,28 @@ The copied edit reference must be one line.
 
 It must be short enough to paste into a larger prompt.
 
-The default format is:
+The default format is a single grouped element reference:
 
 ```txt
-@slide:3 @file:src/slides/003-architecture.tsx @target:data-ai-id=runtime-flow-title @text:"Agent Runtime Flow"
+@element(slide=3 file="src/slides/003-architecture.tsx" target="data-ai-id=runtime-flow-title" text="Agent Runtime Flow")
 ```
 
 If `data-ai-id` is unavailable:
 
 ```txt
-@slide:3 @file:src/slides/003-architecture.tsx @target:h1 @text:"Agent Runtime Flow"
+@element(slide=3 file="src/slides/003-architecture.tsx" target="h1" text="Agent Runtime Flow")
 ```
 
 If the element has no visible text but has an accessible label:
 
 ```txt
-@slide:3 @file:src/slides/003-architecture.tsx @target:svg @label:"flow arrow"
+@element(slide=3 file="src/slides/003-architecture.tsx" target="svg" label="flow arrow")
 ```
 
-If neither text nor label is available, use a compact fallback target:
+If neither text nor label is available, use a compact CSS path target:
 
 ```txt
-@slide:3 @file:src/slides/003-architecture.tsx @target:div.rounded-2xl
+@element(slide=3 file="src/slides/003-architecture.tsx" target="path:div[data-ai-id=principles].grid.grid-cols-2 > div.flex.items-center > svg.lucide > path" within="data-ai-id=principles")
 ```
 
 Coordinate information must not be included by default.
@@ -553,18 +556,24 @@ Avoid multi-line copied references.
 
 Avoid verbose prose.
 
+Avoid multiple top-level `@slide`, `@file`, `@target`, and `@within` tokens for a single selected element because they can look like multiple independent references. Keep all fields grouped inside one `@element(...)` reference.
+
+If a fallback path target is used and the selected element is inside a parent with `data-ai-id`, include `within="data-ai-id=..."` using the nearest ancestor that has `data-ai-id`. Do not add broad `within-text` fields by default because they can duplicate large text blocks and make references less clear.
+
 ### 14.5 Target Priority
 
-When generating an edit reference, use the following priority:
+When generating an edit reference target, use the following priority:
 
 1. `data-ai-id`
 2. visible text
 3. `aria-label`
 4. `alt`
-5. tag name with concise class hint
-6. short DOM path only if necessary
+5. tag name for clear text or label-bearing elements
+6. anchored CSS path for low-level elements such as SVG paths or anonymous containers
 
-DOM paths should be used as a last resort because they are brittle and less helpful for source-code editing.
+Edit Inspect Mode should prefer the deepest visible element under the cursor for selection. This allows users to reference fine-grained elements when needed. If the copied reference would otherwise be ambiguous, the reference should add a CSS path target and nearest `data-ai-id` context.
+
+DOM paths should be concise and anchored to a stable parent such as `data-ai-id` when available. Long unanchored DOM paths are brittle and less helpful for source-code editing.
 
 ## 15. `data-ai-id` Policy
 
@@ -648,6 +657,7 @@ Screenshot requirements:
 * overwrite existing screenshot files for the same slide
 * create `screenshots/` if it does not exist
 * fail clearly if the dev server is not reachable
+* wait briefly after page load before capturing so slide animations, charts, and font rendering can settle
 
 The MVP may assume:
 
@@ -658,6 +668,14 @@ npm run dev
 is already running.
 
 The screenshot scripts do not need to start the dev server automatically.
+
+The default settle wait may be configurable through an environment variable such as:
+
+```bash
+SLIDE_CAPTURE_SETTLE_MS=2000 npm run capture:slide -- 3
+```
+
+Slide components should not remove useful animations solely to make screenshots deterministic. Capture timing belongs in the screenshot script.
 
 ## 17. Visual Review Expectations
 
@@ -689,6 +707,7 @@ Required navigation:
 * space: next slide
 * click: next slide
 * direct URL access: `?slide=N`
+* advancing past the final slide: show an end-of-slide-show screen
 
 Recommended navigation:
 
@@ -701,9 +720,16 @@ Navigation must clamp to valid slide bounds.
 Example:
 
 * if the current slide is the first slide, previous slide keeps the user on the first slide
-* if the current slide is the last slide, next slide keeps the user on the last slide
+* if the current slide is the last slide, next slide opens the end-of-slide-show screen
+* if the current view is the end-of-slide-show screen, previous slide returns to the final slide
 
 The URL should update when the current slide changes.
+
+The end-of-slide-show screen may be represented with:
+
+```txt
+?slide=end
+```
 
 The slide number should be 1-based in URLs and user-facing references.
 
@@ -723,6 +749,7 @@ Slide authors may use:
 Slide authors should avoid:
 
 * global CSS for slide-specific styling
+* solving slide-specific visual problems in runtime or global CSS
 * layout dependent on browser viewport width
 * vertical scrolling
 * tiny text
@@ -734,9 +761,11 @@ Global CSS should mainly define:
 
 * font setup
 * body reset
-* viewer base layout
-* stage base layout
+* neutral viewer base layout
+* stage sizing and transform behavior
 * utility behavior needed by runtime
+
+Global CSS and runtime components should stay visually neutral. Slide-specific concerns such as page numbers, line-breaking rules, decorative backgrounds, card shadows, chart animation choices, and deck-specific layout polish should live in slide components unless they are required for the runtime itself.
 
 ## 20. Font Rules
 
@@ -879,7 +908,7 @@ The browser may provide one-line edit references copied from edit inspect mode.
 
 Example:
 
-`@slide:3 @file:src/slides/003-architecture.tsx @target:data-ai-id=runtime-flow-title @text:"Agent Runtime Flow"`
+`@element(slide=3 file="src/slides/003-architecture.tsx" target="data-ai-id=runtime-flow-title" text="Agent Runtime Flow")`
 
 Use the reference to locate the target JSX element.
 
@@ -887,9 +916,9 @@ Priority:
 
 1. `data-ai-id`
 2. visible text
-3. tag name
-4. aria-label or alt
-5. nearby JSX structure
+3. aria-label or alt
+4. tag name
+5. anchored CSS path and nearest `data-ai-id` context
 ```
 
 ### 23.2 `design-guide-authoring.md`
@@ -1049,6 +1078,7 @@ Examples:
 * `?slide=0` opens slide 1
 * `?slide=999` opens the last slide
 * non-numeric values open slide 1
+* `?slide=end` opens the end-of-slide-show screen when slides exist
 
 ### No slides registered
 
@@ -1158,4 +1188,3 @@ agent creates slides
 ```
 
 This is the core product loop.
-
