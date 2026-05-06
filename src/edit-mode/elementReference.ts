@@ -1,7 +1,7 @@
 import { getShortDomPath } from './domPath'
 
 type ElementReferenceInput = {
-  element: HTMLElement
+  element: Element
   root: HTMLElement
   slideFile: string
   slideNumber: number
@@ -19,7 +19,15 @@ const compactText = (text: string | null | undefined, maxLength = 80) => {
 
 const quote = (value: string) => `"${value.replace(/"/g, '\\"')}"`
 
-const classHint = (element: HTMLElement) => {
+const getElementText = (element: Element) => {
+  if (element instanceof HTMLElement) {
+    return element.innerText
+  }
+
+  return element.textContent
+}
+
+const classHint = (element: Element) => {
   const hint = Array.from(element.classList)
     .filter((name) => !name.startsWith('edit-inspect-'))
     .slice(0, 2)
@@ -28,13 +36,13 @@ const classHint = (element: HTMLElement) => {
   return hint ? `${element.tagName.toLowerCase()}.${hint}` : element.tagName.toLowerCase()
 }
 
-export function getElementLabel(element: HTMLElement) {
-  const aiId = element.dataset.aiId
+export function getElementLabel(element: Element) {
+  const aiId = element.getAttribute('data-ai-id')
   if (aiId) {
     return `${element.tagName.toLowerCase()}[data-ai-id=${aiId}]`
   }
 
-  const text = compactText(element.innerText, 40)
+  const text = compactText(getElementText(element), 40)
   if (text) {
     return `${element.tagName.toLowerCase()} ${quote(text)}`
   }
@@ -58,8 +66,8 @@ export function createEditReference({
   slideFile,
   slideNumber,
 }: ElementReferenceInput) {
-  const aiId = element.dataset.aiId
-  const text = compactText(element.innerText)
+  const aiId = element.getAttribute('data-ai-id')
+  const text = compactText(getElementText(element))
   const ariaLabel = compactText(element.getAttribute('aria-label'))
   const alt = compactText(element.getAttribute('alt'))
   const target = aiId

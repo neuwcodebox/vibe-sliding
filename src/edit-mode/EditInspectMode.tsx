@@ -9,18 +9,122 @@ type EditInspectModeProps = {
 }
 
 type HoverState = {
-  element: HTMLElement
+  element: Element
   label: string
   rect: DOMRect
 }
 
-const isInspectableElement = (
-  target: EventTarget | null,
+type StagePoint = {
+  x: number
+  y: number
+  scaleX: number
+  scaleY: number
+}
+
+const isElementInspectable = (element: Element, root: HTMLElement) => {
+  if (!root.contains(element) || element.closest('[data-edit-inspect-ui="true"]')) {
+    return false
+  }
+
+  const style = window.getComputedStyle(element)
+  return (
+    style.display !== 'none' &&
+    style.visibility !== 'hidden' &&
+    style.pointerEvents !== 'none'
+  )
+}
+
+const getDepth = (element: Element, root: HTMLElement) => {
+  let depth = 0
+  let current: Element | null = element
+
+  while (current && current !== root) {
+    depth += 1
+    current = current.parentElement
+  }
+
+  return depth
+}
+
+const getStagePoint = (
+  clientX: number,
+  clientY: number,
   root: HTMLElement,
-): target is HTMLElement =>
-  target instanceof HTMLElement &&
-  root.contains(target) &&
-  !target.closest('[data-edit-inspect-ui="true"]')
+): StagePoint | null => {
+  const rootRect = root.getBoundingClientRect()
+  const scaleX = rootRect.width / root.offsetWidth
+  const scaleY = rootRect.height / root.offsetHeight
+
+  if (scaleX <= 0 || scaleY <= 0) {
+    return null
+  }
+
+  const x = (clientX - rootRect.left) / scaleX
+  const y = (clientY - rootRect.top) / scaleY
+
+  if (x < 0 || y < 0 || x > root.offsetWidth || y > root.offsetHeight) {
+    return null
+  }
+
+  return { x, y, scaleX, scaleY }
+}
+
+const containsStagePoint = (
+  element: Element,
+  root: HTMLElement,
+  point: StagePoint,
+) => {
+  const rootRect = root.getBoundingClientRect()
+  const rect = element.getBoundingClientRect()
+  const left = (rect.left - rootRect.left) / point.scaleX
+  const top = (rect.top - rootRect.top) / point.scaleY
+  const width = rect.width / point.scaleX
+  const height = rect.height / point.scaleY
+
+  return (
+    width > 0 &&
+    height > 0 &&
+    point.x >= left &&
+    point.x <= left + width &&
+    point.y >= top &&
+    point.y <= top + height
+  )
+}
+
+const getInspectableElementAtPoint = (
+  event: PointerEvent | MouseEvent,
+  root: HTMLElement,
+) => {
+  const point = getStagePoint(event.clientX, event.clientY, root)
+
+  if (!point) {
+    return null
+  }
+
+  const candidates = Array.from(root.querySelectorAll('*'))
+    .filter((element) => isElementInspectable(element, root))
+    .filter((element) => containsStagePoint(element, root, point))
+
+  return candidates.reduce<Element | null>((best, element) => {
+    if (!best) {
+      return element
+    }
+
+    const bestDepth = getDepth(best, root)
+    const elementDepth = getDepth(element, root)
+
+    if (elementDepth !== bestDepth) {
+      return elementDepth > bestDepth ? element : best
+    }
+
+    const bestRect = best.getBoundingClientRect()
+    const elementRect = element.getBoundingClientRect()
+    const bestArea = bestRect.width * bestRect.height
+    const elementArea = elementRect.width * elementRect.height
+
+    return elementArea < bestArea ? element : best
+  }, null)
+}
 
 export function EditInspectMode({
   active,
@@ -43,12 +147,13 @@ export function EditInspectMode({
     }
 
     const onPointerMove = (event: PointerEvent) => {
-      if (!isInspectableElement(event.target, root)) {
+      const element = getInspectableElementAtPoint(event, root)
+
+      if (!element) {
         setHover(null)
         return
       }
 
-      const element = event.target
       setHover({
         element,
         label: getElementLabel(element),
@@ -59,7 +164,9 @@ export function EditInspectMode({
     const onPointerLeave = () => setHover(null)
 
     const onClick = async (event: MouseEvent) => {
-      if (!isInspectableElement(event.target, root)) {
+      const element = getInspectableElementAtPoint(event, root)
+
+      if (!element) {
         return
       }
 
@@ -67,7 +174,7 @@ export function EditInspectMode({
       event.stopPropagation()
 
       const reference = createEditReference({
-        element: event.target,
+        element,
         root,
         slideFile,
         slideNumber,
