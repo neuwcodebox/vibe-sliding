@@ -18,6 +18,7 @@ const compactText = (text: string | null | undefined, maxLength = 80) => {
 }
 
 const quote = (value: string) => `"${value.replace(/"/g, '\\"')}"`
+const field = (name: string, value: string | number) => `${name}=${value}`
 
 const getElementText = (element: Element) => {
   if (element instanceof HTMLElement) {
@@ -97,25 +98,25 @@ export function createEditReference({
         ? element.tagName.toLowerCase()
         : alt
           ? element.tagName.toLowerCase()
-          : `path:${quote(fallbackPath)}`
+          : `path:${fallbackPath}`
 
-  const parts = [
-    `@slide:${slideNumber}`,
-    `@file:${slideFile}`,
-    `@target:${target}`,
+  const fields = [
+    field('slide', slideNumber),
+    field('file', quote(slideFile)),
+    field('target', quote(target)),
   ]
 
   if (text) {
-    parts.push(`@text:${quote(text)}`)
+    fields.push(field('text', quote(text)))
   } else if (ariaLabel) {
-    parts.push(`@label:${quote(ariaLabel)}`)
+    fields.push(field('label', quote(ariaLabel)))
   } else if (alt) {
-    parts.push(`@alt:${quote(alt)}`)
+    fields.push(field('alt', quote(alt)))
   }
 
   if (!aiId && context) {
-    parts.push(`@within:data-ai-id=${context.aiId}`)
+    fields.push(field('within', quote(`data-ai-id=${context.aiId}`)))
   }
 
-  return parts.join(' ')
+  return `@element(${fields.join(' ')})`
 }

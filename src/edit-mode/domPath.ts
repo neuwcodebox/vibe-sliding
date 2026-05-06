@@ -1,10 +1,17 @@
+const cssIdentifier = /^[a-zA-Z_][a-zA-Z0-9_-]*$/
+
+const attrSelector = (name: string, value: string) =>
+  cssIdentifier.test(value)
+    ? `[${name}=${value}]`
+    : `[${name}="${CSS.escape(value)}"]`
+
 const selectorForElement = (element: Element) => {
   const tag = element.tagName.toLowerCase()
   const id = element.id ? `#${CSS.escape(element.id)}` : ''
   const aiId = element.getAttribute('data-ai-id')
-  const aiIdSelector = aiId ? `[data-ai-id="${CSS.escape(aiId)}"]` : ''
+  const aiIdSelector = aiId ? attrSelector('data-ai-id', aiId) : ''
   const ariaLabel = element.getAttribute('aria-label')
-  const ariaSelector = ariaLabel ? `[aria-label="${CSS.escape(ariaLabel)}"]` : ''
+  const ariaSelector = ariaLabel ? attrSelector('aria-label', ariaLabel) : ''
   const className = Array.from(element.classList)
     .filter((name) => !name.startsWith('edit-inspect-'))
     .slice(0, 2)

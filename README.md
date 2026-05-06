@@ -89,7 +89,7 @@ http://localhost:5173/?slide=3&edit=1
 When active, hover highlights the current target and clicking a visible element copies a one-line reference such as:
 
 ```txt
-@slide:3 @file:src/slides/003-content.tsx @target:data-ai-id=runtime-flow-title @text:"Runtime flow"
+@element(slide=3 file="src/slides/003-content.tsx" target="data-ai-id=runtime-flow-title" text="Runtime flow")
 ```
 
 If clipboard access fails, the reference is shown on screen for manual copying.

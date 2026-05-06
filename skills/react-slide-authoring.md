@@ -32,7 +32,7 @@ The browser may provide one-line edit references copied from edit inspect mode.
 
 Example:
 
-`@slide:3 @file:src/slides/003-architecture.tsx @target:data-ai-id=runtime-flow-title @text:"Agent Runtime Flow"`
+`@element(slide=3 file="src/slides/003-architecture.tsx" target="data-ai-id=runtime-flow-title" text="Agent Runtime Flow")`
 
 Use the reference to locate the target JSX element.
 
