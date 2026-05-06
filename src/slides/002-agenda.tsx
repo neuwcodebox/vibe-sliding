@@ -4,22 +4,22 @@ const roles = [
   {
     icon: UserRoundCog,
     title: 'User intent',
-    body: '주제, 청중, 슬라이드 수, 포함할 메시지를 자연어로 요청합니다.',
+    body: 'Describe the topic, audience, slide count, and required message.',
   },
   {
     icon: FileText,
     title: 'Design guide',
-    body: 'designs/*.md가 톤, 색상, 밀도, 차트 표현 규칙을 제공합니다.',
+    body: 'A designs/*.md file defines tone, color, density, and chart rules.',
   },
   {
     icon: Code2,
     title: 'React source',
-    body: 'Agent가 src/slides/의 TSX와 src/slides.ts 등록 순서를 수정합니다.',
+    body: 'The agent edits TSX files under src/slides/ and updates slides.ts.',
   },
   {
     icon: MonitorPlay,
     title: 'Browser review',
-    body: '사용자는 실제 발표 화면을 보고 다음 수정 요청을 결정합니다.',
+    body: 'Review the live presentation surface and request the next change.',
   },
 ]
 
@@ -38,15 +38,15 @@ export default function Slide002Agenda() {
             className="text-[86px] font-semibold leading-none tracking-normal"
             data-ai-id="main-title"
           >
-            사람은 요청하고 Agent가 구현합니다
+            You request the deck. The agent builds it.
           </h1>
         </div>
         <p
           className="self-end text-[32px] leading-snug text-slate-600"
           data-ai-id="summary"
         >
-          이 프로젝트의 핵심은 사람이 슬라이드 코드를 직접 작성하는 것이 아니라,
-          Agent가 편집하기 좋은 React 작업공간을 제공하는 것입니다.
+          Vibe Sliding is not about hand-authoring slide code. It gives AI
+          agents a clear React workspace they can edit reliably.
         </p>
       </div>
 

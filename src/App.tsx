@@ -70,10 +70,10 @@ function App() {
         <div className="flex h-full w-full flex-col items-center justify-center bg-black px-24 text-center text-white">
           <p className="font-mono text-3xl text-white/45">End of slide show</p>
           <h1 className="mt-7 text-[88px] font-semibold leading-none tracking-normal">
-            슬라이드 쇼가 끝났습니다
+            You have reached the end
           </h1>
           <p className="mt-8 text-[34px] text-white/60">
-            왼쪽 또는 위쪽 방향키를 누르면 마지막 슬라이드로 돌아갑니다.
+            Press Left or Up to return to the final slide.
           </p>
         </div>
       ) : CurrentSlide ? (

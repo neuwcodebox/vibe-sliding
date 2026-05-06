@@ -37,14 +37,14 @@ export default function Slide003Content() {
             className="text-[88px] font-semibold leading-[0.98] tracking-normal"
             data-ai-id="main-title"
           >
-            보이는 요소를 그대로 수정 요청
+            Point at what should change
           </h1>
           <p
             className="mt-9 text-[32px] leading-snug text-slate-300"
             data-ai-id="body-summary"
           >
-            Edit Inspect Mode는 브라우저에서 클릭한 요소를 소스 위치와 연결해
-            Agent에게 전달할 수 있는 한 줄 참조로 바꿉니다.
+            Edit Inspect Mode turns a clicked browser element into a one-line
+            source reference you can paste into the next agent prompt.
           </p>
         </div>
 
@@ -81,7 +81,7 @@ export default function Slide003Content() {
           </div>
           <div className="border border-teal-200/20 bg-slate-950/80 p-6 font-mono text-[24px] leading-snug text-teal-100">
             @element(slide=3 file=&quot;src/slides/003-content.tsx&quot;
-            target=&quot;data-ai-id=main-title&quot; text=&quot;보이는 요소를 그대로 수정 요청&quot;)
+            target=&quot;data-ai-id=main-title&quot; text=&quot;Point at what should change&quot;)
           </div>
         </div>
 

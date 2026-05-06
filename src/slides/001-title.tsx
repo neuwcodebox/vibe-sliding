@@ -2,9 +2,9 @@ import { Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const promiseCards = [
-  ['01', 'Describe the deck', '사용자는 발표 목적, 청중, 톤을 Agent에게 설명합니다.'],
-  ['02', 'Agent writes slides', 'Agent가 React 컴포넌트와 슬라이드 순서를 직접 수정합니다.'],
-  ['03', 'Review in browser', '브라우저에서 발표 화면을 보고 수정 요청을 반복합니다.'],
+  ['01', 'Choose a guide', 'Pick a reusable design guide for the deck style.'],
+  ['02', 'Ask the agent', 'Describe the audience, content, and slide count.'],
+  ['03', 'Review locally', 'Preview, inspect, capture, and request revisions.'],
 ]
 
 export default function Slide001Title() {
@@ -14,7 +14,7 @@ export default function Slide001Title() {
       <div className="absolute left-28 top-24 h-1 w-28 bg-teal-300" />
 
       <div className="relative z-10 flex w-full flex-col justify-between">
-        <div className="max-w-[1280px]">
+        <div className="max-w-[1060px]">
           <div
             className="mb-12 inline-flex items-center gap-4 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-2xl font-medium text-teal-100"
             data-ai-id="deck-label"
@@ -23,25 +23,25 @@ export default function Slide001Title() {
             Vibe Sliding Demo
           </div>
           <motion.h1
-            className="max-w-[1250px] text-[122px] font-semibold leading-[0.95] tracking-normal"
+            className="max-w-[1040px] text-[102px] font-semibold leading-[0.96] tracking-normal"
             data-ai-id="main-title"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            AI Agent에게 맡기는 로컬 슬라이드 제작
+            Ask the agent for a deck, not code
           </motion.h1>
           <p
-            className="mt-10 max-w-[1000px] text-[36px] leading-snug text-slate-300"
+            className="mt-10 max-w-[860px] text-[34px] leading-snug text-slate-300"
             data-ai-id="subtitle"
           >
-            사용자는 발표 자료를 요청하고, Agent는 React 슬라이드를 작성하며,
-            브라우저는 바로 확인 가능한 발표 화면이 됩니다.
+            Vibe Sliding gives AI agents a local React slide workspace with
+            design guides, edit inspect references, and screenshot review.
           </p>
         </div>
 
         <div
-          className="grid w-[1040px] grid-cols-3 gap-5"
+          className="grid w-[1010px] grid-cols-3 gap-5"
           data-ai-id="promise-cards"
         >
           {promiseCards.map(([step, title, body]) => (

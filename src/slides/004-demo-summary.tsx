@@ -4,17 +4,17 @@ const demoItems = [
   {
     icon: Layers3,
     title: 'Guided generation',
-    detail: 'Agent가 designs/*.md를 읽고 일관된 비주얼 규칙으로 덱을 만듭니다.',
+    detail: 'The agent reads designs/*.md and follows consistent visual rules.',
   },
   {
     icon: Presentation,
     title: 'Browser presentation',
-    detail: '고정 16:9 스테이지를 브라우저에서 그대로 발표하고 캡처합니다.',
+    detail: 'A fixed 16:9 stage previews, presents, and captures the deck.',
   },
   {
     icon: Keyboard,
     title: 'Keyboard navigation',
-    detail: '좌/우, 상/하, Space, Home, End로 발표 흐름을 제어합니다.',
+    detail: 'Use arrows, Space, Home, and End to control the presentation.',
   },
 ]
 
@@ -35,14 +35,14 @@ export default function Slide004DemoSummary() {
               className="max-w-[980px] text-[92px] font-semibold leading-none tracking-normal"
               data-ai-id="main-title"
             >
-              이 프로젝트가 보여주는 기능
+              What this demo shows
             </h1>
             <p
               className="mt-9 max-w-[900px] text-[34px] leading-snug text-slate-600"
               data-ai-id="summary"
             >
-              Vibe Sliding은 Agent가 슬라이드를 만들고, 사용자가 브라우저에서
-              검토하며, 정확한 참조로 다시 수정시키는 로컬 제작 루프입니다.
+              Vibe Sliding creates a local loop where agents build the deck,
+              users review in the browser, and precise references drive edits.
             </p>
           </div>
 
@@ -89,8 +89,8 @@ export default function Slide004DemoSummary() {
               Ask for the deck, not the code
             </h2>
             <p className="mt-7 text-[30px] leading-snug text-slate-600">
-              사용자는 발표 의도와 피드백을 제공하고, Agent는 슬라이드 소스를
-              계속 개선합니다.
+              You provide the presentation intent and feedback. The agent keeps
+              improving the slide source.
             </p>
           </div>
 
@@ -104,7 +104,7 @@ export default function Slide004DemoSummary() {
 
           <div className="flex items-center gap-4 text-[26px] font-semibold text-teal-800">
             <ArrowDown className="h-8 w-8" aria-hidden />
-            아래 방향키로 종료 화면까지 진행
+            Press Down to continue to the end screen
           </div>
         </div>
       </div>
