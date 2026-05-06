@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 export default function Slide001Title() {
   return (
     <section className="relative flex h-full w-full overflow-hidden bg-[#080b12] px-28 py-24 text-white">
-      <div className="absolute inset-y-0 right-0 w-[44%] bg-[linear-gradient(135deg,rgba(20,184,166,0.18),rgba(59,130,246,0.12),transparent)]" />
+      <div className="absolute inset-y-0 right-0 w-[34%] bg-[linear-gradient(135deg,rgba(20,184,166,0.18),rgba(59,130,246,0.12),transparent)]" />
       <div className="absolute left-28 top-24 h-1 w-28 bg-teal-300" />
       <div className="relative z-10 flex max-w-[1180px] flex-col justify-between">
         <div>
