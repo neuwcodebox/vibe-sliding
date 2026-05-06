@@ -18,7 +18,7 @@ const reviewData = [
 
 export default function Slide003Content() {
   return (
-    <section className="grid h-full w-full grid-cols-[0.95fr_1.05fr] bg-[#0b1020] px-24 py-20 text-white">
+    <section className="grid h-full w-full grid-cols-[0.95fr_1.05fr] bg-[#0b1020] px-24 py-20 text-white [word-break:keep-all]">
       <div className="flex flex-col justify-between pr-16">
         <div>
           <p

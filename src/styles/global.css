@@ -61,18 +61,8 @@ select {
   position: relative;
   overflow: hidden;
   transform-origin: top left;
-  overflow-wrap: normal;
-  word-break: keep-all;
   background: #0f172a;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
-}
-
-.slide-stage code,
-.slide-stage pre,
-.slide-stage kbd,
-.slide-stage samp {
-  overflow-wrap: anywhere;
-  word-break: normal;
 }
 
 .edit-inspect-active .slide-stage {

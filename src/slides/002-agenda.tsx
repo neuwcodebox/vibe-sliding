@@ -25,7 +25,7 @@ const agendaItems = [
 
 export default function Slide002Agenda() {
   return (
-    <section className="flex h-full w-full flex-col bg-[#f8fafc] px-28 py-24 text-slate-950">
+    <section className="flex h-full w-full flex-col bg-[#f8fafc] px-28 py-24 text-slate-950 [word-break:keep-all]">
       <div className="flex items-end justify-between border-b border-slate-200 pb-12">
         <div>
           <p
