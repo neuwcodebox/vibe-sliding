@@ -8,6 +8,12 @@ Vibe Sliding is a local workspace for asking an AI coding agent to generate, edi
 
 This is not a GUI-first PowerPoint replacement. The browser is the preview and presentation surface. The files under `src/slides/` are the source files that the AI agent edits on your behalf.
 
+## Demo Deck
+
+The included demo deck introduces the project workflow: choose a design guide, ask the agent for a deck, inspect specific elements, and review the generated slides.
+
+![Vibe Sliding demo slide grid](docs/demo-slides-grid.png)
+
 ## Quick Start
 
 ```bash

@@ -8,6 +8,12 @@ Vibe Sliding은 AI 코딩 에이전트에게 슬라이드 쇼 생성, 수정, �
 
 이 프로젝트는 GUI 중심의 PowerPoint 대체제가 아닙니다. 브라우저는 미리보기와 발표 화면이고, `src/slides/` 아래 파일들은 AI Agent가 사용자를 대신해 수정하는 소스 파일입니다.
 
+## 데모 덱
+
+포함된 데모 덱은 디자인 가이드 선택, Agent에게 덱 요청, 특정 요소 inspect, 생성된 슬라이드 검토 흐름을 보여줍니다.
+
+![Vibe Sliding 데모 슬라이드 그리드](docs/demo-slides-grid.png)
+
 ## 빠른 시작
 
 ```bash
