@@ -1,4 +1,4 @@
-import { getShortDomPath } from './domPath'
+import { getAnchoredDomPath, getShortDomPath } from './domPath'
 
 type ElementReferenceInput = {
   element: Element
@@ -36,6 +36,24 @@ const classHint = (element: Element) => {
   return hint ? `${element.tagName.toLowerCase()}.${hint}` : element.tagName.toLowerCase()
 }
 
+const findContextElement = (element: Element, root: HTMLElement) => {
+  let current = element.parentElement
+
+  while (current && current !== root) {
+    const aiId = current.getAttribute('data-ai-id')
+    const ariaLabel = current.getAttribute('aria-label')
+    const text = compactText(getElementText(current), 48)
+
+    if (aiId || ariaLabel || text) {
+      return { aiId, ariaLabel, text, tag: current.tagName.toLowerCase() }
+    }
+
+    current = current.parentElement
+  }
+
+  return null
+}
+
 export function getElementLabel(element: Element) {
   const aiId = element.getAttribute('data-ai-id')
   if (aiId) {
@@ -70,6 +88,9 @@ export function createEditReference({
   const text = compactText(getElementText(element))
   const ariaLabel = compactText(element.getAttribute('aria-label'))
   const alt = compactText(element.getAttribute('alt'))
+  const context = findContextElement(element, root)
+  const fallbackPath =
+    getAnchoredDomPath(element, root) || classHint(element) || getShortDomPath(element, root)
   const target = aiId
     ? `data-ai-id=${aiId}`
     : text
@@ -78,7 +99,7 @@ export function createEditReference({
         ? element.tagName.toLowerCase()
         : alt
           ? element.tagName.toLowerCase()
-          : classHint(element) || getShortDomPath(element, root)
+          : `path:${quote(fallbackPath)}`
 
   const parts = [
     `@slide:${slideNumber}`,
@@ -92,6 +113,16 @@ export function createEditReference({
     parts.push(`@label:${quote(ariaLabel)}`)
   } else if (alt) {
     parts.push(`@alt:${quote(alt)}`)
+  }
+
+  if (!aiId && context) {
+    if (context.aiId) {
+      parts.push(`@within:data-ai-id=${context.aiId}`)
+    } else if (context.ariaLabel) {
+      parts.push(`@within:${context.tag}[aria-label=${quote(context.ariaLabel)}]`)
+    } else if (context.text) {
+      parts.push(`@within:${context.tag} @within-text:${quote(context.text)}`)
+    }
   }
 
   return parts.join(' ')
