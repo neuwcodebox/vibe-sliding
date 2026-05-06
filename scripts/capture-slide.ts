@@ -4,6 +4,10 @@ import { chromium } from 'playwright'
 
 const BASE_URL = process.env.SLIDE_BASE_URL ?? 'http://localhost:5173'
 const SCREENSHOTS_DIR = 'screenshots'
+const CAPTURE_SETTLE_MS = Number.parseInt(
+  process.env.SLIDE_CAPTURE_SETTLE_MS ?? '1200',
+  10,
+)
 
 const parseSlideNumber = () => {
   const rawSlide = process.argv[2]
@@ -31,6 +35,7 @@ export async function captureSlide(slideNumber: number) {
       waitUntil: 'networkidle',
       timeout: 8000,
     })
+    await page.waitForTimeout(CAPTURE_SETTLE_MS)
     await page.screenshot({ path: outputPath, fullPage: false })
     console.log(`Captured ${outputPath}`)
   } catch (error) {

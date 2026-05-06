@@ -128,7 +128,6 @@ export default function Slide003Content() {
                 <Area
                   dataKey="clarity"
                   fill="url(#clarity)"
-                  isAnimationActive={false}
                   stroke="#5eead4"
                   strokeWidth={4}
                   type="monotone"
