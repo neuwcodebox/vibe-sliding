@@ -21,6 +21,10 @@ const readSlideIndexFromUrl = (slideCount: number) => {
   }
 
   const rawSlide = new URLSearchParams(window.location.search).get('slide')
+  if (rawSlide === 'end') {
+    return slideCount
+  }
+
   const parsedSlide = Number.parseInt(rawSlide ?? '', 10)
 
   if (!Number.isFinite(parsedSlide)) {
@@ -30,9 +34,9 @@ const readSlideIndexFromUrl = (slideCount: number) => {
   return clamp(parsedSlide - 1, 0, slideCount - 1)
 }
 
-const writeSlideIndexToUrl = (index: number) => {
+const writeSlideIndexToUrl = (index: number, slideCount: number) => {
   const url = new URL(window.location.href)
-  url.searchParams.set('slide', String(index + 1))
+  url.searchParams.set('slide', index >= slideCount ? 'end' : String(index + 1))
   window.history.replaceState(null, '', url)
 }
 
@@ -43,7 +47,7 @@ export function useSlideNavigation(slideCount: number) {
 
   useEffect(() => {
     if (slideCount > 0) {
-      writeSlideIndexToUrl(currentIndex)
+      writeSlideIndexToUrl(currentIndex, slideCount)
     }
   }, [currentIndex, slideCount])
 
@@ -59,7 +63,7 @@ export function useSlideNavigation(slideCount: number) {
       return
     }
 
-    setCurrentIndex(clamp(index, 0, slideCount - 1))
+    setCurrentIndex(clamp(index, 0, slideCount))
   }
 
   const nextSlide = () => goToSlide(currentIndex + 1)
@@ -102,12 +106,14 @@ export function useSlideNavigation(slideCount: number) {
     () => slides[currentIndex]?.component ?? null,
     [currentIndex],
   )
+  const isEndScreen = slideCount > 0 && currentIndex >= slideCount
 
   return {
     currentIndex,
     currentSlide,
     firstSlide,
     goToSlide,
+    isEndScreen,
     lastSlide,
     nextSlide,
     previousSlide,
