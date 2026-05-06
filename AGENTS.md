@@ -24,7 +24,7 @@ src/
   slides/                  # individual slide components
   styles/global.css        # app-wide CSS and Tailwind import
 designs/                   # reusable slide design guides
-skills/                    # promptable authoring guidance
+  skills/                    # Agent Skills directories
 scripts/                   # screenshot capture scripts
 public/                    # static assets served by Vite
 screenshots/               # generated captures, ignored by git

@@ -103,8 +103,10 @@ vibe-sliding/
     startup-pitch.md
 
   skills/
-    react-slide-authoring.md
-    design-guide-authoring.md
+    react-slide-authoring/
+      SKILL.md
+    design-guide-authoring/
+      SKILL.md
 
   src/
     main.tsx
@@ -847,18 +849,29 @@ This is a React-based slide deck workspace for AI-assisted slide authoring.
 
 The project must include a `skills/` directory.
 
-Skills are markdown guidance files for coding AI agents.
+Skills must follow the Agent Skills directory format: each skill is a directory containing a required `SKILL.md` file with YAML frontmatter and Markdown instructions.
 
 Required skills:
 
 ```txt
-skills/react-slide-authoring.md
-skills/design-guide-authoring.md
+skills/react-slide-authoring/SKILL.md
+skills/design-guide-authoring/SKILL.md
 ```
 
 These files are procedural guidance, not runtime code.
 
-### 23.1 `react-slide-authoring.md`
+Each `SKILL.md` must include at least:
+
+```yaml
+---
+name: skill-name
+description: Use this skill when ...
+---
+```
+
+The `name` value must match the parent directory name, use lowercase letters and hyphens, and avoid leading, trailing, or consecutive hyphens. The `description` must explain both what the skill does and when the agent should use it.
+
+### 23.1 `react-slide-authoring/SKILL.md`
 
 This skill must cover:
 
@@ -871,14 +884,10 @@ This skill must cover:
 * `data-ai-id` recommendations
 * constraints against heavy abstractions
 
-It should include this core guidance:
+It should include this core guidance after Agent Skills frontmatter:
 
 ```md
-# React Slide Authoring Skill
-
-## Use this skill when
-
-The user asks to create, edit, restyle, review, or improve slides.
+# React Slide Authoring
 
 ## Required Design Guide
 
@@ -921,7 +930,7 @@ Priority:
 5. anchored CSS path and nearest `data-ai-id` context
 ```
 
-### 23.2 `design-guide-authoring.md`
+### 23.2 `design-guide-authoring/SKILL.md`
 
 This skill must cover:
 
@@ -931,14 +940,10 @@ This skill must cover:
 * avoiding implementation-specific clutter
 * using the required design guide sections
 
-It should include this core guidance:
+It should include this core guidance after Agent Skills frontmatter:
 
 ```md
-# Design Guide Authoring Skill
-
-## Use this skill when
-
-The user asks to create, revise, or extend a design guide under `designs/`.
+# Design Guide Authoring
 
 ## Workflow
 
