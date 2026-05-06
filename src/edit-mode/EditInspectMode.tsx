@@ -1,4 +1,5 @@
 import { type RefObject, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { createEditReference, getElementLabel } from './elementReference'
 
 type EditInspectModeProps = {
@@ -23,6 +24,10 @@ type StagePoint = {
 
 const isElementInspectable = (element: Element, root: HTMLElement) => {
   if (!root.contains(element) || element.closest('[data-edit-inspect-ui="true"]')) {
+    return false
+  }
+
+  if (['path', 'line', 'polyline', 'polygon', 'circle', 'rect'].includes(element.tagName.toLowerCase())) {
     return false
   }
 
@@ -104,6 +109,14 @@ const getInspectableElementAtPoint = (
   const candidates = Array.from(root.querySelectorAll('*'))
     .filter((element) => isElementInspectable(element, root))
     .filter((element) => containsStagePoint(element, root, point))
+
+  const withAiId = candidates
+    .filter((element) => element.hasAttribute('data-ai-id'))
+    .sort((a, b) => getDepth(b, root) - getDepth(a, root))
+
+  if (withAiId[0]) {
+    return withAiId[0]
+  }
 
   return candidates.reduce<Element | null>((best, element) => {
     if (!best) {
@@ -206,7 +219,7 @@ export function EditInspectMode({
     return null
   }
 
-  return (
+  return createPortal(
     <div
       className="pointer-events-none fixed inset-0 z-50"
       data-edit-inspect-ui="true"
@@ -242,6 +255,7 @@ export function EditInspectMode({
           <span className="text-cyan-200">{copiedReference}</span>
         </div>
       ) : null}
-    </div>
+    </div>,
+    document.body,
   )
 }
