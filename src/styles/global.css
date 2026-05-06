@@ -47,9 +47,7 @@ select {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 25% 20%, rgba(20, 184, 166, 0.11), transparent 30%),
-    linear-gradient(135deg, #05070c 0%, #10131e 55%, #07090f 100%);
+  background: #111827;
 }
 
 .slide-stage-frame {
@@ -61,8 +59,6 @@ select {
   position: relative;
   overflow: hidden;
   transform-origin: top left;
-  background: #0f172a;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
 }
 
 .edit-inspect-active .slide-stage {
