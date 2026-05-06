@@ -27,10 +27,6 @@ const isElementInspectable = (element: Element, root: HTMLElement) => {
     return false
   }
 
-  if (['path', 'line', 'polyline', 'polygon', 'circle', 'rect'].includes(element.tagName.toLowerCase())) {
-    return false
-  }
-
   const style = window.getComputedStyle(element)
   return (
     style.display !== 'none' &&
@@ -109,14 +105,6 @@ const getInspectableElementAtPoint = (
   const candidates = Array.from(root.querySelectorAll('*'))
     .filter((element) => isElementInspectable(element, root))
     .filter((element) => containsStagePoint(element, root, point))
-
-  const withAiId = candidates
-    .filter((element) => element.hasAttribute('data-ai-id'))
-    .sort((a, b) => getDepth(b, root) - getDepth(a, root))
-
-  if (withAiId[0]) {
-    return withAiId[0]
-  }
 
   return candidates.reduce<Element | null>((best, element) => {
     if (!best) {
