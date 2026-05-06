@@ -108,6 +108,7 @@ vibe-sliding/
       SKILL.md
       assets/
         design-guide-template.md
+        design-guide-example.md
 
   src/
     main.tsx
@@ -329,9 +330,10 @@ The project must include:
 
 ```txt
 skills/design-guide-authoring/assets/design-guide-template.md
+skills/design-guide-authoring/assets/design-guide-example.md
 ```
 
-The design guide template is a bundled asset of the design guide authoring skill, not a user-selectable design guide. Files under `designs/` should be usable design guides.
+The design guide template and example are bundled assets of the design guide authoring skill, not user-selectable design guides. Files under `designs/` should be usable design guides.
 
 Design guides should follow this structure:
 
@@ -1142,6 +1144,7 @@ The MVP is complete when all of the following are true:
 * `npm run typecheck` passes
 * `npm run build` passes
 * `skills/design-guide-authoring/assets/design-guide-template.md` exists
+* `skills/design-guide-authoring/assets/design-guide-example.md` exists
 * at least four usable design guides exist
 * `AGENTS.md` exists
 * required skill files exist
