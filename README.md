@@ -2,6 +2,8 @@
 
 [Korean README](README.ko.md)
 
+![Vibe Sliding workspace preview](docs/hero.png)
+
 Vibe Sliding is a local workspace for asking an AI coding agent to generate, edit, and review a slide show. You do not normally hand-author the slide source yourself. Instead, you run the preview server, choose a design guide, describe the deck you want, and let the agent write the React slide components.
 
 This is not a GUI-first PowerPoint replacement. The browser is the preview and presentation surface. The files under `src/slides/` are the source files that the AI agent edits on your behalf.

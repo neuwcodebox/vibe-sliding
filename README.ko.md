@@ -2,6 +2,8 @@
 
 [English README](README.md)
 
+![Vibe Sliding 작업공간 미리보기](docs/hero.png)
+
 Vibe Sliding은 AI 코딩 에이전트에게 슬라이드 쇼 생성, 수정, 검토를 맡기기 위한 로컬 작업공간입니다. 사용자가 직접 슬라이드 React 코드를 작성하는 것이 기본 흐름은 아닙니다. 사용자는 미리보기 서버를 실행하고, 디자인 가이드를 고르고, 원하는 발표 자료를 설명하면 됩니다. 실제 `src/slides/`의 React 컴포넌트 작성은 AI Agent가 담당합니다.
 
 이 프로젝트는 GUI 중심의 PowerPoint 대체제가 아닙니다. 브라우저는 미리보기와 발표 화면이고, `src/slides/` 아래 파일들은 AI Agent가 사용자를 대신해 수정하는 소스 파일입니다.
