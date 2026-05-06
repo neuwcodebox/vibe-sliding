@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "capture:slide": "tsx scripts/capture-slide.ts",
+    "capture:all": "tsx scripts/capture-all-slides.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",

@@ -1,121 +1,93 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { EditInspectMode } from './edit-mode/EditInspectMode'
+import { SlideStage } from './runtime/SlideStage'
+import { useSlideNavigation } from './runtime/useSlideNavigation'
+import { slides } from './slides'
+
+const readEditQuery = () =>
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).get('edit') === '1'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const stageRef = useRef<HTMLDivElement>(null)
+  const [isEditMode, setIsEditMode] = useState(readEditQuery)
+  const {
+    currentIndex,
+    currentSlide,
+    nextSlide,
+    slideCount,
+  } = useSlideNavigation(slides.length)
+
+  const setEditMode = useCallback((enabled: boolean) => {
+    setIsEditMode(enabled)
+
+    const url = new URL(window.location.href)
+    if (enabled) {
+      url.searchParams.set('edit', '1')
+    } else {
+      url.searchParams.delete('edit')
+    }
+    window.history.replaceState(null, '', url)
+  }, [])
+
+  useEffect(() => {
+    document.body.classList.toggle('edit-inspect-active', isEditMode)
+    return () => document.body.classList.remove('edit-inspect-active')
+  }, [isEditMode])
+
+  useEffect(() => {
+    const onPopState = () => setIsEditMode(readEditQuery())
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === 'e') {
+        event.preventDefault()
+        setEditMode(!isEditMode)
+      }
+
+      if (event.key === 'Escape' && isEditMode) {
+        event.preventDefault()
+        setEditMode(false)
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [isEditMode, setEditMode])
+
+  const CurrentSlide = currentSlide
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
+    <SlideStage
+      ref={stageRef}
+      onStageClick={isEditMode ? undefined : nextSlide}
+    >
+      {CurrentSlide ? (
+        <CurrentSlide />
+      ) : (
+        <div className="flex h-full w-full flex-col items-center justify-center bg-slate-950 px-24 text-center text-white">
+          <h1 className="text-6xl font-semibold">No slides registered</h1>
+          <p className="mt-6 max-w-3xl text-3xl text-slate-300">
+            Add slide components under src/slides/ and register them in
+            src/slides.ts.
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      )}
+      <EditInspectMode
+        active={isEditMode}
+        slideFile={slides[currentIndex]?.file ?? 'src/slides.ts'}
+        slideNumber={currentIndex + 1}
+        stageRef={stageRef}
+      />
+      {slideCount > 0 ? (
+        <div className="pointer-events-none absolute bottom-8 right-10 rounded bg-black/45 px-4 py-2 font-mono text-xl text-white/70">
+          {currentIndex + 1} / {slideCount}
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      ) : null}
+    </SlideStage>
   )
 }
 
