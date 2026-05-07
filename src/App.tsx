@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { EditInspectMode } from './edit-mode/EditInspectMode'
+import { SlideErrorBoundary } from './runtime/SlideErrorBoundary'
 import { SlideStage } from './runtime/SlideStage'
 import { usePresentationCursorAutoHide } from './runtime/usePresentationCursorAutoHide'
 import { useSlideNavigation } from './runtime/useSlideNavigation'
@@ -62,6 +63,7 @@ function App() {
 
   const CurrentSlide = currentSlide
   const hasSlides = slides.length > 0
+  const currentSlideFile = slides[currentIndex]?.file ?? 'src/slides.ts'
 
   return (
     <SlideStage
@@ -80,7 +82,13 @@ function App() {
           </p>
         </div>
       ) : CurrentSlide ? (
-        <CurrentSlide />
+        <SlideErrorBoundary
+          resetKeys={[currentIndex, CurrentSlide]}
+          slideFile={currentSlideFile}
+          slideNumber={currentIndex + 1}
+        >
+          <CurrentSlide />
+        </SlideErrorBoundary>
       ) : !hasSlides ? (
         <div className="flex h-full w-full flex-col items-center justify-center bg-slate-950 px-24 text-center text-white">
           <h1 className="text-6xl font-semibold">No slides registered</h1>
@@ -92,7 +100,7 @@ function App() {
       ) : null}
       <EditInspectMode
         active={isEditMode && !isEndScreen}
-        slideFile={slides[currentIndex]?.file ?? 'src/slides.ts'}
+        slideFile={currentSlideFile}
         slideNumber={currentIndex + 1}
         stageRef={stageRef}
       />
