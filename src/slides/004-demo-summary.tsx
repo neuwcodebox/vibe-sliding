@@ -129,7 +129,7 @@ export default function Slide004DemoSummary() {
             </p>
           </div>
 
-          <div className="bg-white p-7 text-slate-950">
+          <div className="bg-white text-slate-950">
             <p className="mb-4 font-mono text-2xl text-teal-700">TRY THIS</p>
             <p
               className="mb-4 border-b border-slate-200 pb-4 text-[18px] leading-snug text-slate-600"
