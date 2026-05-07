@@ -1,5 +1,7 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import { BadgeCheck, Keyboard, Layers3, Presentation } from 'lucide-react'
 import { MermaidDiagram } from '../runtime/MermaidDiagram'
+import { getDemoMotion } from './_shared/demo-motion'
 
 const demoItems = [
   {
@@ -54,11 +56,21 @@ sequenceDiagram
 `
 
 export default function Slide004DemoSummary() {
+  const motionPreset = getDemoMotion(Boolean(useReducedMotion()))
+
   return (
-    <section className="relative flex h-full w-full overflow-hidden bg-[#f8fafc] px-28 py-24 text-slate-950 [word-break:keep-all]">
+    <motion.section
+      animate="show"
+      className="relative flex h-full w-full overflow-hidden bg-[#f8fafc] px-28 py-24 text-slate-950 [word-break:keep-all]"
+      initial="hidden"
+      variants={motionPreset.root}
+    >
       <div className="absolute inset-y-0 right-0 w-[36%] bg-teal-50" />
       <div className="relative z-10 grid w-full grid-cols-[1fr_0.78fr] gap-14">
-        <div className="flex flex-col justify-between">
+        <motion.div
+          className="flex flex-col justify-between"
+          variants={motionPreset.fromLeft}
+        >
           <div>
             <p
               className="mb-6 font-mono text-2xl font-semibold uppercase tracking-normal text-teal-700"
@@ -89,10 +101,11 @@ export default function Slide004DemoSummary() {
               const Icon = item.icon
 
               return (
-                <article
+                <motion.article
                   className="min-h-[245px] border border-slate-200 bg-white p-7 shadow-sm"
                   data-ai-id={`demo-card-${index + 1}`}
                   key={item.title}
+                  variants={motionPreset.card}
                 >
                   <div className="mb-6 flex items-center justify-between">
                     <Icon className="h-10 w-10 text-teal-700" aria-hidden />
@@ -106,15 +119,16 @@ export default function Slide004DemoSummary() {
                   <p className="mt-4 text-[23px] leading-snug text-slate-600">
                     {item.detail}
                   </p>
-                </article>
+                </motion.article>
               )
             })}
           </div>
-        </div>
+        </motion.div>
 
-        <div
+        <motion.div
           className="flex flex-col justify-between border border-teal-200 bg-white p-10 shadow-sm"
           data-ai-id="closing-prompt-card"
+          variants={motionPreset.fromRight}
         >
           <div>
             <div className="mb-8 flex h-20 w-20 items-center justify-center bg-teal-50 text-teal-700">
@@ -146,8 +160,8 @@ export default function Slide004DemoSummary() {
             />
           </div>
 
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }

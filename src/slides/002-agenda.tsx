@@ -1,4 +1,6 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import { Code2, FileText, MonitorPlay, UserRoundCog } from 'lucide-react'
+import { getDemoMotion } from './_shared/demo-motion'
 
 const roles = [
   {
@@ -24,9 +26,19 @@ const roles = [
 ]
 
 export default function Slide002Agenda() {
+  const motionPreset = getDemoMotion(Boolean(useReducedMotion()))
+
   return (
-    <section className="flex h-full w-full flex-col bg-[#f8fafc] px-28 py-24 text-slate-950 [word-break:keep-all]">
-      <div className="grid grid-cols-[0.92fr_1.08fr] gap-14 border-b border-slate-200 pb-12">
+    <motion.section
+      animate="show"
+      className="flex h-full w-full flex-col bg-[#f8fafc] px-28 py-24 text-slate-950 [word-break:keep-all]"
+      initial="hidden"
+      variants={motionPreset.root}
+    >
+      <motion.div
+        className="grid grid-cols-[0.92fr_1.08fr] gap-14 border-b border-slate-200 pb-12"
+        variants={motionPreset.rise}
+      >
         <div>
           <p
             className="mb-6 font-mono text-2xl font-semibold uppercase tracking-normal text-teal-700"
@@ -48,17 +60,21 @@ export default function Slide002Agenda() {
           Vibe Sliding is not about hand-authoring slide code. It gives AI
           agents a clear React workspace they can edit reliably.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="mt-14 grid flex-1 grid-cols-4 gap-6">
+      <motion.div
+        className="mt-14 grid flex-1 grid-cols-4 gap-6"
+        variants={motionPreset.root}
+      >
         {roles.map((item, index) => {
           const Icon = item.icon
 
           return (
-            <article
+            <motion.article
               className="flex flex-col justify-between border border-slate-200 bg-white p-8 shadow-sm"
               data-ai-id={`workflow-card-${index + 1}`}
               key={item.title}
+              variants={motionPreset.card}
             >
               <div>
                 <div className="mb-9 flex items-center justify-between">
@@ -77,10 +93,10 @@ export default function Slide002Agenda() {
                 </p>
               </div>
               <div className="mt-10 h-1 w-20 bg-teal-600" />
-            </article>
+            </motion.article>
           )
         })}
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   )
 }
