@@ -32,6 +32,7 @@ Vite가 출력한 로컬 URL을 브라우저에서 열면 슬라이드 쇼를 �
 - `designs/` 아래의 재사용 가능한 디자인 가이드
 - 슬라이드 요소를 가리켜 정확한 수정 참조를 복사하는 Edit Inspect Mode
 - 생성된 슬라이드를 이미지로 검토하는 screenshot capture 스크립트
+- 렌더된 덱을 PowerPoint에서 공유하기 위한 이미지 기반 PPTX export
 - 플로우차트, 시퀀스 다이어그램 등 기술 시각화를 위한 Mermaid 렌더링
 
 의도된 흐름은 “사용자가 슬라이드 쇼를 설명하고, Agent가 소스를 수정하고, 사용자가 브라우저에서 결과를 검토하는 방식”입니다.
@@ -212,6 +213,40 @@ npm run capture:all
 SLIDE_CAPTURE_SETTLE_MS=2000 npm run capture:slide -- 3
 ```
 
+## PowerPoint로 내보내기
+
+PPTX export는 스크린샷과 같은 브라우저 렌더링 경로를 사용합니다. 먼저 개발 서버를 켜둡니다.
+
+```bash
+npm run dev
+```
+
+등록된 모든 슬라이드를 기본 경로로 내보냅니다.
+
+```bash
+npm run export:pptx
+```
+
+원하는 출력 경로를 지정할 수도 있습니다.
+
+```bash
+npm run export:pptx -- exports/demo.pptx
+```
+
+기본 출력 파일은 `exports/vibe-sliding.pptx`입니다. 생성된 PPTX는 이미지 기반입니다. 각 슬라이드가 한 장의 전체 화면 PNG로 들어가므로 PowerPoint에서 발표할 수는 있지만, 텍스트 상자, 도형, 차트, 다이어그램을 개별 요소로 편집할 수는 없습니다.
+
+다른 개발 서버 URL을 사용해야 하면 `SLIDE_BASE_URL`을 지정합니다.
+
+```bash
+SLIDE_BASE_URL=http://localhost:4173 npm run export:pptx
+```
+
+차트나 애니메이션이 있는 슬라이드는 export 전에 잠시 기다립니다. 필요하면 대기 시간을 조정할 수 있습니다.
+
+```bash
+SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx
+```
+
 ## Agent에게 새 디자인 가이드 요청하기
 
 새로운 발표 톤이 필요하면 Agent에게 `designs/` 아래에 새 디자인 가이드를 만들라고 요청하세요.
@@ -275,6 +310,7 @@ skills/
 scripts/
 public/
 screenshots/
+exports/
 ```
 
 공유 인프라:
@@ -289,5 +325,6 @@ screenshots/
 - `src/slides.ts`: 슬라이드 등록 순서
 - `designs/`: Agent에게 주는 시각 지침
 - `screenshots/`: 캡처된 슬라이드 이미지
+- `exports/`: 생성된 PPTX 파일
 
 대부분의 발표 내용과 시각 수정은 `src/slides/` 안에서 해결해야 합니다. `runtime/`, `edit-mode/`, `styles/global.css`는 여러 슬라이드 쇼에서 재사용되는 일반 인프라로 유지해야 합니다.

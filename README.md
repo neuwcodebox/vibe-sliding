@@ -32,6 +32,7 @@ Open the local URL printed by Vite. It is usually something like `http://localho
 - Reusable design guides under `designs/`.
 - Edit Inspect Mode for pointing at slide elements and copying precise references.
 - Screenshot capture scripts for reviewing generated slides.
+- Image-based PPTX export for sharing rendered decks in PowerPoint.
 - Mermaid diagram rendering for flowcharts, sequence diagrams, and other technical visuals.
 
 The intended workflow is: you describe the slide show, the agent edits the source, and you review the result in the browser.
@@ -212,6 +213,45 @@ Slides with charts or animations wait briefly before capture. You can adjust the
 SLIDE_CAPTURE_SETTLE_MS=2000 npm run capture:slide -- 3
 ```
 
+## Export To PowerPoint
+
+PPTX export uses the same browser rendering path as screenshots. Start the dev
+server first.
+
+```bash
+npm run dev
+```
+
+Export all registered slides to the default path:
+
+```bash
+npm run export:pptx
+```
+
+Export to a custom path:
+
+```bash
+npm run export:pptx -- exports/demo.pptx
+```
+
+The output is written as `exports/vibe-sliding.pptx` by default. Generated PPTX
+files are image-based: each slide is inserted as a full-slide PNG, so PowerPoint
+can present the deck but cannot edit individual text boxes, shapes, charts, or
+diagrams.
+
+You can point the export script at a different dev server URL:
+
+```bash
+SLIDE_BASE_URL=http://localhost:4173 npm run export:pptx
+```
+
+Slides with charts or animations wait briefly before export. Adjust the wait time
+when needed.
+
+```bash
+SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx
+```
+
 ## Ask An Agent To Add A Design Guide
 
 Ask for a new design guide when you need a new presentation tone. The agent should create a Markdown file under `designs/`.
@@ -275,6 +315,7 @@ skills/
 scripts/
 public/
 screenshots/
+exports/
 ```
 
 Shared infrastructure:
@@ -289,5 +330,6 @@ Deck-specific content:
 - `src/slides.ts`: slide registration order
 - `designs/`: visual instructions for the agent
 - `screenshots/`: captured slide images
+- `exports/`: generated PPTX files
 
 Most deck content and visual changes should live under `src/slides/`. `runtime/`, `edit-mode/`, and `styles/global.css` should stay generic across many slide shows.

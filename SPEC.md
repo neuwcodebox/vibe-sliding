@@ -40,7 +40,7 @@ The project should feel like a lightweight local replacement for React-based can
 
 The initial implementation must not attempt to provide:
 
-* PPTX compatibility
+* editable or native PowerPoint object compatibility
 * WYSIWYG editing
 * drag-and-drop editing
 * visual design editor
@@ -78,6 +78,10 @@ The project should include the following runtime/helper libraries by default:
 * `tailwind-merge`
 * `@fontsource/inter`
 * `@fontsource/noto-sans-kr`
+
+The project should include the following export helper library:
+
+* `pptxgenjs`
 
 The project should include the following development dependencies for screenshot capture:
 
@@ -138,11 +142,14 @@ vibe-sliding/
   scripts/
     capture-slide.ts
     capture-all-slides.ts
+    export-pptx.ts
 
   public/
 
   screenshots/
     .gitkeep
+
+  exports/
 
   package.json
   vite.config.ts
@@ -161,14 +168,15 @@ vibe-sliding/
     "build": "tsc -b && vite build",
     "typecheck": "tsc --noEmit",
     "capture:slide": "tsx scripts/capture-slide.ts",
-    "capture:all": "tsx scripts/capture-all-slides.ts"
+    "capture:all": "tsx scripts/capture-all-slides.ts",
+    "export:pptx": "tsx scripts/export-pptx.ts"
   }
 }
 ```
 
-The screenshot scripts may assume the Vite dev server is already running.
+The screenshot and PPTX export scripts may assume the Vite dev server is already running.
 
-The MVP does not need to automatically start and stop the dev server from the capture scripts.
+The MVP does not need to automatically start and stop the dev server from the capture or export scripts.
 
 ## 7. Slide Runtime
 
@@ -686,6 +694,46 @@ SLIDE_CAPTURE_SETTLE_MS=2000 npm run capture:slide -- 3
 
 Slide components should not remove useful animations solely to make screenshots deterministic. Capture timing belongs in the screenshot script.
 
+## 16.1 Image-Based PPTX Export
+
+The project must support image-based PPTX export with Playwright and PptxGenJS.
+
+Script:
+
+```bash
+npm run export:pptx
+```
+
+Default output:
+
+```txt
+exports/vibe-sliding.pptx
+```
+
+Custom output paths may be provided as a positional argument:
+
+```bash
+npm run export:pptx -- exports/demo.pptx
+```
+
+PPTX export requirements:
+
+* export only registered slides from `src/slides.ts`
+* do not export the end-of-slide-show screen
+* render each slide through the same browser preview path as screenshots
+* capture each slide at 1920x1080
+* insert each captured slide as a full-slide PNG in a 16:9 wide PPTX slide
+* create `exports/` or the requested output directory if it does not exist
+* fail clearly if the dev server is not reachable
+* support `SLIDE_BASE_URL` for non-default dev server URLs
+* support `SLIDE_CAPTURE_SETTLE_MS` for chart, animation, and font settling
+
+The exported PPTX is for presentation and sharing. It is not an editable/native
+PowerPoint object conversion: text boxes, shapes, charts, diagrams, and other
+slide elements may appear as pixels inside one full-slide image.
+
+The PPTX export script does not need to start the dev server automatically.
+
 ## 17. Visual Review Expectations
 
 After visual slide changes, coding agents should capture screenshots and inspect them when possible.
@@ -1198,7 +1246,7 @@ The MVP is complete when all of the following are true:
 The following are explicitly future work, not MVP requirements:
 
 * PDF export
-* PPTX export
+* editable/native PPTX export
 * presenter mode
 * speaker notes
 * slide thumbnail overview

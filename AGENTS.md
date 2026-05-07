@@ -41,12 +41,13 @@ screenshots/               # generated captures, ignored by git
 - Lint with `npm run lint`.
 - Capture one slide with `npm run capture:slide -- N`.
 - Capture all slides with `npm run capture:all`.
+- Export an image-based PowerPoint deck with `npm run export:pptx`.
 
 Use npm, not pnpm or yarn.
 
 ## Key Dependencies
 
-- Runtime: React 19, Vite, Tailwind CSS 4, Framer Motion, Lucide React, Mermaid, Recharts, clsx, and tailwind-merge.
+- Runtime: React 19, Vite, Tailwind CSS 4, Framer Motion, Lucide React, Mermaid, Recharts, clsx, tailwind-merge, and PptxGenJS.
 - Fonts: `@fontsource/inter` and `@fontsource/noto-sans-kr`.
 - Tooling: TypeScript 6, ESLint 10, Playwright, tsx, and the Vite React plugin.
 
@@ -99,4 +100,5 @@ Use npm, not pnpm or yarn.
 - Run the narrowest command that gives confidence for the change.
 - For TypeScript or runtime changes, run `npm run typecheck` at minimum.
 - For visual slide changes, run the relevant screenshot capture command when a dev server is available.
+- For PPTX export changes, run `npm run export:pptx` when a dev server is available.
 - For docs-only changes, `git diff --check` is usually sufficient.
