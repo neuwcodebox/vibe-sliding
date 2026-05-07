@@ -28,6 +28,13 @@ const demoItems = [
 const demoSequenceChart = `---
 config:
   theme: base
+  sequence:
+    actorMargin: 94
+    boxMargin: 14
+    messageMargin: 38
+    diagramMarginX: 12
+    diagramMarginY: 8
+    width: 142
   themeVariables:
     background: '#FFFFFF'
     primaryColor: '#F8FAFC'
@@ -140,7 +147,7 @@ export default function Slide004DemoSummary() {
             <MermaidDiagram
               ariaLabel="Mermaid sequence diagram showing the user, agent, and browser loop"
               chart={demoSequenceChart}
-              className="h-[205px] bg-white"
+              className="h-[255px] bg-white"
               data-ai-id="mermaid-demo-sequence"
             />
           </div>
