@@ -1,4 +1,11 @@
-import { ArrowDown, BadgeCheck, Keyboard, Layers3, Presentation } from 'lucide-react'
+import {
+  ArrowDown,
+  BadgeCheck,
+  Keyboard,
+  Layers3,
+  Presentation,
+} from 'lucide-react'
+import { MermaidDiagram } from '../runtime/MermaidDiagram'
 
 const demoItems = [
   {
@@ -17,6 +24,33 @@ const demoItems = [
     detail: 'Use arrows, Space, Home, and End to control the presentation.',
   },
 ]
+
+const demoSequenceChart = `---
+config:
+  theme: base
+  themeVariables:
+    background: '#FFFFFF'
+    primaryColor: '#F8FAFC'
+    primaryTextColor: '#020617'
+    primaryBorderColor: '#0F766E'
+    lineColor: '#0F766E'
+    actorBkg: '#F8FAFC'
+    actorBorder: '#0F766E'
+    actorTextColor: '#020617'
+    signalColor: '#334155'
+    signalTextColor: '#334155'
+    fontFamily: 'Inter, Noto Sans KR, sans-serif'
+    fontSize: 22px
+---
+sequenceDiagram
+  participant User
+  participant Agent
+  participant Browser
+  User->>Agent: Request deck
+  Agent->>Browser: Render slides
+  Browser-->>User: Review
+  User->>Agent: Precise edit
+`
 
 export default function Slide004DemoSummary() {
   return (
@@ -94,9 +128,18 @@ export default function Slide004DemoSummary() {
             </p>
           </div>
 
-          <div className="border border-slate-200 bg-slate-950 p-7 text-white">
-            <p className="mb-4 font-mono text-2xl text-teal-200">TRY THIS</p>
-            <p className="text-[28px] leading-snug">
+          <div className="bg-white p-7 text-slate-950">
+            <p className="mb-4 font-mono text-2xl text-teal-700">TRY THIS</p>
+            <MermaidDiagram
+              ariaLabel="Mermaid sequence diagram showing the user, agent, and browser loop"
+              chart={demoSequenceChart}
+              className="h-[220px] bg-white"
+              data-ai-id="mermaid-demo-sequence"
+            />
+            <p
+              className="mt-3 border-t border-slate-200 pt-3 text-[18px] leading-snug text-slate-600"
+              data-ai-id="demo-prompt-example"
+            >
               Use designs/technical-grid.md. Create a four page demo deck
               introducing Vibe Sliding.
             </p>

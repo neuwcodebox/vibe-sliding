@@ -30,6 +30,7 @@ Open the local URL printed by Vite. It is usually something like `http://localho
 - Reusable design guides under `designs/`.
 - Edit Inspect Mode for pointing at slide elements and copying precise references.
 - Screenshot capture scripts for reviewing generated slides.
+- Mermaid diagram rendering for flowcharts, sequence diagrams, and other technical visuals.
 
 The intended workflow is: you describe the slide show, the agent edits the source, and you review the result in the browser.
 
@@ -107,6 +108,37 @@ export const slides = [
 ```
 
 You do not need to memorize this pattern, but it helps to know what the agent is expected to change.
+
+## Add Mermaid Diagrams
+
+Use `MermaidDiagram` when a slide needs a flowchart, sequence diagram, or other Mermaid-supported visual.
+
+```tsx
+import { MermaidDiagram } from '../runtime/MermaidDiagram'
+
+const chart = `---
+config:
+  theme: base
+  themeVariables:
+    darkMode: true
+    background: '#0B1020'
+    primaryColor: '#111827'
+    primaryTextColor: '#F8FAFC'
+    primaryBorderColor: '#334155'
+    lineColor: '#5EEAD4'
+    fontFamily: 'Inter, Noto Sans KR, sans-serif'
+---
+flowchart LR
+  A[Prompt] --> B[React slide]
+  B --> C[Browser review]
+`
+
+export default function Slide004Topic() {
+  return <MermaidDiagram chart={chart} className="h-[420px]" />
+}
+```
+
+Set per-diagram themes in the chart string with YAML frontmatter. Mermaid `%%{init:...}%%` directives may still work, but frontmatter is the preferred style for new slides.
 
 ## Make Agent Edits Precise
 
