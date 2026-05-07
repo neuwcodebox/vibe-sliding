@@ -40,7 +40,7 @@ The project should feel like a lightweight local replacement for React-based can
 
 The initial implementation must not attempt to provide:
 
-* editable or native PowerPoint object compatibility
+* complete editable or native PowerPoint object compatibility
 * WYSIWYG editing
 * drag-and-drop editing
 * visual design editor
@@ -81,6 +81,7 @@ The project should include the following runtime/helper libraries by default:
 
 The project should include the following export helper library:
 
+* `dom-to-pptx`
 * `pptxgenjs`
 
 The project should include the following development dependencies for screenshot capture:
@@ -734,6 +735,50 @@ slide elements may appear as pixels inside one full-slide image.
 
 The PPTX export script does not need to start the dev server automatically.
 
+## 16.2 Editable PPTX Export
+
+The project must support an experimental editable PPTX export with Playwright
+and `dom-to-pptx`.
+
+Script:
+
+```bash
+npm run export:pptx:editable
+```
+
+Default output:
+
+```txt
+exports/vibe-sliding-editable.pptx
+```
+
+Custom output paths may be provided as a positional argument:
+
+```bash
+npm run export:pptx:editable -- exports/demo-editable.pptx
+```
+
+Editable PPTX export requirements:
+
+* keep `npm run export:pptx` as the stable image-based export
+* export only registered slides from `src/slides.ts`
+* do not export the end-of-slide-show screen
+* render all slides in a dedicated `?export=editable-pptx` browser surface
+* use unscaled 1920x1080 slide roots with `data-pptx-export-slide`
+* avoid `SlideStage`, viewport scaling, presentation navigation, click handling, cursor hiding, and Edit Inspect Mode in the export surface
+* call `dom-to-pptx` in the browser with `skipDownload: true`, `svgAsVector: true`, and `layout: 'LAYOUT_16x9'`
+* return the generated PPTX Blob to the Playwright script and write it under `exports/` or the requested output path
+* fail clearly if the dev server is not reachable or the browser export bridge is unavailable
+* support `SLIDE_BASE_URL` for non-default dev server URLs
+* support `SLIDE_CAPTURE_SETTLE_MS` for chart, animation, Mermaid, and font settling
+
+Editable export prioritizes PowerPoint editability over exact visual fidelity.
+Text, shapes, images, and SVGs should become editable where `dom-to-pptx` can
+map them, but charts, Mermaid diagrams, advanced CSS, and visual effects may be
+partially converted or exported as SVG/image objects.
+
+The editable PPTX export script does not need to start the dev server automatically.
+
 ## 17. Visual Review Expectations
 
 After visual slide changes, coding agents should capture screenshots and inspect them when possible.
@@ -1246,7 +1291,7 @@ The MVP is complete when all of the following are true:
 The following are explicitly future work, not MVP requirements:
 
 * PDF export
-* editable/native PPTX export
+* full-fidelity editable/native PPTX export
 * presenter mode
 * speaker notes
 * slide thumbnail overview

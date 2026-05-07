@@ -32,7 +32,7 @@ Vite가 출력한 로컬 URL을 브라우저에서 열면 슬라이드 쇼를 �
 - `designs/` 아래의 재사용 가능한 디자인 가이드
 - 슬라이드 요소를 가리켜 정확한 수정 참조를 복사하는 Edit Inspect Mode
 - 생성된 슬라이드를 이미지로 검토하는 screenshot capture 스크립트
-- 렌더된 덱을 PowerPoint에서 공유하기 위한 이미지 기반 PPTX export
+- 렌더된 덱을 PowerPoint에서 공유하기 위한 이미지 기반 및 실험적 편집 가능 PPTX export
 - 플로우차트, 시퀀스 다이어그램 등 기술 시각화를 위한 Mermaid 렌더링
 
 의도된 흐름은 “사용자가 슬라이드 쇼를 설명하고, Agent가 소스를 수정하고, 사용자가 브라우저에서 결과를 검토하는 방식”입니다.
@@ -221,7 +221,7 @@ PPTX export는 스크린샷과 같은 브라우저 렌더링 경로를 사용합
 npm run dev
 ```
 
-등록된 모든 슬라이드를 기본 경로로 내보냅니다.
+등록된 모든 슬라이드를 이미지 기반 PPTX로 기본 경로에 내보냅니다.
 
 ```bash
 npm run export:pptx
@@ -235,16 +235,32 @@ npm run export:pptx -- exports/demo.pptx
 
 기본 출력 파일은 `exports/vibe-sliding.pptx`입니다. 생성된 PPTX는 이미지 기반입니다. 각 슬라이드가 한 장의 전체 화면 PNG로 들어가므로 PowerPoint에서 발표할 수는 있지만, 텍스트 상자, 도형, 차트, 다이어그램을 개별 요소로 편집할 수는 없습니다.
 
-다른 개발 서버 URL을 사용해야 하면 `SLIDE_BASE_URL`을 지정합니다.
+실험적인 편집 가능 PPTX도 만들 수 있습니다.
+
+```bash
+npm run export:pptx:editable
+```
+
+편집 가능 export도 출력 경로를 지정할 수 있습니다.
+
+```bash
+npm run export:pptx:editable -- exports/demo-editable.pptx
+```
+
+편집 가능 export의 기본 출력 파일은 `exports/vibe-sliding-editable.pptx`입니다. 이 경로는 `dom-to-pptx`를 사용해 스케일 없는 1920x1080 슬라이드 DOM을 PowerPoint 텍스트, 도형, 이미지, SVG 객체로 변환하려고 시도합니다. 편집 가능성이 중요할 때 사용하고, 시각적 재현성이 더 중요하면 이미지 기반 export를 권장합니다. 일부 차트, Mermaid 다이어그램, SVG, 고급 CSS, 효과는 완전한 PowerPoint native 객체가 아니라 부분 변환되거나 SVG/이미지 객체로 들어갈 수 있습니다.
+
+다른 개발 서버 URL을 사용해야 하면 두 export 명령 모두에 `SLIDE_BASE_URL`을 지정할 수 있습니다.
 
 ```bash
 SLIDE_BASE_URL=http://localhost:4173 npm run export:pptx
+SLIDE_BASE_URL=http://localhost:4173 npm run export:pptx:editable
 ```
 
 차트나 애니메이션이 있는 슬라이드는 export 전에 잠시 기다립니다. 필요하면 대기 시간을 조정할 수 있습니다.
 
 ```bash
 SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx
+SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx:editable
 ```
 
 ## Agent에게 새 디자인 가이드 요청하기

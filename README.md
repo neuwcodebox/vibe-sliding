@@ -32,7 +32,7 @@ Open the local URL printed by Vite. It is usually something like `http://localho
 - Reusable design guides under `designs/`.
 - Edit Inspect Mode for pointing at slide elements and copying precise references.
 - Screenshot capture scripts for reviewing generated slides.
-- Image-based PPTX export for sharing rendered decks in PowerPoint.
+- Image-based and experimental editable PPTX export for sharing rendered decks in PowerPoint.
 - Mermaid diagram rendering for flowcharts, sequence diagrams, and other technical visuals.
 
 The intended workflow is: you describe the slide show, the agent edits the source, and you review the result in the browser.
@@ -222,7 +222,7 @@ server first.
 npm run dev
 ```
 
-Export all registered slides to the default path:
+Export all registered slides as image-based slides to the default path:
 
 ```bash
 npm run export:pptx
@@ -239,10 +239,31 @@ files are image-based: each slide is inserted as a full-slide PNG, so PowerPoint
 can present the deck but cannot edit individual text boxes, shapes, charts, or
 diagrams.
 
-You can point the export script at a different dev server URL:
+You can also create an experimental editable PPTX:
+
+```bash
+npm run export:pptx:editable
+```
+
+Custom editable output paths work the same way:
+
+```bash
+npm run export:pptx:editable -- exports/demo-editable.pptx
+```
+
+Editable export writes `exports/vibe-sliding-editable.pptx` by default. It uses
+`dom-to-pptx` to convert the unscaled 1920x1080 slide DOM into PowerPoint text,
+shape, image, and SVG objects where possible. Use this when editability matters,
+but prefer the image-based export when visual fidelity is more important. Some
+charts, Mermaid diagrams, SVGs, advanced CSS, and effects may be partially
+converted or exported as SVG/image objects instead of fully native PowerPoint
+objects.
+
+You can point either export script at a different dev server URL:
 
 ```bash
 SLIDE_BASE_URL=http://localhost:4173 npm run export:pptx
+SLIDE_BASE_URL=http://localhost:4173 npm run export:pptx:editable
 ```
 
 Slides with charts or animations wait briefly before export. Adjust the wait time
@@ -250,6 +271,7 @@ when needed.
 
 ```bash
 SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx
+SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx:editable
 ```
 
 ## Ask An Agent To Add A Design Guide

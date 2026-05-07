@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { EditInspectMode } from './edit-mode/EditInspectMode'
+import { EditablePptxExportMode } from './export-mode/EditablePptxExportMode'
 import { SlideErrorBoundary } from './runtime/SlideErrorBoundary'
 import { SlideStage } from './runtime/SlideStage'
 import { usePresentationCursorAutoHide } from './runtime/usePresentationCursorAutoHide'
@@ -10,7 +11,11 @@ const readEditQuery = () =>
   typeof window !== 'undefined' &&
   new URLSearchParams(window.location.search).get('edit') === '1'
 
-function App() {
+const readExportQuery = () =>
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).get('export') === 'editable-pptx'
+
+function PresentationApp() {
   const stageRef = useRef<HTMLDivElement>(null)
   const [isEditMode, setIsEditMode] = useState(readEditQuery)
   const {
@@ -106,6 +111,14 @@ function App() {
       />
     </SlideStage>
   )
+}
+
+function App() {
+  if (readExportQuery()) {
+    return <EditablePptxExportMode />
+  }
+
+  return <PresentationApp />
 }
 
 export default App

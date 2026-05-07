@@ -11,12 +11,14 @@
     "typecheck": "tsc --noEmit",
     "capture:slide": "tsx scripts/capture-slide.ts",
     "capture:all": "tsx scripts/capture-all-slides.ts",
-    "export:pptx": "tsx scripts/export-pptx.ts"
+    "export:pptx": "tsx scripts/export-pptx.ts",
+    "export:pptx:editable": "tsx scripts/export-pptx-editable.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@fontsource/noto-sans-kr": "^5.2.9",
     "clsx": "^2.1.1",
+    "dom-to-pptx": "^1.1.8",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.14.0",
     "mermaid": "^11.14.0",
