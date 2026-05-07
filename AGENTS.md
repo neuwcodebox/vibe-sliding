@@ -85,6 +85,11 @@ Use npm, not pnpm or yarn.
 - When changing hit-testing or copied edit references, verify behavior in the browser because viewport scaling affects coordinates.
 - Avoid clipboard assertions in automated tests; validate visible UI feedback instead.
 
+## Git Workflow
+
+- Use Conventional Commits for git commit messages, such as `feat: add slide capture shortcut` or `fix: preserve scaled hit target coordinates`.
+- Keep commit subjects concise and imperative.
+
 ## Verification
 
 - Run the narrowest command that gives confidence for the change.
