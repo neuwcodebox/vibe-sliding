@@ -42,6 +42,12 @@ screenshots/               # generated captures, ignored by git
 
 Use npm, not pnpm or yarn.
 
+## Key Dependencies
+
+- Runtime: React 19, Vite, Tailwind CSS 4, Framer Motion, Lucide React, Mermaid, Recharts, clsx, and tailwind-merge.
+- Fonts: `@fontsource/inter` and `@fontsource/noto-sans-kr`.
+- Tooling: TypeScript 6, ESLint 10, Playwright, tsx, and the Vite React plugin.
+
 ## Naming Conventions
 
 - Slide files use a three-digit numeric prefix and kebab-case topic: `src/slides/001-title.tsx`, `src/slides/004-agent-flow.tsx`.
