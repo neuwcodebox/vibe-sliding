@@ -130,19 +130,19 @@ export default function Slide004DemoSummary() {
 
           <div className="bg-white p-7 text-slate-950">
             <p className="mb-4 font-mono text-2xl text-teal-700">TRY THIS</p>
-            <MermaidDiagram
-              ariaLabel="Mermaid sequence diagram showing the user, agent, and browser loop"
-              chart={demoSequenceChart}
-              className="h-[220px] bg-white"
-              data-ai-id="mermaid-demo-sequence"
-            />
             <p
-              className="mt-3 border-t border-slate-200 pt-3 text-[18px] leading-snug text-slate-600"
+              className="mb-4 border-b border-slate-200 pb-4 text-[18px] leading-snug text-slate-600"
               data-ai-id="demo-prompt-example"
             >
               Use designs/technical-grid.md. Create a four page demo deck
               introducing Vibe Sliding.
             </p>
+            <MermaidDiagram
+              ariaLabel="Mermaid sequence diagram showing the user, agent, and browser loop"
+              chart={demoSequenceChart}
+              className="h-[205px] bg-white"
+              data-ai-id="mermaid-demo-sequence"
+            />
           </div>
 
           <div className="flex items-center gap-4 text-[26px] font-semibold text-teal-800">
