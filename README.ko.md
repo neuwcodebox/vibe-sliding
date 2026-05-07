@@ -12,6 +12,8 @@ Vibe Sliding은 AI 코딩 에이전트에게 슬라이드 쇼 생성, 수정, �
 
 포함된 데모 덱은 디자인 가이드 선택, Agent에게 덱 요청, 특정 요소 inspect, 생성된 슬라이드 검토 흐름을 보여줍니다.
 
+호스팅된 데모는 [https://neuwcodebox.github.io/vibe-sliding/](https://neuwcodebox.github.io/vibe-sliding/)에서 볼 수 있습니다.
+
 ![Vibe Sliding 데모 슬라이드 그리드](docs/demo-slides-grid.png)
 
 ## 빠른 시작
@@ -191,6 +193,20 @@ Create a new design guide under designs/ for executive product strategy reviews.
 Agent는 `skills/design-guide-authoring/assets/design-guide-template.md`를 구조로 사용하고, `skills/design-guide-authoring/assets/design-guide-example.md`를 완성 예시로 참고해야 합니다.
 
 디자인 가이드는 특정 한 장의 슬라이드 내용이 아니라 여러 슬라이드에 반복 적용할 수 있는 시각 규칙이어야 합니다.
+
+## GitHub Pages에 배포하기
+
+이 프로젝트는 GitHub Actions로 `dist/` 프로덕션 빌드 산출물을 GitHub Pages에 게시할 수 있습니다. 포함된 워크플로는 `main`에 푸시될 때 자동으로 배포하며, Actions 탭에서 수동 실행도 가능합니다.
+
+배포 base path는 `vite.config.ts`에 하드코딩하지 않고 `VITE_BASE_PATH`로 제어합니다. 이 저장소의 프로젝트 사이트용 워크플로에서는 다음 값을 사용합니다.
+
+```txt
+VITE_BASE_PATH=/vibe-sliding/
+```
+
+프로젝트를 포크하거나, 저장소명을 바꾸거나, 커스텀 도메인을 쓰는 경우 `.github/workflows/deploy-pages.yml`의 `VITE_BASE_PATH`만 수정하면 됩니다. 앱이 도메인 루트에서 제공된다면 `/`를 사용하세요. 로컬 예시는 `.env.example`을 참고하세요.
+
+GitHub에서는 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 설정하세요.
 
 ## 검증
 

@@ -12,6 +12,8 @@ This is not a GUI-first PowerPoint replacement. The browser is the preview and p
 
 The included demo deck introduces the project workflow: choose a design guide, ask the agent for a deck, inspect specific elements, and review the generated slides.
 
+View the hosted demo at [https://neuwcodebox.github.io/vibe-sliding/](https://neuwcodebox.github.io/vibe-sliding/).
+
 ![Vibe Sliding demo slide grid](docs/demo-slides-grid.png)
 
 ## Quick Start
@@ -191,6 +193,20 @@ Create a new design guide under designs/ for executive product strategy reviews.
 The agent should use `skills/design-guide-authoring/assets/design-guide-template.md` as the structure and `skills/design-guide-authoring/assets/design-guide-example.md` as a completed reference.
 
 A design guide should define reusable visual rules across slides. It should not be a single-slide outline.
+
+## Deploy To GitHub Pages
+
+This project can publish the production build in `dist/` with GitHub Actions. The included workflow deploys automatically when `main` is pushed, and it can also be started manually from the Actions tab.
+
+The deployment base path is controlled with `VITE_BASE_PATH` instead of being hard-coded in `vite.config.ts`. For this repository's project site, the workflow sets:
+
+```txt
+VITE_BASE_PATH=/vibe-sliding/
+```
+
+If you fork the project, rename the repository, or use a custom domain, update `VITE_BASE_PATH` in `.github/workflows/deploy-pages.yml`. Use `/` when the app is served from the domain root. See `.env.example` for local examples.
+
+In GitHub, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
 
 ## Validation
 
