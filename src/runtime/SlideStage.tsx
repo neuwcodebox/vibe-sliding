@@ -3,11 +3,12 @@ import { STAGE_HEIGHT, STAGE_WIDTH, useStageScale } from './useStageScale'
 
 type SlideStageProps = {
   children: ReactNode
+  isCursorHidden?: boolean
   onStageClick?: () => void
 }
 
 export const SlideStage = forwardRef<HTMLDivElement, SlideStageProps>(
-  ({ children, onStageClick }, ref) => {
+  ({ children, isCursorHidden = false, onStageClick }, ref) => {
     const scale = useStageScale()
 
     return (
@@ -21,7 +22,7 @@ export const SlideStage = forwardRef<HTMLDivElement, SlideStageProps>(
         >
           <div
             ref={ref}
-            className="slide-stage"
+            className={`slide-stage${isCursorHidden ? ' cursor-hidden' : ''}`}
             onClick={onStageClick}
             style={{
               width: STAGE_WIDTH,

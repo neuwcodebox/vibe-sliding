@@ -61,6 +61,10 @@ select {
   transform-origin: top left;
 }
 
+.slide-stage.cursor-hidden {
+  cursor: none;
+}
+
 .edit-inspect-active .slide-stage {
   cursor: crosshair;
 }

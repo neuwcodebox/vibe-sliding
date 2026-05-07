@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { EditInspectMode } from './edit-mode/EditInspectMode'
 import { SlideStage } from './runtime/SlideStage'
+import { usePresentationCursorAutoHide } from './runtime/usePresentationCursorAutoHide'
 import { useSlideNavigation } from './runtime/useSlideNavigation'
 import { slides } from './slides'
 
@@ -17,6 +18,7 @@ function App() {
     isEndScreen,
     nextSlide,
   } = useSlideNavigation(slides.length)
+  const isCursorHidden = usePresentationCursorAutoHide(!isEditMode)
 
   const setEditMode = useCallback((enabled: boolean) => {
     setIsEditMode(enabled)
@@ -63,6 +65,7 @@ function App() {
 
   return (
     <SlideStage
+      isCursorHidden={isCursorHidden}
       ref={stageRef}
       onStageClick={isEditMode ? undefined : nextSlide}
     >

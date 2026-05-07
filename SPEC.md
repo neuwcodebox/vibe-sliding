@@ -185,6 +185,7 @@ Required runtime features:
 * render slides inside a fixed 16:9 logical stage
 * scale the stage to fit the current viewport
 * prevent scrolling during normal presentation mode
+* hide the idle cursor during normal presentation mode
 
 The runtime must not introduce a heavy slide abstraction, slide DSL, or framework-like API.
 
