@@ -6,6 +6,8 @@ This file gives coding agents practical instructions for working in this reposit
 
 Vibe Sliding is a local React slide deck workspace.
 
+- This repository is both the runtime and a starter template for users who will replace the demo deck with their own slides.
+- Preserve that template boundary: deck-specific changes should stay under `src/slides/` whenever possible so downstream users can customize slides without touching runtime code.
 - Vite provides the preview and presentation surface.
 - Slides are plain React components.
 - Source files are the editing surface.
@@ -42,9 +44,16 @@ screenshots/               # generated captures, ignored by git
 
 Use npm, not pnpm or yarn.
 
+## Key Dependencies
+
+- Runtime: React 19, Vite, Tailwind CSS 4, Framer Motion, Lucide React, Mermaid, Recharts, clsx, and tailwind-merge.
+- Fonts: `@fontsource/inter` and `@fontsource/noto-sans-kr`.
+- Tooling: TypeScript 6, ESLint 10, Playwright, tsx, and the Vite React plugin.
+
 ## Naming Conventions
 
 - Slide files use a three-digit numeric prefix and kebab-case topic: `src/slides/001-title.tsx`, `src/slides/004-agent-flow.tsx`.
+- Keep reusable demo-deck helpers under a clearly named subfolder such as `src/slides/_shared/`; do not place helper files next to numbered slide files in the `src/slides/` root.
 - Slide components use PascalCase with the slide number and topic: `Slide001Title`, `Slide004AgentFlow`.
 - Register slides in order in `src/slides.ts`.
 - Keep the `file` field in `src/slides.ts` aligned with the actual slide path.
@@ -56,6 +65,7 @@ Use npm, not pnpm or yarn.
 - Prefer direct React, TypeScript, and Tailwind classes over new abstractions.
 - Keep runtime code small and focused; avoid introducing a slide framework, DSL, or broad configuration layer unless explicitly requested.
 - Keep code outside `src/slides/` generic and reusable across decks; it should not encode assumptions for one specific slide, deck, visual theme, or presentation.
+- Do not add demo-only behavior, visuals, transitions, or animation defaults to runtime components. Put demo-deck animation and visual polish in `src/slides/`, including slide-local helpers when reuse is useful.
 - Put slide-specific layout and visual fixes in the relevant slide file.
 - Use `src/styles/global.css` only for app-wide base styling, font setup, and runtime-level behavior.
 - Do not solve a single slide's visual issue by changing runtime components or global CSS.
@@ -78,6 +88,11 @@ Use npm, not pnpm or yarn.
 - Keep navigation, scaling, stage rendering, and edit inspect code separated by existing module boundaries under `src/runtime/` and `src/edit-mode/`.
 - When changing hit-testing or copied edit references, verify behavior in the browser because viewport scaling affects coordinates.
 - Avoid clipboard assertions in automated tests; validate visible UI feedback instead.
+
+## Git Workflow
+
+- Use Conventional Commits for git commit messages, such as `feat: add slide capture shortcut` or `fix: preserve scaled hit target coordinates`.
+- Keep commit subjects concise and imperative.
 
 ## Verification
 

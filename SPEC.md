@@ -73,6 +73,7 @@ The project should include the following runtime/helper libraries by default:
 * `lucide-react`
 * `framer-motion`
 * `recharts`
+* `mermaid`
 * `clsx`
 * `tailwind-merge`
 * `@fontsource/inter`
@@ -773,6 +774,43 @@ Global CSS should mainly define:
 * utility behavior needed by runtime
 
 Global CSS and runtime components should stay visually neutral. Slide-specific concerns such as page numbers, line-breaking rules, decorative backgrounds, card shadows, chart animation choices, and deck-specific layout polish should live in slide components unless they are required for the runtime itself.
+
+### 19.1 Mermaid Diagram Support
+
+The project should support Mermaid diagrams through a small reusable React component, not through a slide DSL or markdown parser.
+
+Slide authors should render Mermaid diagrams with:
+
+```tsx
+<MermaidDiagram chart={chart} />
+```
+
+Diagram-specific theme and style configuration should live in the Mermaid chart string using YAML frontmatter.
+
+Example:
+
+```ts
+const chart = `---
+config:
+  theme: base
+  themeVariables:
+    darkMode: true
+    background: '#0B1020'
+    primaryColor: '#111827'
+    primaryTextColor: '#F8FAFC'
+    primaryBorderColor: '#334155'
+    lineColor: '#5EEAD4'
+    fontFamily: 'Inter, Noto Sans KR, sans-serif'
+---
+flowchart LR
+  A[Prompt] --> B[React slide]
+  B --> C[Browser review]
+`
+```
+
+The runtime should initialize Mermaid with `startOnLoad: false` and render diagrams programmatically. Mermaid's deprecated `%%{init: ...}%%` directive may work for compatibility, but project examples and documentation should prefer frontmatter config.
+
+Mermaid render failures must be contained inside the diagram component so a single invalid chart does not break the whole slide.
 
 ## 20. Font Rules
 

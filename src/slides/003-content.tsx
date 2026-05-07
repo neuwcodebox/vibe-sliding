@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import { Camera, CheckCircle2, MousePointerClick, Route } from 'lucide-react'
 import {
   Area,
@@ -7,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { getDemoMotion } from './_shared/demo-motion'
 
 const iterationData = [
   { name: 'Prompt', confidence: 42 },
@@ -22,9 +24,19 @@ const inspectSteps = [
 ]
 
 export default function Slide003Content() {
+  const motionPreset = getDemoMotion(Boolean(useReducedMotion()))
+
   return (
-    <section className="grid h-full w-full grid-cols-[0.92fr_1.08fr] bg-[#0b1020] px-24 py-20 text-white [word-break:keep-all]">
-      <div className="flex flex-col justify-between pr-14">
+    <motion.section
+      animate="show"
+      className="grid h-full w-full grid-cols-[0.92fr_1.08fr] bg-[#0b1020] px-24 py-20 text-white [word-break:keep-all]"
+      initial="hidden"
+      variants={motionPreset.root}
+    >
+      <motion.div
+        className="flex flex-col justify-between pr-14"
+        variants={motionPreset.fromLeft}
+      >
         <div>
           <p
             className="mb-8 inline-flex items-center gap-3 font-mono text-2xl font-semibold text-teal-200"
@@ -53,22 +65,27 @@ export default function Slide003Content() {
           data-ai-id="inspect-steps"
         >
           {inspectSteps.map((item, index) => (
-            <div
+            <motion.div
               className="flex items-center gap-4 border border-white/10 bg-white/[0.05] px-6 py-5"
               key={item}
+              variants={motionPreset.card}
             >
               <CheckCircle2 className="h-8 w-8 text-teal-200" aria-hidden />
               <span className="font-mono text-teal-200">0{index + 1}</span>
               {item}
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-rows-[0.58fr_1fr] gap-7">
-        <div
+      <motion.div
+        className="grid grid-rows-[0.58fr_1fr] gap-7"
+        variants={motionPreset.fromRight}
+      >
+        <motion.div
           className="border border-white/10 bg-white/[0.06] p-8"
           data-ai-id="inspect-reference-card"
+          variants={motionPreset.card}
         >
           <div className="mb-7 flex items-center justify-between">
             <h2 className="text-[44px] font-semibold tracking-normal">
@@ -83,11 +100,12 @@ export default function Slide003Content() {
             @element(slide=3 file=&quot;src/slides/003-content.tsx&quot;
             target=&quot;data-ai-id=main-title&quot; text=&quot;Point at what should change&quot;)
           </div>
-        </div>
+        </motion.div>
 
-        <div
+        <motion.div
           className="border border-white/10 bg-white/[0.06] p-8"
           data-ai-id="capture-chart"
+          variants={motionPreset.card}
         >
           <div className="mb-5 flex items-end justify-between">
             <div>
@@ -131,8 +149,8 @@ export default function Slide003Content() {
               type="monotone"
             />
           </AreaChart>
-        </div>
-      </div>
-    </section>
+        </motion.div>
+      </motion.div>
+    </motion.section>
   )
 }

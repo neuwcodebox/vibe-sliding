@@ -1,4 +1,7 @@
-import { ArrowDown, BadgeCheck, Keyboard, Layers3, Presentation } from 'lucide-react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { BadgeCheck, Keyboard, Layers3, Presentation } from 'lucide-react'
+import { MermaidDiagram } from '../runtime/MermaidDiagram'
+import { getDemoMotion } from './_shared/demo-motion'
 
 const demoItems = [
   {
@@ -18,12 +21,56 @@ const demoItems = [
   },
 ]
 
+const demoSequenceChart = `---
+config:
+  theme: base
+  sequence:
+    actorMargin: 94
+    boxMargin: 14
+    messageMargin: 38
+    diagramMarginX: 12
+    diagramMarginY: 8
+    width: 142
+  themeVariables:
+    background: '#FFFFFF'
+    primaryColor: '#F8FAFC'
+    primaryTextColor: '#020617'
+    primaryBorderColor: '#0F766E'
+    lineColor: '#0F766E'
+    actorBkg: '#F8FAFC'
+    actorBorder: '#0F766E'
+    actorTextColor: '#020617'
+    signalColor: '#334155'
+    signalTextColor: '#334155'
+    fontFamily: 'Inter, Noto Sans KR, sans-serif'
+    fontSize: 22px
+---
+sequenceDiagram
+  participant User
+  participant Agent
+  participant Browser
+  User->>Agent: Request deck
+  Agent->>Browser: Render slides
+  Browser-->>User: Review
+  User->>Agent: Precise edit
+`
+
 export default function Slide004DemoSummary() {
+  const motionPreset = getDemoMotion(Boolean(useReducedMotion()))
+
   return (
-    <section className="relative flex h-full w-full overflow-hidden bg-[#f8fafc] px-28 py-24 text-slate-950 [word-break:keep-all]">
+    <motion.section
+      animate="show"
+      className="relative flex h-full w-full overflow-hidden bg-[#f8fafc] px-28 py-24 text-slate-950 [word-break:keep-all]"
+      initial="hidden"
+      variants={motionPreset.root}
+    >
       <div className="absolute inset-y-0 right-0 w-[36%] bg-teal-50" />
       <div className="relative z-10 grid w-full grid-cols-[1fr_0.78fr] gap-14">
-        <div className="flex flex-col justify-between">
+        <motion.div
+          className="flex flex-col justify-between"
+          variants={motionPreset.fromLeft}
+        >
           <div>
             <p
               className="mb-6 font-mono text-2xl font-semibold uppercase tracking-normal text-teal-700"
@@ -54,10 +101,11 @@ export default function Slide004DemoSummary() {
               const Icon = item.icon
 
               return (
-                <article
+                <motion.article
                   className="min-h-[245px] border border-slate-200 bg-white p-7 shadow-sm"
                   data-ai-id={`demo-card-${index + 1}`}
                   key={item.title}
+                  variants={motionPreset.card}
                 >
                   <div className="mb-6 flex items-center justify-between">
                     <Icon className="h-10 w-10 text-teal-700" aria-hidden />
@@ -71,15 +119,16 @@ export default function Slide004DemoSummary() {
                   <p className="mt-4 text-[23px] leading-snug text-slate-600">
                     {item.detail}
                   </p>
-                </article>
+                </motion.article>
               )
             })}
           </div>
-        </div>
+        </motion.div>
 
-        <div
+        <motion.div
           className="flex flex-col justify-between border border-teal-200 bg-white p-10 shadow-sm"
           data-ai-id="closing-prompt-card"
+          variants={motionPreset.fromRight}
         >
           <div>
             <div className="mb-8 flex h-20 w-20 items-center justify-center bg-teal-50 text-teal-700">
@@ -94,20 +143,25 @@ export default function Slide004DemoSummary() {
             </p>
           </div>
 
-          <div className="border border-slate-200 bg-slate-950 p-7 text-white">
-            <p className="mb-4 font-mono text-2xl text-teal-200">TRY THIS</p>
-            <p className="text-[28px] leading-snug">
+          <div className="bg-white text-slate-950">
+            <p className="mb-4 font-mono text-2xl text-teal-700">TRY THIS</p>
+            <p
+              className="mb-4 border-b border-slate-200 pb-4 text-[18px] leading-snug text-slate-600"
+              data-ai-id="demo-prompt-example"
+            >
               Use designs/technical-grid.md. Create a four page demo deck
               introducing Vibe Sliding.
             </p>
+            <MermaidDiagram
+              ariaLabel="Mermaid sequence diagram showing the user, agent, and browser loop"
+              chart={demoSequenceChart}
+              className="h-[255px] bg-white"
+              data-ai-id="mermaid-demo-sequence"
+            />
           </div>
 
-          <div className="flex items-center gap-4 text-[26px] font-semibold text-teal-800">
-            <ArrowDown className="h-8 w-8" aria-hidden />
-            Press Down to continue to the end screen
-          </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 }

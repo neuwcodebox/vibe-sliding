@@ -32,6 +32,7 @@ Vite가 출력한 로컬 URL을 브라우저에서 열면 슬라이드 쇼를 �
 - `designs/` 아래의 재사용 가능한 디자인 가이드
 - 슬라이드 요소를 가리켜 정확한 수정 참조를 복사하는 Edit Inspect Mode
 - 생성된 슬라이드를 이미지로 검토하는 screenshot capture 스크립트
+- 플로우차트, 시퀀스 다이어그램 등 기술 시각화를 위한 Mermaid 렌더링
 
 의도된 흐름은 “사용자가 슬라이드 쇼를 설명하고, Agent가 소스를 수정하고, 사용자가 브라우저에서 결과를 검토하는 방식”입니다.
 
@@ -109,6 +110,37 @@ export const slides = [
 ```
 
 사용자가 이 패턴을 외울 필요는 없지만, Agent가 어떤 작업을 해야 하는지 이해하는 데 도움이 됩니다.
+
+## Mermaid 다이어그램 추가하기
+
+플로우차트, 시퀀스 다이어그램 등 Mermaid가 지원하는 시각 요소가 필요하면 `MermaidDiagram`을 사용합니다.
+
+```tsx
+import { MermaidDiagram } from '../runtime/MermaidDiagram'
+
+const chart = `---
+config:
+  theme: base
+  themeVariables:
+    darkMode: true
+    background: '#0B1020'
+    primaryColor: '#111827'
+    primaryTextColor: '#F8FAFC'
+    primaryBorderColor: '#334155'
+    lineColor: '#5EEAD4'
+    fontFamily: 'Inter, Noto Sans KR, sans-serif'
+---
+flowchart LR
+  A[Prompt] --> B[React slide]
+  B --> C[Browser review]
+`
+
+export default function Slide004Topic() {
+  return <MermaidDiagram chart={chart} className="h-[420px]" />
+}
+```
+
+다이어그램별 테마는 chart 문자열 상단의 YAML frontmatter로 설정합니다. Mermaid `%%{init:...}%%` directive도 호환성상 동작할 수 있지만, 새 슬라이드 예시는 frontmatter 방식을 권장합니다.
 
 ## Agent가 정확히 수정할 수 있게 만들기
 
