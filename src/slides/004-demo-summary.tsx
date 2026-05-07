@@ -1,10 +1,4 @@
-import {
-  ArrowDown,
-  BadgeCheck,
-  Keyboard,
-  Layers3,
-  Presentation,
-} from 'lucide-react'
+import { BadgeCheck, Keyboard, Layers3, Presentation } from 'lucide-react'
 import { MermaidDiagram } from '../runtime/MermaidDiagram'
 
 const demoItems = [
@@ -152,10 +146,6 @@ export default function Slide004DemoSummary() {
             />
           </div>
 
-          <div className="flex items-center gap-4 text-[26px] font-semibold text-teal-800">
-            <ArrowDown className="h-8 w-8" aria-hidden />
-            Press Down to continue to the end screen
-          </div>
         </div>
       </div>
     </section>
