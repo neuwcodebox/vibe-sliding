@@ -66,14 +66,14 @@ export default function Slide003Content() {
               </div>
               <span className="font-mono text-[17px] text-slate-500">LOCAL</span>
             </div>
-            <div className="mt-8 space-y-3 font-mono text-[24px] leading-snug">
+            <div className="mt-6 space-y-2 font-mono text-[21px] leading-snug">
               {fileTree.map(([name, kind]) => (
                 <p className={`whitespace-pre ${kind === 'theme' ? 'text-sky-200' : kind === 'folder' ? 'text-teal-100' : 'text-slate-300'}`} key={name}>
                   {name}
                 </p>
               ))}
             </div>
-            <p className="mt-12 border-t border-slate-700 pt-5 text-[23px] leading-snug text-slate-400">
+            <p className="mt-7 border-t border-slate-700 pt-4 text-[20px] leading-snug text-slate-400">
               Every slide is a normal component—not a proprietary canvas.
             </p>
           </motion.article>
