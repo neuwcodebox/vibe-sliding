@@ -220,6 +220,16 @@ npm run capture:all
 
 결과는 `screenshots/slide-001.png`, `screenshots/slide-002.png` 같은 이름으로 저장됩니다. 생성된 PNG 파일은 git에 포함되지 않습니다.
 
+기본 데모 덱을 바꿨다면 위 README에 쓰이는 그리드도 갱신합니다.
+
+```bash
+npm run capture:all
+npm run capture:demo-grid
+```
+
+그리드는 `src/slides.ts`에 현재 등록된 슬라이드만 사용하며
+`docs/demo-slides-grid.png`에 저장됩니다.
+
 차트나 애니메이션이 있는 슬라이드는 캡처 전에 잠시 기다립니다. 필요하면 대기 시간을 조정할 수 있습니다.
 
 ```bash

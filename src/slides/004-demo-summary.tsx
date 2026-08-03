@@ -1,59 +1,10 @@
 import { motion, useReducedMotion } from 'framer-motion'
-import { BadgeCheck, Keyboard, Layers3, Presentation } from 'lucide-react'
-import { MermaidDiagram } from '../runtime/MermaidDiagram'
+import { ArrowRight, Code2, MonitorPlay, MousePointerClick } from 'lucide-react'
+import { DemoChrome } from './_shared/demo-chrome'
 import { getDemoMotion } from './_shared/demo-motion'
 
-const demoItems = [
-  {
-    icon: Layers3,
-    title: 'Guided generation',
-    detail: 'The agent reads designs/*.md and follows consistent visual rules.',
-  },
-  {
-    icon: Presentation,
-    title: 'Browser presentation',
-    detail: 'A fixed 16:9 stage previews, presents, and captures the deck.',
-  },
-  {
-    icon: Keyboard,
-    title: 'Keyboard navigation',
-    detail: 'Use arrows, Space, Home, and End to control the presentation.',
-  },
-]
-
-const demoSequenceChart = `---
-config:
-  theme: base
-  sequence:
-    actorMargin: 94
-    boxMargin: 14
-    messageMargin: 38
-    diagramMarginX: 12
-    diagramMarginY: 8
-    width: 142
-  themeVariables:
-    background: '#FFFFFF'
-    primaryColor: '#F8FAFC'
-    primaryTextColor: '#020617'
-    primaryBorderColor: '#0F766E'
-    lineColor: '#0F766E'
-    actorBkg: '#F8FAFC'
-    actorBorder: '#0F766E'
-    actorTextColor: '#020617'
-    signalColor: '#334155'
-    signalTextColor: '#334155'
-    fontFamily: 'Inter, Noto Sans KR, sans-serif'
-    fontSize: 22px
----
-sequenceDiagram
-  participant User
-  participant Agent
-  participant Browser
-  User->>Agent: Request deck
-  Agent->>Browser: Render slides
-  Browser-->>User: Review
-  User->>Agent: Precise edit
-`
+const elementReference =
+  '@element(slide=4 file="src/slides/004-demo-summary.tsx" target="data-ai-id=main-title" text="Click the exact element you want changed.")'
 
 export default function Slide004DemoSummary() {
   const motionPreset = getDemoMotion(Boolean(useReducedMotion()))
@@ -61,105 +12,160 @@ export default function Slide004DemoSummary() {
   return (
     <motion.section
       animate="show"
-      className="relative flex h-full w-full overflow-hidden bg-[#f8fafc] px-28 py-24 text-slate-950 [word-break:keep-all]"
+      className="relative h-full w-full overflow-hidden bg-[#0B1020] px-24 py-24 text-[#F8FAFC] [word-break:keep-all]"
       initial="hidden"
       variants={motionPreset.root}
     >
-      <div className="absolute inset-y-0 right-0 w-[36%] bg-teal-50" />
-      <div className="relative z-10 grid w-full grid-cols-[1fr_0.78fr] gap-14">
+      <DemoChrome page="04" section="EDIT INSPECT" />
+      <div className="pointer-events-none absolute inset-x-24 top-[338px] h-px bg-[#334155]/70" />
+
+      <div className="relative z-10 flex h-full flex-col">
         <motion.div
-          className="flex flex-col justify-between"
-          variants={motionPreset.fromLeft}
+          className="grid grid-cols-[1.2fr_0.8fr] gap-16"
+          variants={motionPreset.rise}
         >
           <div>
             <p
-              className="mb-6 font-mono text-2xl font-semibold uppercase tracking-normal text-teal-700"
+              className="mb-6 flex items-center gap-3 font-mono text-2xl font-semibold text-[#5EEAD4]"
               data-ai-id="section-kicker"
             >
-              Demo recap
+              <MousePointerClick className="h-7 w-7" aria-hidden />
+              EDIT INSPECT MODE
             </p>
             <h1
-              className="max-w-[980px] text-[92px] font-semibold leading-none tracking-normal"
+              className="max-w-[1060px] text-[80px] font-semibold leading-[0.98] tracking-normal"
               data-ai-id="main-title"
             >
-              What this demo shows
+              Click the exact element you want changed.
             </h1>
-            <p
-              className="mt-9 max-w-[900px] text-[34px] leading-snug text-slate-600"
-              data-ai-id="summary"
-            >
-              Vibe Sliding creates a local loop where agents build the deck,
-              users review in the browser, and precise references drive edits.
-            </p>
           </div>
-
-          <div
-            className="grid grid-cols-3 gap-5"
-            data-ai-id="demo-summary-cards"
+          <p
+            className="self-end pb-2 text-[29px] leading-snug text-[#CBD5E1]"
+            data-ai-id="summary"
           >
-            {demoItems.map((item, index) => {
-              const Icon = item.icon
-
-              return (
-                <motion.article
-                  className="min-h-[245px] border border-slate-200 bg-white p-7 shadow-sm"
-                  data-ai-id={`demo-card-${index + 1}`}
-                  key={item.title}
-                  variants={motionPreset.card}
-                >
-                  <div className="mb-6 flex items-center justify-between">
-                    <Icon className="h-10 w-10 text-teal-700" aria-hidden />
-                    <span className="font-mono text-2xl text-slate-400">
-                      0{index + 1}
-                    </span>
-                  </div>
-                  <h2 className="text-[31px] font-semibold leading-tight tracking-normal">
-                    {item.title}
-                  </h2>
-                  <p className="mt-4 text-[23px] leading-snug text-slate-600">
-                    {item.detail}
-                  </p>
-                </motion.article>
-              )
-            })}
-          </div>
+            A rendered selection becomes a precise source target the agent can
+            act on.
+          </p>
         </motion.div>
 
         <motion.div
-          className="flex flex-col justify-between border border-teal-200 bg-white p-10 shadow-sm"
-          data-ai-id="closing-prompt-card"
-          variants={motionPreset.fromRight}
+          className="mt-14 flex flex-1 flex-col"
+          data-ai-id="causal-flow"
+          variants={motionPreset.root}
         >
-          <div>
-            <div className="mb-8 flex h-20 w-20 items-center justify-center bg-teal-50 text-teal-700">
-              <BadgeCheck className="h-11 w-11" aria-hidden />
-            </div>
-            <h2 className="text-[58px] font-semibold leading-tight tracking-normal">
-              Ask for the deck, not the code
-            </h2>
-            <p className="mt-7 text-[30px] leading-snug text-slate-600">
-              You provide the presentation intent and feedback. The agent keeps
-              improving the slide source.
-            </p>
-          </div>
+          <p className="font-mono text-xl font-medium uppercase tracking-[0.16em] text-[#93C5FD]">
+            Rendered feedback → copyable instruction → source edit
+          </p>
 
-          <div className="bg-white text-slate-950">
-            <p className="mb-4 font-mono text-2xl text-teal-700">TRY THIS</p>
-            <p
-              className="mb-4 border-b border-slate-200 pb-4 text-[18px] leading-snug text-slate-600"
-              data-ai-id="demo-prompt-example"
+          <div className="mt-5 grid flex-1 grid-cols-[1fr_88px_1.2fr_88px_1fr] items-stretch">
+            <motion.article
+              className="flex min-w-0 flex-col border border-[#334155] bg-[#111827] p-7"
+              data-ai-id="rendered-selection"
+              variants={motionPreset.card}
             >
-              Use designs/technical-grid.md. Create a four page demo deck
-              introducing Vibe Sliding.
-            </p>
-            <MermaidDiagram
-              ariaLabel="Mermaid sequence diagram showing the user, agent, and browser loop"
-              chart={demoSequenceChart}
-              className="h-[255px] bg-white"
-              data-ai-id="mermaid-demo-sequence"
-            />
-          </div>
+              <div className="mb-7 flex items-center justify-between">
+                <div className="flex items-center gap-3 text-[22px] font-semibold text-[#F8FAFC]">
+                  <MonitorPlay className="h-7 w-7 text-[#5EEAD4]" aria-hidden />
+                  Browser
+                </div>
+                <span className="font-mono text-lg text-[#93C5FD]">01</span>
+              </div>
 
+              <div className="flex flex-1 flex-col border border-[#334155] bg-[#0B1020] p-5">
+                <div className="mb-7 flex items-center justify-between border-b border-[#334155] pb-4 font-mono text-base text-[#94A3B8]">
+                  <span>localhost:5173/?edit=1</span>
+                  <span className="text-[#5EEAD4]">ACTIVE</span>
+                </div>
+                <p className="font-mono text-lg text-[#93C5FD]">DEMO SLIDE</p>
+                <div className="relative mt-5 border-2 border-[#5EEAD4] bg-[#5EEAD4]/10 px-5 py-6">
+                  <MousePointerClick
+                    className="absolute -right-4 -top-5 h-10 w-10 bg-[#0B1020] p-1 text-[#5EEAD4]"
+                    aria-hidden
+                  />
+                  <p className="text-[35px] font-semibold leading-tight tracking-normal">
+                    Point at what should change
+                  </p>
+                </div>
+                <p className="mt-auto pt-6 text-[20px] leading-snug text-[#CBD5E1]">
+                  Open ?edit=1, click the visible element, then paste the
+                  reference into your next prompt.
+                </p>
+              </div>
+            </motion.article>
+
+            <motion.div
+              className="flex items-center justify-center"
+              variants={motionPreset.fade}
+            >
+              <ArrowRight className="h-11 w-11 text-[#5EEAD4]" aria-hidden />
+            </motion.div>
+
+            <motion.article
+              className="flex min-w-0 flex-col border border-[#5EEAD4]/75 bg-[#111827] p-8"
+              data-ai-id="element-reference"
+              variants={motionPreset.card}
+            >
+              <div className="mb-8 flex items-center justify-between">
+                <div>
+                  <p className="font-mono text-lg font-semibold uppercase tracking-[0.14em] text-[#5EEAD4]">
+                    Copied reference
+                  </p>
+                  <h2 className="mt-3 text-[42px] font-semibold leading-tight tracking-normal">
+                    One precise reference
+                  </h2>
+                </div>
+                <span className="font-mono text-xl text-[#93C5FD]">02</span>
+              </div>
+
+              <div className="flex flex-1 items-center border border-[#334155] bg-[#0B1020] px-7 py-8 font-mono text-[19px] leading-[1.65] text-[#D5FFF8]">
+                <code className="[overflow-wrap:anywhere]">{elementReference}</code>
+              </div>
+
+              <p className="mt-6 text-[21px] leading-snug text-[#CBD5E1]">
+                One copyable instruction preserves both the intended change and
+                its source location.
+              </p>
+            </motion.article>
+
+            <motion.div
+              className="flex items-center justify-center"
+              variants={motionPreset.fade}
+            >
+              <ArrowRight className="h-11 w-11 text-[#5EEAD4]" aria-hidden />
+            </motion.div>
+
+            <motion.article
+              className="flex min-w-0 flex-col border border-[#334155] bg-[#111827] p-7"
+              data-ai-id="source-target"
+              variants={motionPreset.card}
+            >
+              <div className="mb-7 flex items-center justify-between">
+                <div className="flex items-center gap-3 text-[22px] font-semibold text-[#F8FAFC]">
+                  <Code2 className="h-7 w-7 text-[#5EEAD4]" aria-hidden />
+                  React source
+                </div>
+                <span className="font-mono text-lg text-[#93C5FD]">03</span>
+              </div>
+
+              <div className="flex flex-1 flex-col border border-[#334155] bg-[#0B1020] p-5 font-mono">
+                <p className="border-b border-[#334155] pb-4 text-[17px] text-[#93C5FD]">
+                  src/slides/004-demo-summary.tsx
+                </p>
+                <div className="mt-7 space-y-2 text-[20px] leading-[1.55] text-[#CBD5E1]">
+                  <p>&lt;h1</p>
+                  <p className="border-l-2 border-[#5EEAD4] bg-[#5EEAD4]/10 px-3 py-2 text-[#D5FFF8]">
+                    data-ai-id=&quot;main-title&quot;
+                  </p>
+                  <p className="pl-4">&gt;Click the exact element</p>
+                  <p className="pl-4">you want changed.&lt;/h1&gt;</p>
+                </div>
+                <p className="mt-auto pt-6 text-[20px] leading-snug text-[#CBD5E1]">
+                  The agent can locate the exact JSX region and revise it
+                  safely.
+                </p>
+              </div>
+            </motion.article>
+          </div>
         </motion.div>
       </div>
     </motion.section>

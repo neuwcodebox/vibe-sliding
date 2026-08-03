@@ -127,6 +127,7 @@ for this project.
 - Lint: `npm run lint`
 - Capture one slide: `npm run capture:slide -- N`
 - Capture the deck: `npm run capture:all`
+- Refresh the checked-in demo grid: `npm run capture:demo-grid` (after `capture:all`)
 - Export image-based PPTX: `npm run export:pptx`
 - Export experimental editable PPTX: `npm run export:pptx:editable`
 

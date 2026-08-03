@@ -1,26 +1,27 @@
+import { ArrowRight, Braces, FolderTree, MonitorPlay } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
-import { Camera, CheckCircle2, MousePointerClick, Route } from 'lucide-react'
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { DemoChrome } from './_shared/demo-chrome'
 import { getDemoMotion } from './_shared/demo-motion'
 
-const iterationData = [
-  { name: 'Prompt', confidence: 42 },
-  { name: 'Preview', confidence: 63 },
-  { name: 'Inspect', confidence: 78 },
-  { name: 'Capture', confidence: 92 },
+const fileTree = [
+  ['src/', 'folder'],
+  ['  slides/', 'folder'],
+  ['    001-title.tsx', 'file'],
+  ['    002-agenda.tsx', 'file'],
+  ['  slides.ts', 'file'],
+  ['designs/', 'folder'],
+  ['  basics/', 'folder'],
+  ['    technical-grid.md', 'theme'],
+  ['  beautiful-html-templates/', 'folder'],
+  ['    templates/cobalt-grid/', 'theme'],
 ]
 
-const inspectSteps = [
-  'Open ?edit=1',
-  'Click a visible element',
-  'Paste @element(...) into the prompt',
+const codeLines = [
+  '<section className="h-full w-full">',
+  '  <h1 data-ai-id="main-title">',
+  '    Tell the story.',
+  '  </h1>',
+  '</section>',
 ]
 
 export default function Slide003Content() {
@@ -29,128 +30,108 @@ export default function Slide003Content() {
   return (
     <motion.section
       animate="show"
-      className="grid h-full w-full grid-cols-[0.92fr_1.08fr] bg-[#0b1020] px-24 py-20 text-white [word-break:keep-all]"
+      className="relative h-full w-full overflow-hidden bg-[#0b1020] px-24 py-20 text-slate-50 [word-break:keep-all]"
       initial="hidden"
       variants={motionPreset.root}
     >
-      <motion.div
-        className="flex flex-col justify-between pr-14"
-        variants={motionPreset.fromLeft}
-      >
-        <div>
-          <p
-            className="mb-8 inline-flex items-center gap-3 font-mono text-2xl font-semibold text-teal-200"
-            data-ai-id="section-kicker"
-          >
-            <Route className="h-7 w-7" aria-hidden />
-            Revision loop
-          </p>
-          <h1
-            className="text-[88px] font-semibold leading-[0.98] tracking-normal"
-            data-ai-id="main-title"
-          >
-            Point at what should change
-          </h1>
-          <p
-            className="mt-9 text-[32px] leading-snug text-slate-300"
-            data-ai-id="body-summary"
-          >
-            Edit Inspect Mode turns a clicked browser element into a one-line
-            source reference you can paste into the next agent prompt.
-          </p>
-        </div>
+      <DemoChrome page="03" section="LOCAL SOURCE SURFACE" />
 
-        <div
-          className="space-y-4 text-[27px] text-slate-200"
-          data-ai-id="inspect-steps"
-        >
-          {inspectSteps.map((item, index) => (
-            <motion.div
-              className="flex items-center gap-4 border border-white/10 bg-white/[0.05] px-6 py-5"
-              key={item}
-              variants={motionPreset.card}
-            >
-              <CheckCircle2 className="h-8 w-8 text-teal-200" aria-hidden />
-              <span className="font-mono text-teal-200">0{index + 1}</span>
-              {item}
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      <motion.div
-        className="grid grid-rows-[0.58fr_1fr] gap-7"
-        variants={motionPreset.fromRight}
-      >
-        <motion.div
-          className="border border-white/10 bg-white/[0.06] p-8"
-          data-ai-id="inspect-reference-card"
-          variants={motionPreset.card}
-        >
-          <div className="mb-7 flex items-center justify-between">
-            <h2 className="text-[44px] font-semibold tracking-normal">
-              Copied reference
-            </h2>
-            <MousePointerClick
-              className="h-10 w-10 text-teal-200"
-              aria-label="edit inspect pointer"
-            />
+      <div className="relative z-10 flex h-full flex-col pt-14">
+        <motion.div className="flex items-end justify-between" variants={motionPreset.rise}>
+          <div>
+            <p className="flex items-center gap-3 font-mono text-[20px] font-medium tracking-[0.13em] text-teal-100" data-ai-id="section-kicker">
+              <Braces className="h-6 w-6" aria-hidden />
+              OPEN, LOCAL, REVISION-READY
+            </p>
+            <h1 className="mt-7 text-[86px] font-semibold leading-[0.94] tracking-[-0.045em]" data-ai-id="main-title">
+              The deck stays in React.
+            </h1>
           </div>
-          <div className="border border-teal-200/20 bg-slate-950/80 p-6 font-mono text-[24px] leading-snug text-teal-100">
-            @element(slide=3 file=&quot;src/slides/003-content.tsx&quot;
-            target=&quot;data-ai-id=main-title&quot; text=&quot;Point at what should change&quot;)
-          </div>
+          <p className="max-w-[610px] pb-2 text-[28px] leading-snug text-slate-300" data-ai-id="summary">
+            The agent edits ordinary TSX in your repo. You keep the source,
+            version it, and revise it later.
+          </p>
         </motion.div>
 
         <motion.div
-          className="border border-white/10 bg-white/[0.06] p-8"
-          data-ai-id="capture-chart"
-          variants={motionPreset.card}
+          className="mt-12 grid flex-1 grid-cols-[0.88fr_52px_1.16fr_52px_0.86fr] items-center"
+          data-ai-id="source-flow"
+          variants={motionPreset.root}
         >
-          <div className="mb-5 flex items-end justify-between">
-            <div>
-              <h2 className="text-[42px] font-semibold tracking-normal">
-                Review confidence
-              </h2>
-              <p className="mt-2 flex items-center gap-3 text-[24px] text-slate-400">
-                <Camera className="h-7 w-7" aria-hidden />
-                Screenshots make visual regressions visible
-              </p>
+          <motion.article className="min-h-[500px] border border-slate-600 bg-[#111827] p-8" variants={motionPreset.card}>
+            <div className="flex items-center justify-between border-b border-slate-700 pb-5">
+              <div className="flex items-center gap-3 font-mono text-[20px] tracking-[0.12em] text-teal-100">
+                <FolderTree className="h-6 w-6" aria-hidden />
+                FILE TREE
+              </div>
+              <span className="font-mono text-[17px] text-slate-500">LOCAL</span>
             </div>
-            <div className="font-mono text-[34px] text-teal-200">92%</div>
+            <div className="mt-8 space-y-3 font-mono text-[24px] leading-snug">
+              {fileTree.map(([name, kind]) => (
+                <p className={`whitespace-pre ${kind === 'theme' ? 'text-sky-200' : kind === 'folder' ? 'text-teal-100' : 'text-slate-300'}`} key={name}>
+                  {name}
+                </p>
+              ))}
+            </div>
+            <p className="mt-12 border-t border-slate-700 pt-5 text-[23px] leading-snug text-slate-400">
+              Every slide is a normal component—not a proprietary canvas.
+            </p>
+          </motion.article>
+
+          <div className="flex justify-center">
+            <ArrowRight className="h-9 w-9 text-teal-200" aria-hidden />
           </div>
-          <AreaChart
-            data={iterationData}
-            height={350}
-            margin={{ left: 0, right: 16, top: 24, bottom: 0 }}
-            width={860}
-          >
-            <defs>
-              <linearGradient id="confidence" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="5%" stopColor="#5eead4" stopOpacity={0.75} />
-                <stop offset="95%" stopColor="#5eead4" stopOpacity={0.05} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid stroke="rgba(148,163,184,0.22)" vertical={false} />
-            <XAxis dataKey="name" stroke="#94a3b8" tick={{ fontSize: 20 }} />
-            <YAxis stroke="#94a3b8" tick={{ fontSize: 20 }} width={46} />
-            <Tooltip
-              contentStyle={{
-                background: '#0f172a',
-                border: '1px solid rgba(94,234,212,0.3)',
-                color: '#f8fafc',
-              }}
-            />
-            <Area
-              dataKey="confidence"
-              fill="url(#confidence)"
-              stroke="#5eead4"
-              strokeWidth={4}
-              type="monotone"
-            />
-          </AreaChart>
+
+          <motion.article className="min-h-[500px] border border-teal-200/45 bg-[#111827] p-8" variants={motionPreset.card}>
+            <div className="flex items-center justify-between border-b border-slate-700 pb-5">
+              <div className="flex items-center gap-3 font-mono text-[20px] tracking-[0.12em] text-teal-100">
+                <Braces className="h-6 w-6" aria-hidden />
+                TSX SOURCE
+              </div>
+              <span className="font-mono text-[17px] text-slate-500">EDITABLE</span>
+            </div>
+            <div className="mt-9 bg-[#080d18] p-7 font-mono text-[23px] leading-[1.7] text-slate-300">
+              {codeLines.map((line, index) => (
+                <p className={index === 1 ? 'text-teal-100' : index === 2 ? 'text-white' : ''} key={`${line}-${index}`}>
+                  {line}
+                </p>
+              ))}
+            </div>
+            <div className="mt-8 flex items-center gap-4 border-l-2 border-sky-300 pl-5 text-[23px] leading-snug text-sky-100">
+              <span className="font-mono">data-ai-id</span>
+              <span className="text-slate-400">makes the next edit precise.</span>
+            </div>
+          </motion.article>
+
+          <div className="flex justify-center">
+            <ArrowRight className="h-9 w-9 text-sky-200" aria-hidden />
+          </div>
+
+          <motion.article className="min-h-[500px] border border-slate-600 bg-[#111827] p-8" variants={motionPreset.card}>
+            <div className="flex items-center justify-between border-b border-slate-700 pb-5">
+              <div className="flex items-center gap-3 font-mono text-[20px] tracking-[0.12em] text-teal-100">
+                <MonitorPlay className="h-6 w-6" aria-hidden />
+                BROWSER
+              </div>
+              <span className="font-mono text-[17px] text-slate-500">RENDERED</span>
+            </div>
+            <div className="mt-9 border border-slate-600 bg-[#0b1020] p-6">
+              <div className="flex gap-2">
+                <span className="h-3 w-3 bg-rose-300" />
+                <span className="h-3 w-3 bg-amber-200" />
+                <span className="h-3 w-3 bg-teal-200" />
+              </div>
+              <p className="mt-10 font-mono text-[17px] tracking-[0.12em] text-teal-100">SLIDE 01 / THE BRIEF</p>
+              <p className="mt-5 text-[47px] font-semibold leading-[0.95] tracking-[-0.04em] text-white">Tell the story.</p>
+              <div className="mt-7 h-2 w-32 bg-teal-200" />
+              <p className="mt-7 text-[22px] leading-snug text-slate-400">A fixed 16:9 stage keeps the composition intact on every screen.</p>
+            </div>
+            <p className="mt-8 border-t border-slate-700 pt-5 text-[23px] leading-snug text-slate-400">
+              Preview live · present with keys · jump to ?slide=N.
+            </p>
+          </motion.article>
         </motion.div>
-      </motion.div>
+      </div>
     </motion.section>
   )
 }

@@ -236,6 +236,16 @@ npm run capture:all
 
 Screenshots are written as `screenshots/slide-001.png`, `screenshots/slide-002.png`, and so on. Generated PNG files are ignored by git.
 
+After changing the included demo deck, refresh the checked-in grid used above:
+
+```bash
+npm run capture:all
+npm run capture:demo-grid
+```
+
+The grid uses only the slides currently registered in `src/slides.ts` and is
+written to `docs/demo-slides-grid.png`.
+
 Slides with charts or animations wait briefly before capture. You can adjust the wait time when needed.
 
 ```bash

@@ -179,6 +179,7 @@ vibe-sliding/
     "typecheck": "tsc --noEmit",
     "capture:slide": "tsx scripts/capture-slide.ts",
     "capture:all": "tsx scripts/capture-all-slides.ts",
+    "capture:demo-grid": "tsx scripts/capture-demo-grid.ts",
     "export:pptx": "tsx scripts/export-pptx.ts"
   }
 }
@@ -695,6 +696,7 @@ Scripts:
 ```bash
 npm run capture:slide -- 3
 npm run capture:all
+npm run capture:demo-grid
 ```
 
 Output directory:
@@ -710,6 +712,11 @@ screenshots/slide-001.png
 screenshots/slide-002.png
 screenshots/slide-003.png
 ```
+
+After `capture:all`, `capture:demo-grid` must create
+`docs/demo-slides-grid.png` from only the captures for slides currently
+registered in `src/slides.ts`. A capture from a previous, longer demo deck must
+not appear in the grid.
 
 Screenshot requirements:
 
@@ -1333,6 +1340,7 @@ The MVP is complete when all of the following are true:
 * clicking in Edit Inspect Mode copies a one-line edit reference
 * `npm run capture:slide -- 1` creates `screenshots/slide-001.png`
 * `npm run capture:all` captures all registered slides
+* `npm run capture:demo-grid` refreshes `docs/demo-slides-grid.png` from the current registered slides
 * `npm run typecheck` passes
 * `npm run build` passes
 * `skills/design-guide-authoring/assets/design-guide-template.md` exists

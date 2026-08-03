@@ -3,6 +3,7 @@ import Slide001 from './slides/001-title'
 import Slide002 from './slides/002-agenda'
 import Slide003 from './slides/003-content'
 import Slide004 from './slides/004-demo-summary'
+import Slide005 from './slides/005-review-loop'
 
 export type SlideDefinition = {
   component: ComponentType
@@ -25,5 +26,9 @@ export const slides: SlideDefinition[] = [
   {
     component: Slide004,
     file: 'src/slides/004-demo-summary.tsx',
+  },
+  {
+    component: Slide005,
+    file: 'src/slides/005-review-loop.tsx',
   },
 ]
