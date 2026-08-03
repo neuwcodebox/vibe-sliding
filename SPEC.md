@@ -8,14 +8,14 @@ This project provides a local React-based slide deck workspace for AI-assisted s
 
 The goal is to let a coding AI agent create, revise, and visually inspect web-based presentation slides inside a normal frontend project.
 
-This is not a traditional PPT editor. Slides are React components, the browser is the preview/presentation surface, and markdown design guides define the visual direction.
+This is not a traditional PPT editor. Slides are React components, the browser is the preview/presentation surface, and theme collections under `designs/` define the visual direction.
 
 The system must prioritize:
 
 - simple project structure
 - fast local preview
 - AI-agent-friendly editing
-- explicit design guide selection
+- explicit theme-leaf selection
 - stable 16:9 slide rendering
 - screenshot-based visual review
 - minimal slide framework abstraction
@@ -29,7 +29,8 @@ React source code       = slide source
 Vite dev server         = live preview
 Browser                 = slide viewer
 Coding AI agent         = slide author/editor
-designs/*.md            = selectable design guide gallery
+designs/basics/<theme>.md = project-owned selectable theme leaves
+designs/beautiful-html-templates/templates/<theme>/ = source-preserved selectable theme leaves
 Playwright screenshots  = visual feedback mechanism
 Edit Inspect Mode       = element reference helper
 ```
@@ -47,7 +48,7 @@ The initial implementation must not attempt to provide:
 * Figma/Canva-like manipulation
 * a custom slide DSL
 * a large slide component framework
-* persistent selected-design state
+* persistent selected-theme state
 * complex theme engine
 * collaborative editing
 * remote hosting workflow
@@ -103,10 +104,18 @@ vibe-sliding/
   AGENTS.md
 
   designs/
-    minimal-dark.md
-    executive-clean.md
-    technical-grid.md
-    startup-pitch.md
+    README.md
+    basics/
+      README.md
+      minimal-dark.md
+      executive-clean.md
+      technical-grid.md
+      startup-pitch.md
+    beautiful-html-templates/
+      LICENSE
+      UPSTREAM.md
+      index.json
+      templates/
 
   skills/
     react-slide-authoring/
@@ -298,30 +307,59 @@ export const slides = [
 
 Automatic glob import may be considered later, but it is not part of the MVP.
 
-## 11. Design Guide Gallery
+## 11. Theme Collection Catalog
 
-The project must provide a design guide gallery under:
+The project must provide a theme-collection catalog under:
 
 ```txt
 designs/
 ```
 
-Each design guide is a markdown file.
+`designs/README.md` must describe the catalog, peer collection structure,
+selection policy, and provenance boundary for vendored source themes.
 
-The root project must not contain a single mandatory `DESIGN.md` that silently governs all work.
+The catalog contains peer theme collections. The MVP includes:
 
-Instead, users must explicitly select a design guide for each new deck, new slide batch, or broad visual revision.
+* `designs/basics/`, a project-owned collection whose `<theme>.md` files listed
+  in its README are theme leaves
+* `designs/beautiful-html-templates/`, a source-preserved collection whose
+  `templates/<theme>/` directories are theme leaves
+
+The root project must not contain a single mandatory `DESIGN.md` that silently
+governs all work.
+
+For each new deck, new slide batch, or broad visual revision, users must name
+one theme leaf or explicitly delegate that choice to the coding agent. A
+collection is a browsing scope, not a deck direction. Do not treat two leaves
+from the same or different collections as co-equal visual systems for the same
+deck.
 
 Example user intent:
 
 ```txt
-Use designs/technical-grid.md.
+Use designs/basics/technical-grid.md.
 Create a 6-slide presentation about the internal AI agent platform.
 ```
 
-If the user does not select a design guide for new slide creation or broad visual changes, the coding agent should ask the user to choose one.
+```txt
+Use designs/beautiful-html-templates/templates/cobalt-grid/.
+Create a 6-slide presentation about the internal AI agent platform.
+```
 
-The project must not store selected design state in a config file.
+If the user neither selects a theme leaf nor explicitly delegates the choice
+for new slide creation or broad visual changes, the coding agent should ask the
+user to choose one. Collection README files, `index.json`, licenses, and
+provenance files are browsing metadata, not theme leaves.
+
+For `basics/`, the coding agent must read the collection README and the selected
+theme. For `beautiful-html-templates/`, it must read progressively: `index.json`
+to shortlist, the shortlisted candidates' `template.json` and `design.md`, and
+the chosen template's `template.html` only when a React implementation needs a
+structural detail. Source-theme HTML, `deck-stage.js`, sample content,
+remote-font setup, and navigation runtime are reference material only; they
+must not be imported into this project's runtime.
+
+The project must not store selected theme state in a config file.
 
 Do not create files such as:
 
@@ -331,11 +369,12 @@ selected-design.json
 current-design.txt
 ```
 
-Design choice is part of the current task instruction, not persistent project state.
+Theme selection is part of the current task instruction, not persistent project state.
 
-For small text edits, typo fixes, bug fixes, or narrow corrections, the agent may preserve the existing visual style without asking for a design guide.
+For small text edits, typo fixes, bug fixes, or narrow corrections, the agent
+may preserve the existing visual style without asking for a new theme.
 
-## 12. Design Guide Template
+## 12. Project Theme Guide Template
 
 The project must include:
 
@@ -344,9 +383,14 @@ skills/design-guide-authoring/assets/design-guide-template.md
 skills/design-guide-authoring/assets/design-guide-example.md
 ```
 
-The design guide template and example are bundled assets of the design guide authoring skill, not user-selectable design guides. Files under `designs/` should be usable design guides.
+The theme-guide template and example are bundled assets of the design guide
+authoring skill, not selectable theme leaves. They are used only to create
+or revise a project-owned Markdown theme leaf in a collection such as
+`designs/basics/`. The catalog also contains source-preserved themes, which
+retain their own upstream documentation and must not be rewritten as duplicate
+local theme leaves merely for selection.
 
-Design guides should follow this structure:
+Project-owned theme guides should follow this structure:
 
 ```md
 # Design Name
@@ -424,7 +468,7 @@ Describe the audience, situation, and presentation type this design is best for.
 Examples of prompts that work well with this design.
 ```
 
-Design guides must be concrete enough for a coding AI agent to produce visually consistent slides.
+Project-owned theme guides must be concrete enough for a coding AI agent to produce visually consistent slides.
 
 Avoid vague-only guidance such as:
 
@@ -440,18 +484,18 @@ Prefer concrete visual direction:
 Use dark navy backgrounds, thin slate borders, emerald accent lines, compact technical cards, and grid-based layouts.
 ```
 
-## 13. Built-In Design Guides
+## 13. Project-Owned Basics Collection
 
-The MVP should include at least these design guides:
+The MVP should include these theme leaves in `designs/basics/`:
 
 ```txt
-minimal-dark.md
-executive-clean.md
-technical-grid.md
-startup-pitch.md
+basics/minimal-dark.md
+basics/executive-clean.md
+basics/technical-grid.md
+basics/startup-pitch.md
 ```
 
-Each guide must be complete enough to be usable without additional explanation.
+Each theme leaf must be complete enough to be usable without additional explanation.
 
 Recommended purposes:
 
@@ -793,7 +837,7 @@ Visual review should check:
 * low contrast
 * inconsistent alignment
 * unintended scrolling
-* visual mismatch with the selected design guide
+* visual mismatch with the selected theme leaf
 * chart labels too small
 * important content too close to edges
 * hover/edit overlays not interfering with normal view
@@ -976,9 +1020,9 @@ This is a React-based slide deck workspace for AI-assisted slide authoring.
 - Prefer direct JSX and Tailwind classes.
 - Keep each slide within the fixed 16:9 slide stage.
 - Use `public/assets/` for static assets.
-- Do not store the selected design guide in a config file.
-- For new slides or broad visual edits, the user must explicitly choose a file under `designs/`.
-- If the user does not choose a design guide, ask them to choose one.
+- Do not store the selected theme in a config file.
+- For new slides or broad visual edits, the user must name one theme leaf under a collection in `designs/` or explicitly delegate the choice.
+- If the user does neither, ask them to choose one.
 - For small text edits or bug fixes, preserve the current visual style.
 - When creating complex slides, add `data-ai-id` to major editable elements.
 - After visual changes, capture screenshots and review the result when possible.
@@ -1015,7 +1059,7 @@ The `name` value must match the parent directory name, use lowercase letters and
 This skill must cover:
 
 * when to use the skill
-* explicit design guide requirement
+* explicit theme-leaf requirement
 * slide creation workflow
 * slide editing workflow
 * screenshot review workflow
@@ -1028,18 +1072,22 @@ It should include this core guidance after Agent Skills frontmatter:
 ```md
 # React Slide Authoring
 
-## Required Design Guide
+## Required Theme Leaf
 
-For new slides or broad visual changes, check whether the user explicitly selected a file under `designs/`.
+For new slides or broad visual changes, check whether the user named one theme
+leaf under a collection in `designs/` or explicitly delegated the choice.
 
-If no design guide was selected, do not proceed with slide generation. Ask the user to choose one.
+If neither occurred, do not proceed with slide generation. Ask the user to
+choose one.
 
 For small text edits or bug fixes, preserve the existing style.
 
 ## Workflow
 
 1. Read `AGENTS.md`.
-2. Read the selected `designs/*.md`.
+2. Read `designs/README.md`, the selected collection's browse guidance, and the
+   selected theme leaf. For the source collection, use the progressive lookup
+   order defined in the catalog.
 3. Inspect `src/slides.ts`.
 4. Inspect relevant files under `src/slides/`.
 5. Create or edit plain React slide components.
@@ -1073,24 +1121,30 @@ Priority:
 
 This skill must cover:
 
-* creating new design guides
-* revising existing design guides
+* creating new Basics theme leaves
+* revising existing Basics theme leaves
+* selecting a theme leaf from a peer collection
+* maintaining source-theme provenance without changing collection rank
 * keeping guides concrete and reusable
 * avoiding implementation-specific clutter
-* using the required design guide sections
+* using the required theme-guide sections
 
 It should include this core guidance after Agent Skills frontmatter:
 
 ```md
-# Design Guide Authoring
+# Theme Collection Authoring
 
 ## Workflow
 
 1. Understand the target mood, audience, and use case.
-2. Create or edit a markdown file under `designs/`.
-3. Keep the guide readable by AI coding agents.
-4. Avoid overly abstract descriptions.
-5. Include concrete color, typography, layout, and do/don't guidance.
+2. Decide which existing theme leaf fits, or whether a new reusable
+   project-owned leaf is needed in its collection.
+3. Create or edit a Markdown file only for a project-owned reusable theme;
+   keep source-theme collections source-preserving.
+4. Keep a project-owned theme readable by AI coding agents and concrete enough to
+   implement in React.
+5. Include concrete color, typography, layout, evidence, CJK, and do/don't
+   guidance rather than abstract style adjectives.
 6. Include an Agent Prompt Guide section.
 
 ## Required Sections
@@ -1120,10 +1174,10 @@ The README must explain:
 * installation
 * local development
 * how users ask an AI agent to generate or revise a slide show
-* design guide selection
+* theme collection and leaf selection
 * screenshot capture
 * edit inspect mode
-* adding a new design guide
+* choosing a theme collection/leaf or adding a project-owned theme
 * which files the AI agent edits when adding slides
 
 The README must use npm commands only.
@@ -1139,7 +1193,9 @@ npm run capture:slide -- 3
 npm run capture:all
 ```
 
-The README must tell users to name a design file under `designs/` when asking an AI agent for new slide creation or broad visual changes.
+The README must tell users to name one theme leaf under a `designs/` collection
+when asking an AI agent for new slide creation or broad visual changes, and
+explain how to browse the peer collections.
 
 ## 25. Example Slides
 
@@ -1281,7 +1337,7 @@ The MVP is complete when all of the following are true:
 * `npm run build` passes
 * `skills/design-guide-authoring/assets/design-guide-template.md` exists
 * `skills/design-guide-authoring/assets/design-guide-example.md` exists
-* at least four usable design guides exist
+* at least four usable Basics theme leaves exist
 * `AGENTS.md` exists
 * required skill files exist
 * at least three example slides exist
@@ -1299,12 +1355,12 @@ The following are explicitly future work, not MVP requirements:
 * screenshot diff
 * visual regression testing
 * design preview gallery
-* preview images next to `designs/*.md`
+* preview images next to project-owned theme leaves
 * selected slide capture from the browser UI
 * temporary dev server startup inside capture scripts
 * automatic import of slide files
 * asset cleanup helper
-* more design guides
+* more theme leaves or collections
 * optional diagram helpers
 * optional Mermaid integration
 
@@ -1316,8 +1372,8 @@ Do not enforce slide quality through heavy code abstractions.
 
 Instead, guide quality through:
 
-* explicit design guide selection
-* concrete markdown design guides
+* explicit theme-leaf selection
+* concrete peer collections of project-owned and source-preserved themes
 * simple slide file structure
 * screenshot-based visual review
 * Edit Inspect Mode references

@@ -81,5 +81,5 @@ Use this guide for product vision decks, fundraising narratives, demo introducti
 
 ## Agent Prompt Guide
 
-- "Use designs/startup-pitch.md. Create a 6-slide pitch for an AI slide authoring workspace."
+- "Use designs/basics/startup-pitch.md. Create a 6-slide pitch for an AI slide authoring workspace."
 - "Restyle slide 1 as a stronger product promise with one large metric."

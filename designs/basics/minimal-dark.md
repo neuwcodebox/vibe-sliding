@@ -79,5 +79,5 @@ Use this guide for focused technical explainers, concise product updates, intern
 
 ## Agent Prompt Guide
 
-- "Use designs/minimal-dark.md. Create a 4-slide overview of our AI runtime."
+- "Use designs/basics/minimal-dark.md. Create a 4-slide overview of our AI runtime."
 - "Use the minimal dark guide and revise slide 2 to focus on one decision."

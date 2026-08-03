@@ -80,5 +80,5 @@ Use this guide for architecture reviews, API explanations, infrastructure plans,
 
 ## Agent Prompt Guide
 
-- "Use designs/technical-grid.md. Create slides explaining the agent runtime architecture."
+- "Use designs/basics/technical-grid.md. Create slides explaining the agent runtime architecture."
 - "Use the technical grid guide and revise the diagram so each node has a data-ai-id."

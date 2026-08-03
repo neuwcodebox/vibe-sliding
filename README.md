@@ -4,13 +4,13 @@
 
 ![Vibe Sliding workspace preview](docs/hero.png)
 
-Vibe Sliding is a local workspace for asking an AI coding agent to generate, edit, and review a slide show. You run the preview server, choose a design guide, describe the deck you want, and let the agent write the React slide components.
+Vibe Sliding is a local workspace for asking an AI coding agent to generate, edit, and review a slide show. You run the preview server, choose a theme, describe the deck you want, and let the agent write the React slide components.
 
 This is not a GUI-first PowerPoint replacement. The browser is the preview and presentation surface. The files under `src/slides/` are the source files that the AI agent edits on your behalf.
 
 ## Demo Deck
 
-The included demo deck introduces the project workflow: choose a design guide, ask the agent for a deck, inspect specific elements, and review the generated slides.
+The included demo deck introduces the project workflow: choose a theme leaf, ask the agent for a deck, inspect specific elements, and review the generated slides.
 
 View the hosted demo at [https://neuwcodebox.github.io/vibe-sliding/](https://neuwcodebox.github.io/vibe-sliding/).
 
@@ -29,7 +29,7 @@ Open the local URL printed by Vite. It is usually something like `http://localho
 
 - A local browser-based slide viewer.
 - A React slide codebase that AI agents can edit reliably.
-- Reusable design guides under `designs/`.
+- A single catalog of peer theme collections under `designs/`.
 - Edit Inspect Mode for pointing at slide elements and copying precise references.
 - Screenshot capture scripts for reviewing generated slides.
 - Image-based and experimental editable PPTX export for sharing rendered decks in PowerPoint.
@@ -55,7 +55,7 @@ http://localhost:5173/?slide=3&edit=1
 
 ## Ask An Agent To Create A Deck
 
-1. Choose a design guide from `designs/`.
+1. Choose one theme leaf from a collection in `designs/README.md`, or explicitly ask the agent to choose one for you.
 2. Tell the agent what deck you want: topic, audience, number of slides, tone, and any required content.
 3. Ask the agent to create or revise the slide components.
 4. Preview the result in the browser.
@@ -64,29 +64,58 @@ http://localhost:5173/?slide=3&edit=1
 Example prompt:
 
 ```txt
-Use designs/technical-grid.md. Create a 5-slide deck about our internal AI agent platform for an engineering leadership audience. Keep the style technical, structured, and presentation-ready.
+Use designs/basics/technical-grid.md. Create a 5-slide deck about our internal AI agent platform for an engineering leadership audience. Keep the style technical, structured, and presentation-ready.
 ```
 
-For broad visual changes, name the design guide explicitly. For small copy edits, typo fixes, or narrow bug fixes, ask the agent to preserve the current slide style.
+For broad visual changes, name one theme leaf explicitly or delegate that choice
+to the agent. If neither happens, the agent should ask before changing the
+visual system. For small copy edits, typo fixes, or narrow bug fixes, ask the
+agent to preserve the current slide style.
 
-## Choose A Design Guide
+## Choose A Theme Leaf
 
-Built-in guides:
+[`designs/README.md`](designs/README.md) is the catalog and selection guide.
+Its collections are peers: their maintenance and licensing differ, but neither
+outranks the other at deck-selection time.
 
-- `designs/minimal-dark.md`
-- `designs/executive-clean.md`
-- `designs/technical-grid.md`
-- `designs/startup-pitch.md`
+| Collection | Selectable leaf | Browse it with |
+| --- | --- | --- |
+| [`basics/`](designs/basics/README.md) | One `<theme>.md` file listed in its README | The collection README |
+| [`beautiful-html-templates/`](designs/beautiful-html-templates/) | One `templates/<theme>/` directory | `index.json`, then shortlisted metadata |
 
-Design guides are instructions for the agent. They describe visual language, density, typography, color, chart treatment, motion, and other style rules the generated slides should follow.
+Name one leaf for a new deck or broad redesign, or explicitly ask the agent to
+choose one. The collection README, `index.json`, license, and provenance files
+help with browsing; they are not themes themselves. Two themes should not be
+co-equal systems in the same deck, and the selected theme is never stored in a
+config file.
+
+Examples:
+
+```txt
+Use designs/basics/technical-grid.md as the theme. Create a 5-slide architecture review for engineering leaders.
+```
+
+```txt
+Use designs/beautiful-html-templates/templates/cobalt-grid/ as the theme. Create a 5-slide product demo for engineering leaders.
+```
+
+For Beautiful HTML Templates, the agent first searches `index.json`, reads only
+the most relevant candidates' metadata and design notes, and opens a selected
+template's HTML source only when an implementation detail is needed. It keeps
+the template's visual grammar while using your content, the fixed 1920×1080
+React stage, and the installed font stack. It never imports upstream HTML
+runtime, sample copy, navigation, or remote-font setup.
 
 ## What The Agent Edits
 
-When you ask for slides, the agent usually changes these files:
+For ordinary deck creation or revision, the agent usually changes these files:
 
 - `src/slides/`: generated slide components
 - `src/slides.ts`: slide registration order
-- `designs/`: reusable visual guides, only when you ask for a new or revised guide
+
+`designs/` changes only when you explicitly request a reusable theme addition or
+revision, or an update to the source-preserving external snapshot. Choosing a
+theme for a deck does not modify its collection.
 
 A generated slide is a default-exported React component whose root fills the fixed 16:9 stage.
 
@@ -274,19 +303,22 @@ SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx
 SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx:editable
 ```
 
-## Ask An Agent To Add A Design Guide
+## Ask An Agent To Add A Basics Theme
 
-Ask for a new design guide when you need a new presentation tone. The agent should create a Markdown file under `designs/`.
+Ask for a new Basics theme only when no existing leaf in either collection
+provides a direction you expect to reuse. The agent should create a Markdown
+file under `designs/basics/`.
 
 Useful prompt:
 
 ```txt
-Create a new design guide under designs/ for executive product strategy reviews. Use a restrained, high-density style with strong chart readability.
+Create a new Basics theme under designs/basics/ for executive product strategy reviews. Use a restrained, high-density style with strong chart readability.
 ```
 
 The agent should use `skills/design-guide-authoring/assets/design-guide-template.md` as the structure and `skills/design-guide-authoring/assets/design-guide-example.md` as a completed reference.
 
-A design guide should define reusable visual rules across slides. It should not be a single-slide outline.
+A Basics theme should define reusable visual rules across slides. It should not
+be a single-slide outline or a duplicate restatement of an upstream theme.
 
 ## Deploy To GitHub Pages
 
@@ -333,6 +365,9 @@ src/
   slides/
   styles/
 designs/
+  README.md
+  basics/
+  beautiful-html-templates/
 skills/
 scripts/
 public/
@@ -350,7 +385,7 @@ Deck-specific content:
 
 - `src/slides/`: slide components generated by the agent
 - `src/slides.ts`: slide registration order
-- `designs/`: visual instructions for the agent
+- `designs/`: the theme-collection catalog, Basics themes, and source-preserved themes
 - `screenshots/`: captured slide images
 - `exports/`: generated PPTX files
 

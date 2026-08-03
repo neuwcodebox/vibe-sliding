@@ -2,7 +2,9 @@
 
 ## Intended Use
 
-Describe the audience, situation, and presentation type this design is best for.
+Describe the audience, occasion, delivery mode, and presentation type this
+design is best for. State whether it is speaker-led or reading-first, the
+appropriate density, and the kinds of evidence it should carry well.
 
 ## Visual Theme & Atmosphere
 
@@ -29,23 +31,25 @@ Describe the audience, situation, and presentation type this design is best for.
 - Body scale:
 - Caption scale:
 - Rules for monospace text:
+- Korean/CJK fallback, tracking, and line-height rules:
 
 ## Layout Principles
 
-- 16:9 slide canvas
-- Preferred composition
-- Spacing rules
-- Density rules
-- How to handle diagrams, tables, and charts
+- 16:9 slide canvas and safe outer margins:
+- Preferred focal compositions and reading order:
+- Gutter, baseline, alignment, and spacing rules:
+- Density rules and when to split a slide instead of shrinking text:
+- Cover, context, evidence/mechanism, comparison or decision, and close:
+- How to handle diagrams, tables, charts, and product captures:
 
 ## Visual Elements
 
-- Cards:
-- Panels:
-- Lines:
-- Icons:
-- Diagrams:
-- Tables:
+- Evidence priority (real UI, source structure, workflow, sourced data):
+- Cards and grouping rules:
+- Panels, lines, and surface treatment:
+- Icons and images:
+- Diagrams and flows:
+- Tables and comparisons:
 - Code blocks:
 - Charts:
 
@@ -56,11 +60,11 @@ Describe the audience, situation, and presentation type this design is best for.
 
 ## Do
 
-- Concrete positive rules
+- Concrete positive rules for hierarchy, evidence, and consistency
 
 ## Don't
 
-- Concrete anti-patterns
+- Concrete anti-patterns, including density, decorative filler, and style mixing
 
 ## Responsive Behavior
 
@@ -70,4 +74,5 @@ Describe the audience, situation, and presentation type this design is best for.
 
 ## Agent Prompt Guide
 
-Examples of prompts that work well with this design.
+Give a concise prompt that names this guide, the audience, delivery mode, and
+the desired kind of evidence.
