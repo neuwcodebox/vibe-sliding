@@ -24,6 +24,7 @@ export const SlideStage = forwardRef<HTMLDivElement, SlideStageProps>(
             ref={ref}
             className={`slide-stage${isCursorHidden ? ' cursor-hidden' : ''}`}
             onClick={onStageClick}
+            onDragStart={(event) => event.preventDefault()}
             style={{
               width: STAGE_WIDTH,
               height: STAGE_HEIGHT,

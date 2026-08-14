@@ -59,6 +59,8 @@ select {
   position: relative;
   overflow: hidden;
   transform-origin: top left;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .slide-stage.cursor-hidden {
