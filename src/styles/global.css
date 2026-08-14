@@ -139,6 +139,7 @@ select {
 }
 
 .presenter-header-actions, .presenter-timer-controls, .presenter-audience-controls, .presenter-tool-group { display: flex; align-items: center; gap: 8px; }
+.presenter-kicker-row { display: flex; align-items: center; gap: 6px; }
 .presenter-kicker { margin: 0; color: #72e4df; font: 600 12px/1.2 Inter, sans-serif; letter-spacing: .13em; }
 .presenter-title-row { display: flex; align-items: center; gap: 10px; margin-top: 7px; }
 .presenter-counter { margin: 0; font-size: 20px; font-weight: 600; }
@@ -146,7 +147,7 @@ select {
 .presenter-timer { gap: 8px; border: 1px solid #2d405d; background: #111b2c; padding: 9px 12px; border-radius: 8px; font-variant-numeric: tabular-nums; }
 .presenter-icon-button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #2d405d; border-radius: 8px; background: #111b2c; color: inherit; cursor: pointer; }
 .presenter-icon-button.is-active { border-color: #72e4df; background: #143a43; color: #b6fffb; }
-.presenter-connection-status { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 999px; }
+.presenter-connection-status { display: grid; width: 16px; height: 16px; place-items: center; border-radius: 999px; }
 .presenter-connection-status.is-connected { color: #72e4df; }
 .presenter-connection-status.is-disconnected { background: rgb(255 77 79 / 14%); color: #ff8b8d; }
 .presenter-audience-controls { gap: 10px; }

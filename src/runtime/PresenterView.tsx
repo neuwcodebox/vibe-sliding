@@ -245,7 +245,12 @@ export function PresenterView() {
     >
       <header className="presenter-header">
         <div>
-          <p className="presenter-kicker">PRESENTER VIEW</p>
+          <div className="presenter-kicker-row">
+            <p className="presenter-kicker">PRESENTER VIEW</p>
+            <div className={`presenter-connection-status${isAudienceConnected ? ' is-connected' : ' is-disconnected'}`} role="status" aria-label={isAudienceConnected ? '청중 화면 연결됨' : '청중 화면 연결 안 됨'} title={isAudienceConnected ? '청중 화면 연결됨' : '청중 화면이 닫혔거나 연결되지 않았습니다.'}>
+              {isAudienceConnected ? <MonitorCheck size={13} aria-hidden /> : <MonitorX size={13} aria-hidden />}
+            </div>
+          </div>
           <div className="presenter-title-row">
             <p className="presenter-counter">슬라이드 {slideLabel}</p>
             <button
@@ -260,9 +265,6 @@ export function PresenterView() {
           </div>
         </div>
         <div className="presenter-header-actions">
-          <div className={`presenter-connection-status${isAudienceConnected ? ' is-connected' : ' is-disconnected'}`} role="status" aria-label={isAudienceConnected ? '청중 화면 연결됨' : '청중 화면 연결 안 됨'} title={isAudienceConnected ? '청중 화면 연결됨' : '청중 화면이 닫혔거나 연결되지 않았습니다.'}>
-            {isAudienceConnected ? <MonitorCheck size={17} aria-hidden /> : <MonitorX size={17} aria-hidden />}
-          </div>
           <div className="presenter-audience-controls" aria-label="청중 화면 제어">
             <button className={`presenter-icon-button${isAudienceFrozen ? ' is-active' : ''}`} onClick={toggleAudienceFreeze} aria-label="청중 화면 고정" aria-pressed={isAudienceFrozen} title="청중 화면 고정 (F)"><Lock size={18} aria-hidden /></button>
             <button className={`presenter-icon-button${isLaserActive ? ' is-active' : ''}`} onClick={toggleLaser} aria-label="레이저 포인터" aria-pressed={isLaserActive} title="레이저 포인터 (R)"><MousePointer2 size={18} aria-hidden /></button>
