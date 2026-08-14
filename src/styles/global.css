@@ -40,6 +40,14 @@ select {
   font: inherit;
 }
 
+button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 2px solid #0066cc;
+}
+
 .slide-viewer {
   display: flex;
   min-height: 100vh;
