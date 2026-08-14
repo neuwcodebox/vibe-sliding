@@ -21,11 +21,11 @@ function InkOverlay({ strokes }: { strokes: InkStroke[] }) {
   return <svg className="presenter-preview-ink" aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none">{strokes.map((stroke, index) => <polyline fill="none" key={index} points={stroke.points.map((point) => `${point.x},${point.y}`).join(' ')} stroke="#ff4d4f" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.006" />)}</svg>
 }
 
-function SlidePreview({ index, label, inkStrokes = [], laserPointer, onPointerDown, onPointerLeave, onPointerMove, onPointerUp }: { index: number; label: string; inkStrokes?: InkStroke[]; laserPointer?: { x: number; y: number } | null; onPointerDown?: (event: ReactPointerEvent<HTMLElement>) => void; onPointerLeave?: () => void; onPointerMove?: (event: ReactPointerEvent<HTMLElement>) => void; onPointerUp?: (event: ReactPointerEvent<HTMLElement>) => void }) {
+function SlidePreview({ index, isDrawing = false, label, inkStrokes = [], laserPointer, onPointerDown, onPointerLeave, onPointerMove, onPointerUp }: { index: number; isDrawing?: boolean; label: string; inkStrokes?: InkStroke[]; laserPointer?: { x: number; y: number } | null; onPointerDown?: (event: ReactPointerEvent<HTMLElement>) => void; onPointerLeave?: () => void; onPointerMove?: (event: ReactPointerEvent<HTMLElement>) => void; onPointerUp?: (event: ReactPointerEvent<HTMLElement>) => void }) {
   const Slide = slides[index]?.component
 
   return (
-    <section className="presenter-preview" aria-label={label} onPointerDown={onPointerDown} onPointerLeave={onPointerLeave} onPointerMove={onPointerMove} onPointerUp={onPointerUp}>
+    <section className={`presenter-preview${isDrawing ? ' presenter-preview-is-drawing' : ''}`} aria-label={label} onPointerDown={onPointerDown} onPointerLeave={onPointerLeave} onPointerMove={onPointerMove} onPointerUp={onPointerUp}>
       <div className="presenter-preview-stage">
         {Slide ? (
           <SlideErrorBoundary
@@ -138,6 +138,7 @@ export function PresenterView() {
 
   const startInkStroke = (event: ReactPointerEvent<HTMLElement>) => {
     if (!isPenActive) return
+    event.preventDefault()
     event.currentTarget.setPointerCapture(event.pointerId)
     const strokes = [...inkStrokesRef.current, { points: [getPreviewPoint(event)] }]
     activeInkStroke.current = strokes.length - 1
@@ -148,6 +149,7 @@ export function PresenterView() {
 
   const extendInkStroke = (event: ReactPointerEvent<HTMLElement>) => {
     if (!isPenActive || activeInkStroke.current === null) return
+    event.preventDefault()
     const strokeIndex = activeInkStroke.current
     const strokes = inkStrokesRef.current.map((stroke, index) => index === strokeIndex ? { points: [...stroke.points, getPreviewPoint(event)] } : stroke)
     inkStrokesRef.current = strokes
@@ -297,7 +299,7 @@ export function PresenterView() {
       <div className="presenter-layout">
         <div className="presenter-current-panel">
           <p className="presenter-panel-label"><MonitorUp size={16} aria-hidden /> 현재 화면</p>
-          <SlidePreview index={currentIndex} inkStrokes={inkStrokes} label="현재 슬라이드 미리보기" laserPointer={laserPointer} onPointerDown={startInkStroke} onPointerLeave={() => { if (isLaserActive) publishLaserPointer(null); setLaserPointer(null); activeInkStroke.current = null }} onPointerMove={(event) => { updateLaserPointer(event); extendInkStroke(event) }} onPointerUp={finishInkStroke} />
+          <SlidePreview index={currentIndex} isDrawing={isPenActive} inkStrokes={inkStrokes} label="현재 슬라이드 미리보기" laserPointer={laserPointer} onPointerDown={startInkStroke} onPointerLeave={() => { if (isLaserActive) publishLaserPointer(null); setLaserPointer(null); activeInkStroke.current = null }} onPointerMove={(event) => { updateLaserPointer(event); extendInkStroke(event) }} onPointerUp={finishInkStroke} />
           <p className="presenter-file">{currentFile}</p>
         </div>
 
