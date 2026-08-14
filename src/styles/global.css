@@ -115,7 +115,7 @@ select {
 .presenter-slide-menu-button { width: 32px; height: 32px; }
 .presenter-timer { gap: 8px; border: 1px solid #2d405d; background: #111b2c; padding: 9px 12px; border-radius: 8px; font-variant-numeric: tabular-nums; }
 .presenter-icon-button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #2d405d; border-radius: 8px; background: #111b2c; color: inherit; cursor: pointer; }
-.presenter-slide-menu { position: absolute; z-index: 10; top: 94px; right: 24px; width: min(380px, calc(100vw - 48px)); max-height: calc(100dvh - 176px); overflow: hidden; border: 1px solid #385276; border-radius: 10px; background: #101a2a; box-shadow: 0 18px 45px rgb(0 0 0 / 42%); }
+.presenter-slide-menu { position: absolute; z-index: 10; top: 94px; left: 24px; width: min(380px, calc(100vw - 48px)); max-height: calc(100dvh - 176px); overflow: hidden; border: 1px solid #385276; border-radius: 10px; background: #101a2a; box-shadow: 0 18px 45px rgb(0 0 0 / 42%); }
 .presenter-slide-menu-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2d405d; padding: 14px 16px; }
 .presenter-slide-menu-header p { margin: 0; font-size: 14px; font-weight: 600; }
 .presenter-slide-menu-header button { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 5px; background: transparent; color: #aebed3; cursor: pointer; }
@@ -152,7 +152,7 @@ select {
 @media (max-width: 800px) {
   .presenter-view { padding: 16px; }
   .presenter-header { flex: 0 0 auto; padding-bottom: 14px; }
-  .presenter-slide-menu { top: 78px; right: 16px; width: min(380px, calc(100vw - 32px)); max-height: calc(100dvh - 150px); }
+  .presenter-slide-menu { top: 78px; left: 16px; width: min(380px, calc(100vw - 32px)); max-height: calc(100dvh - 150px); }
   .presenter-layout { display: grid; min-height: 0; flex: 1 1 auto; grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; overflow: hidden; padding: 16px 0; }
   .presenter-current-panel .presenter-file { display: none; }
   .presenter-side-panel { min-height: 0; }
