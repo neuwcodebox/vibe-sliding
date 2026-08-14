@@ -57,11 +57,12 @@ Presentation shortcuts:
 - `F`: freeze or resume the audience screen
 - `R`: toggle the laser pointer
 - `D`: toggle pen annotations
+- `Z`: undo the last pen stroke
 - `C`: clear the current slide's annotations
 
 For a one-monitor presentation, use the small translucent expand button at the
 bottom-center of the audience screen. It provides black/white, laser, pen, and clear
-controls, with the same `B`, `W`, `R`, `D`, and `C` shortcuts. Use `F` there to enter
+controls, with the same `B`, `W`, `R`, `D`, `Z`, and `C` shortcuts. Use `F` there to enter
 or exit fullscreen. Presenter View shows whether the audience screen is connected.
 
 Examples:

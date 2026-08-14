@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Clock3, Eraser, List, Lock, MonitorCheck, MonitorOff, MonitorUp, MonitorX, MousePointer2, Pause, PenLine, Play, RotateCcw, Sun, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Clock3, Eraser, List, Lock, MonitorCheck, MonitorOff, MonitorUp, MonitorX, MousePointer2, Pause, PenLine, Play, RotateCcw, Sun, Undo2, X } from 'lucide-react'
 import { type CSSProperties, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { slides } from '../slides'
 import { SlideErrorBoundary } from './SlideErrorBoundary'
@@ -131,6 +131,14 @@ export function PresenterView() {
     publishInkStrokes(currentIndex, [])
   }
 
+  const undoInkStroke = () => {
+    activeInkStroke.current = null
+    const nextInkStrokes = (inkStrokesBySlideRef.current[currentIndex] ?? []).slice(0, -1)
+    inkStrokesBySlideRef.current[currentIndex] = nextInkStrokes
+    setInkStrokes(nextInkStrokes)
+    publishInkStrokes(currentIndex, nextInkStrokes)
+  }
+
   const togglePen = () => {
     setIsPenActive((active) => !active)
     setIsLaserActive(false)
@@ -217,6 +225,10 @@ export function PresenterView() {
         event.preventDefault()
         clearInkStrokes()
       }
+      if (event.key.toLowerCase() === 'z') {
+        event.preventDefault()
+        undoInkStroke()
+      }
       if (event.key.toLowerCase() === 'f') {
         event.preventDefault()
         toggleAudienceFreeze()
@@ -274,7 +286,8 @@ export function PresenterView() {
             </div>
             <div className="presenter-tool-group" aria-label="펜 주석">
               <button className={`presenter-icon-button${isPenActive ? ' is-active' : ''}`} onClick={togglePen} aria-label="펜 주석" aria-pressed={isPenActive} title="펜 주석 (D)"><PenLine size={18} aria-hidden /></button>
-            <button className="presenter-icon-button" onClick={clearInkStrokes} aria-label="펜 주석 지우기" title="이 슬라이드 주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
+              <button className="presenter-icon-button" onClick={undoInkStroke} disabled={inkStrokes.length === 0} aria-label="마지막 펜 주석 되돌리기" title="마지막 획 되돌리기 (Z)"><Undo2 size={18} aria-hidden /></button>
+              <button className="presenter-icon-button" onClick={clearInkStrokes} aria-label="펜 주석 지우기" title="이 슬라이드 주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
             </div>
           </div>
           <div className="presenter-timer-controls">

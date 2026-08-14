@@ -84,6 +84,7 @@ select {
 .audience-quick-menu { display: flex; gap: 5px; border: 1px solid rgb(148 163 184 / 40%); border-radius: 10px; background: rgb(15 23 42 / 82%); padding: 5px; backdrop-filter: blur(10px); }
 .audience-quick-menu button, .audience-quick-toggle { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgb(148 163 184 / 48%); border-radius: 7px; background: rgb(15 23 42 / 70%); color: #e2e8f0; cursor: pointer; }
 .audience-quick-menu button.is-active { border-color: #72e4df; background: #143a43; color: #b6fffb; }
+.audience-quick-menu button:disabled, .presenter-icon-button:disabled { cursor: not-allowed; opacity: .38; }
 .audience-quick-statuses { display: flex; gap: 5px; }
 .audience-quick-status { position: relative; display: grid; width: 25px; height: 25px; place-items: center; border: 1px solid rgb(148 163 184 / 42%); border-radius: 999px; background: rgb(15 23 42 / 76%); color: #d8e5f7; line-height: 1; backdrop-filter: blur(8px); }
 .audience-quick-status > svg { transition: opacity 120ms ease, transform 120ms ease; }
