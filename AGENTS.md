@@ -62,18 +62,11 @@ for this project.
 
 ## Slide authoring method
 
-1. **Classify the work and prevent AI-default design.** Before creating,
-   editing, or restyling any slide, read
-   [`.agents/skills/kill-ai-slop/SKILL.md`](.agents/skills/kill-ai-slop/SKILL.md)
-   completely. Apply its principles: make deliberate, explainable choices;
-   favor a single coherent voice and hierarchy from scale and space; subtract
-   default decoration; and keep copy specific. Treat its scanner results as
-   leads, not verdicts—preserve intentional theme and brand decisions. For a
-   broad visual review or a user request to de-slop, follow its full
-   scan → triage → report → approval → minimal-fix workflow before changing
-   slides. Distinguish a new deck or broad redesign from an enhancement.
-   Inspect `src/slides.ts`, the relevant components, and the selected theme
-   before changing code.
+1. **Classify the work.** Before creating, editing, or restyling slides, read
+   the `kill-ai-slop` skill to avoid AI-default design patterns. For a de-slop
+   request or broad visual review, follow that skill's workflow. Distinguish a
+   new deck or broad redesign from an enhancement. Inspect `src/slides.ts`,
+   the relevant components, and the selected theme before changing code.
 2. **Plan the story before layout.** Identify audience, delivery mode, and the
    job of each slide. Speaker-led decks prioritize one idea, large type, and
    whitespace; reading-first decks may carry denser evidence, annotations, and
