@@ -1,4 +1,4 @@
-import { Eraser, type LucideIcon, MonitorOff, MousePointer2, PanelBottomClose, PanelBottomOpen, PenLine, Sun, X } from 'lucide-react'
+import { Eraser, Expand, type LucideIcon, MonitorOff, MousePointer2, PanelBottomClose, PanelBottomOpen, PenLine, Shrink, Sun, X } from 'lucide-react'
 import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { EditInspectMode } from './edit-mode/EditInspectMode'
 import { EditablePptxExportMode } from './export-mode/EditablePptxExportMode'
@@ -11,6 +11,7 @@ import {
   type LaserPointerPosition,
   publishSlideChange,
   publishInkStrokes,
+  publishAudienceHeartbeat,
   subscribeToAudienceScreenMode,
   subscribeToInkStrokes,
   subscribeToLaserPointer,
@@ -26,14 +27,16 @@ type AudienceQuickControlsProps = {
   isPenActive: boolean
   onClearActiveTool: (tool: AudienceToolStatus['id']) => void
   onClearInk: () => void
+  isFullscreen: boolean
   onSetAudienceScreen: (mode: Exclude<AudienceScreenMode, 'visible'>) => void
+  onToggleFullscreen: () => void
   onToggleLaser: () => void
   onTogglePen: () => void
 }
 
 type AudienceToolStatus = { icon: LucideIcon; id: 'screen' | 'laser' | 'pen'; label: string }
 
-function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive, onClearActiveTool, onClearInk, onSetAudienceScreen, onToggleLaser, onTogglePen }: AudienceQuickControlsProps) {
+function AudienceQuickControls({ audienceScreenMode, isFullscreen, isLaserActive, isPenActive, onClearActiveTool, onClearInk, onSetAudienceScreen, onToggleFullscreen, onToggleLaser, onTogglePen }: AudienceQuickControlsProps) {
   const [isOpen, setIsOpen] = useState(false)
   const selectMenuAction = (action: () => void) => {
     action()
@@ -73,6 +76,7 @@ function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive,
           <button className={isLaserActive ? 'is-active' : undefined} onClick={() => selectMenuAction(onToggleLaser)} aria-label="레이저 포인터" title="레이저 포인터 (R)"><MousePointer2 size={18} aria-hidden /></button>
           <button className={isPenActive ? 'is-active' : undefined} onClick={() => selectMenuAction(onTogglePen)} aria-label="펜 주석" title="펜 주석 (D)"><PenLine size={18} aria-hidden /></button>
           <button onClick={() => selectMenuAction(onClearInk)} aria-label="이 슬라이드 주석 지우기" title="이 슬라이드 주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
+          <button className={isFullscreen ? 'is-active' : undefined} onClick={() => selectMenuAction(onToggleFullscreen)} aria-label={isFullscreen ? '전체 화면 종료' : '전체 화면'} title={`${isFullscreen ? '전체 화면 종료' : '전체 화면'} (F)`}>{isFullscreen ? <Shrink size={18} aria-hidden /> : <Expand size={18} aria-hidden />}</button>
         </div>
       )}
       <button className="audience-quick-toggle" onClick={() => setIsOpen((open) => !open)} aria-label={isOpen ? '발표 도구 접기' : '발표 도구 펼치기'} aria-expanded={isOpen} title={isOpen ? '발표 도구 접기' : '발표 도구 펼치기'}>
@@ -102,6 +106,7 @@ function PresentationApp() {
   const [inkStrokesBySlide, setInkStrokesBySlide] = useState<Record<number, InkStroke[]>>({})
   const [isAudienceLaserActive, setIsAudienceLaserActive] = useState(false)
   const [isAudiencePenActive, setIsAudiencePenActive] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(() => document.fullscreenElement !== null)
   const activeInkStroke = useRef<number | null>(null)
   const inkStrokesBySlideRef = useRef<Record<number, InkStroke[]>>({})
   const {
@@ -150,6 +155,19 @@ function PresentationApp() {
 
   useEffect(() => subscribeToInkStrokes(setSlideInkStrokes), [setSlideInkStrokes])
 
+  useEffect(() => {
+    const publishHeartbeat = () => publishAudienceHeartbeat()
+    publishHeartbeat()
+    const heartbeat = window.setInterval(publishHeartbeat, 1000)
+    return () => window.clearInterval(heartbeat)
+  }, [])
+
+  useEffect(() => {
+    const onFullscreenChange = () => setIsFullscreen(document.fullscreenElement !== null)
+    document.addEventListener('fullscreenchange', onFullscreenChange)
+    return () => document.removeEventListener('fullscreenchange', onFullscreenChange)
+  }, [])
+
   const setAudienceScreen = useCallback((mode: Exclude<AudienceScreenMode, 'visible'>) => {
     const nextMode = audienceScreenMode === mode ? 'visible' : mode
     setAudienceScreenMode(nextMode)
@@ -190,6 +208,14 @@ function PresentationApp() {
     if (tool === 'pen') {
       activeInkStroke.current = null
       setIsAudiencePenActive(false)
+    }
+  }, [])
+
+  const toggleFullscreen = useCallback(() => {
+    if (document.fullscreenElement) {
+      void document.exitFullscreen()
+    } else {
+      void document.documentElement.requestFullscreen()
     }
   }, [])
 
@@ -244,11 +270,15 @@ function PresentationApp() {
         event.preventDefault()
         clearAudienceInk()
       }
+      if (event.key.toLowerCase() === 'f') {
+        event.preventDefault()
+        toggleFullscreen()
+      }
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [clearAudienceInk, isEditMode, setAudienceScreen, toggleAudienceLaser, toggleAudiencePen])
+  }, [clearAudienceInk, isEditMode, setAudienceScreen, toggleAudienceLaser, toggleAudiencePen, toggleFullscreen])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -345,11 +375,13 @@ function PresentationApp() {
       {!isEditMode && (
         <AudienceQuickControls
           audienceScreenMode={audienceScreenMode}
+          isFullscreen={isFullscreen}
           isLaserActive={isAudienceLaserActive}
           isPenActive={isAudiencePenActive}
           onClearActiveTool={clearAudienceActiveTool}
           onClearInk={clearAudienceInk}
           onSetAudienceScreen={setAudienceScreen}
+          onToggleFullscreen={toggleFullscreen}
           onToggleLaser={toggleAudienceLaser}
           onTogglePen={toggleAudiencePen}
         />

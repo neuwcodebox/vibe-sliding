@@ -146,6 +146,9 @@ select {
 .presenter-timer { gap: 8px; border: 1px solid #2d405d; background: #111b2c; padding: 9px 12px; border-radius: 8px; font-variant-numeric: tabular-nums; }
 .presenter-icon-button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #2d405d; border-radius: 8px; background: #111b2c; color: inherit; cursor: pointer; }
 .presenter-icon-button.is-active { border-color: #72e4df; background: #143a43; color: #b6fffb; }
+.presenter-connection-status { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 999px; }
+.presenter-connection-status.is-connected { color: #72e4df; }
+.presenter-connection-status.is-disconnected { background: rgb(255 77 79 / 14%); color: #ff8b8d; }
 .presenter-audience-controls { gap: 10px; }
 .presenter-tool-group { height: 40px; gap: 4px; border: 1px solid #2d405d; border-radius: 8px; background: #0d1625; padding: 2px; }
 .presenter-tool-group .presenter-icon-button { width: 34px; height: 34px; border-color: transparent; background: transparent; }

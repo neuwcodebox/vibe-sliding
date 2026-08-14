@@ -1,9 +1,9 @@
-import { ChevronLeft, ChevronRight, Clock3, Eraser, List, Lock, MonitorOff, MonitorUp, MousePointer2, Pause, PenLine, Play, RotateCcw, Sun, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Clock3, Eraser, List, Lock, MonitorCheck, MonitorOff, MonitorUp, MonitorX, MousePointer2, Pause, PenLine, Play, RotateCcw, Sun, X } from 'lucide-react'
 import { type CSSProperties, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { slides } from '../slides'
 import { SlideErrorBoundary } from './SlideErrorBoundary'
 import { readSlideIndexFromUrl, writeSlideIndexToUrl } from './useSlideNavigation'
-import { publishAudienceScreenMode, publishInkStrokes, publishLaserPointer, publishSlideChange, subscribeToSlideChanges, type AudienceScreenMode, type InkStroke } from './presenterSync'
+import { publishAudienceScreenMode, publishInkStrokes, publishLaserPointer, publishSlideChange, subscribeToAudienceHeartbeat, subscribeToSlideChanges, type AudienceScreenMode, type InkStroke } from './presenterSync'
 
 const formatElapsed = (seconds: number) => {
   const hours = Math.floor(seconds / 3600)
@@ -60,6 +60,8 @@ export function PresenterView() {
   const [isPenActive, setIsPenActive] = useState(false)
   const [inkStrokes, setInkStrokes] = useState<InkStroke[]>([])
   const [laserPointer, setLaserPointer] = useState<{ x: number; y: number } | null>(null)
+  const [lastAudienceHeartbeat, setLastAudienceHeartbeat] = useState(0)
+  const [connectionCheckTime, setConnectionCheckTime] = useState(() => Date.now())
   const activeInkStroke = useRef<number | null>(null)
   const inkStrokesBySlideRef = useRef<Record<number, InkStroke[]>>({})
 
@@ -67,6 +69,13 @@ export function PresenterView() {
     setCurrentIndex(index)
     setInkStrokes(inkStrokesBySlideRef.current[index] ?? [])
   }), [])
+
+  useEffect(() => subscribeToAudienceHeartbeat(() => setLastAudienceHeartbeat(Date.now())), [])
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setConnectionCheckTime(Date.now()), 1000)
+    return () => window.clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     if (!isTimerRunning) {
@@ -223,6 +232,7 @@ export function PresenterView() {
   const nextIndex = Math.min(currentIndex + 1, slideCount)
   const slideLabel = currentIndex >= slideCount ? '발표 종료 화면' : `${currentIndex + 1} / ${slideCount}`
   const currentFile = useMemo(() => currentSlide?.file ?? '—', [currentSlide])
+  const isAudienceConnected = connectionCheckTime - lastAudienceHeartbeat < 3_000
 
   return (
     <main
@@ -250,6 +260,9 @@ export function PresenterView() {
           </div>
         </div>
         <div className="presenter-header-actions">
+          <div className={`presenter-connection-status${isAudienceConnected ? ' is-connected' : ' is-disconnected'}`} role="status" aria-label={isAudienceConnected ? '청중 화면 연결됨' : '청중 화면 연결 안 됨'} title={isAudienceConnected ? '청중 화면 연결됨' : '청중 화면이 닫혔거나 연결되지 않았습니다.'}>
+            {isAudienceConnected ? <MonitorCheck size={17} aria-hidden /> : <MonitorX size={17} aria-hidden />}
+          </div>
           <div className="presenter-audience-controls" aria-label="청중 화면 제어">
             <button className={`presenter-icon-button${isAudienceFrozen ? ' is-active' : ''}`} onClick={toggleAudienceFreeze} aria-label="청중 화면 고정" aria-pressed={isAudienceFrozen} title="청중 화면 고정 (F)"><Lock size={18} aria-hidden /></button>
             <button className={`presenter-icon-button${isLaserActive ? ' is-active' : ''}`} onClick={toggleLaser} aria-label="레이저 포인터" aria-pressed={isLaserActive} title="레이저 포인터 (R)"><MousePointer2 size={18} aria-hidden /></button>

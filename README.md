@@ -61,7 +61,8 @@ Presentation shortcuts:
 
 For a one-monitor presentation, use the small translucent expand button at the
 bottom-center of the audience screen. It provides black/white, laser, pen, and clear
-controls, with the same `B`, `W`, `R`, `D`, and `C` shortcuts.
+controls, with the same `B`, `W`, `R`, `D`, and `C` shortcuts. Use `F` there to enter
+or exit fullscreen. Presenter View shows whether the audience screen is connected.
 
 Examples:
 
