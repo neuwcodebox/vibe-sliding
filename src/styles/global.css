@@ -84,7 +84,7 @@ select {
 .audience-quick-menu { display: flex; gap: 5px; border: 1px solid rgb(148 163 184 / 40%); border-radius: 10px; background: rgb(15 23 42 / 82%); padding: 5px; backdrop-filter: blur(10px); }
 .audience-quick-menu button, .audience-quick-toggle { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgb(148 163 184 / 48%); border-radius: 7px; background: rgb(15 23 42 / 70%); color: #e2e8f0; cursor: pointer; }
 .audience-quick-menu button.is-active { border-color: #72e4df; background: #143a43; color: #b6fffb; }
-.audience-quick-status { margin: 0; border: 1px solid rgb(148 163 184 / 42%); border-radius: 999px; background: rgb(15 23 42 / 76%); color: #d8e5f7; padding: 4px 9px; font-size: 11px; line-height: 1; backdrop-filter: blur(8px); }
+.audience-quick-status { display: flex; align-items: center; gap: 5px; border: 1px solid rgb(148 163 184 / 42%); border-radius: 999px; background: rgb(15 23 42 / 76%); color: #d8e5f7; padding: 5px 8px; line-height: 1; backdrop-filter: blur(8px); }
 .audience-quick-toggle { width: 68px; height: 10px; overflow: hidden; border-bottom: 0; border-radius: 7px 7px 0 0; background: rgb(15 23 42 / 62%); color: #cbd5e1; opacity: .38; transition: width 160ms ease, height 160ms ease, opacity 160ms ease; }
 .audience-quick-toggle svg { opacity: 0; transition: opacity 120ms ease; }
 .audience-quick-controls:hover .audience-quick-toggle, .audience-quick-controls.is-open .audience-quick-toggle, .audience-quick-toggle:focus-visible { width: 96px; height: 26px; opacity: .92; }

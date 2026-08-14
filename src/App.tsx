@@ -1,4 +1,4 @@
-import { Eraser, MonitorOff, MousePointer2, PanelBottomClose, PanelBottomOpen, PenLine, Sun } from 'lucide-react'
+import { Eraser, type LucideIcon, MonitorOff, MousePointer2, PanelBottomClose, PanelBottomOpen, PenLine, Sun } from 'lucide-react'
 import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { EditInspectMode } from './edit-mode/EditInspectMode'
 import { EditablePptxExportMode } from './export-mode/EditablePptxExportMode'
@@ -30,16 +30,26 @@ type AudienceQuickControlsProps = {
   onTogglePen: () => void
 }
 
+type AudienceToolStatus = { icon: LucideIcon; label: string }
+
 function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive, onClearInk, onSetAudienceScreen, onToggleLaser, onTogglePen }: AudienceQuickControlsProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const activeTools = [
-    audienceScreenMode === 'black' ? '검정 화면' : audienceScreenMode === 'white' ? '흰색 화면' : null,
-    isLaserActive ? '레이저' : null,
-    isPenActive ? '펜' : null,
-  ].filter(Boolean)
+  const activeTools: AudienceToolStatus[] = [
+    audienceScreenMode === 'black' ? { label: '검정 화면', icon: MonitorOff } : audienceScreenMode === 'white' ? { label: '흰색 화면', icon: Sun } : null,
+    isLaserActive ? { label: '레이저 포인터', icon: MousePointer2 } : null,
+    isPenActive ? { label: '펜 주석', icon: PenLine } : null,
+  ].filter((tool): tool is AudienceToolStatus => tool !== null)
 
   return (
     <div className={`audience-quick-controls${isOpen ? ' is-open' : ''}`}>
+      {activeTools.length > 0 && (
+        <div className="audience-quick-status" aria-label={`활성 도구: ${activeTools.map((tool) => tool.label).join(', ')}`} aria-live="polite">
+          {activeTools.map((tool) => {
+            const Icon = tool.icon
+            return <Icon key={tool.label} size={14} aria-hidden />
+          })}
+        </div>
+      )}
       {isOpen && (
         <div className="audience-quick-menu" aria-label="발표 도구">
           <button className={audienceScreenMode === 'black' ? 'is-active' : undefined} onClick={() => onSetAudienceScreen('black')} aria-label="검정 화면 전환" title="검정 화면"><MonitorOff size={18} aria-hidden /></button>
@@ -49,7 +59,6 @@ function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive,
           <button onClick={onClearInk} aria-label="이 슬라이드 주석 지우기" title="주석 지우기"><Eraser size={18} aria-hidden /></button>
         </div>
       )}
-      {activeTools.length > 0 && <p className="audience-quick-status" aria-live="polite">{activeTools.join(' · ')}</p>}
       <button className="audience-quick-toggle" onClick={() => setIsOpen((open) => !open)} aria-label={isOpen ? '발표 도구 접기' : '발표 도구 펼치기'} aria-expanded={isOpen} title={isOpen ? '발표 도구 접기' : '발표 도구 펼치기'}>
         {isOpen ? <PanelBottomClose size={18} aria-hidden /> : <PanelBottomOpen size={18} aria-hidden />}
       </button>
