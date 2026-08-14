@@ -79,5 +79,5 @@ Use this guide for management summaries, decision memos, project status updates,
 
 ## Agent Prompt Guide
 
-- "Use designs/basics/executive-clean.md. Create a 5-slide decision deck for platform investment."
+- "Use designs/basics/themes/executive-clean.md. Create a 5-slide decision deck for platform investment."
 - "Restyle this slide as an executive summary with one recommendation and three supporting facts."

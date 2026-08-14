@@ -83,7 +83,7 @@ http://localhost:5173/?slide=3&presenter=1
 예시 프롬프트:
 
 ```txt
-Use designs/basics/technical-grid.md. Create a 5-slide deck about our internal AI agent platform for an engineering leadership audience. Keep the style technical, structured, and presentation-ready.
+Use designs/basics/themes/technical-grid.md. Create a 5-slide deck about our internal AI agent platform for an engineering leadership audience. Keep the style technical, structured, and presentation-ready.
 ```
 
 전체 스타일을 크게 바꿀 때는 테마 하나를 명시하거나 Agent에게 선택을 명시적으로 맡기세요. 둘 다 없다면 Agent가 시각 시스템을 바꾸기 전에 물어봐야 합니다. 작은 문구 수정, 오타 수정, 좁은 버그 수정은 기존 슬라이드 스타일을 유지하라고 요청하면 됩니다.
@@ -94,7 +94,7 @@ Use designs/basics/technical-grid.md. Create a 5-slide deck about our internal A
 
 | 컬렉션 | 선택 가능한 leaf | 탐색 방법 |
 | --- | --- | --- |
-| [`basics/`](designs/basics/README.md) | 컬렉션 README에 적힌 `<theme>.md` 파일 하나 | 컬렉션 README |
+| [`basics/`](designs/basics/README.md) | `index.json`에 적힌 `themes/<theme>.md` 파일 하나 | `index.json` 후 선택한 테마 |
 | [`beautiful-html-templates/`](designs/beautiful-html-templates/) | `templates/<theme>/` 디렉터리 하나 | `index.json` 후 후보 메타데이터 |
 
 새 덱이나 큰 리디자인에는 leaf 하나를 명시하거나 Agent에게 선택을 명시적으로 맡기세요. 컬렉션 README, `index.json`, 라이선스, 출처 파일은 탐색용이며 테마 자체가 아닙니다. 두 테마를 같은 비중의 시스템으로 섞지 않고, 선택 결과를 설정 파일에 저장하지 않습니다.
@@ -102,7 +102,7 @@ Use designs/basics/technical-grid.md. Create a 5-slide deck about our internal A
 예시:
 
 ```txt
-Use designs/basics/technical-grid.md as the theme. Create a 5-slide architecture review for engineering leaders.
+Use designs/basics/themes/technical-grid.md as the theme. Create a 5-slide architecture review for engineering leaders.
 ```
 
 ```txt
@@ -371,6 +371,7 @@ designs/
   README.md
   basics/
   beautiful-html-templates/
+  pptx-design-styles/
 skills/
 scripts/
 public/
@@ -388,7 +389,7 @@ exports/
 
 - `src/slides/`: Agent가 생성하는 슬라이드 컴포넌트
 - `src/slides.ts`: 슬라이드 등록 순서
-- `designs/`: 테마 컬렉션 카탈로그, Basics 테마, 원본 보존 테마
+- `designs/`: 디자인 시스템·슬라이드 템플릿·스타일 레퍼런스 컬렉션
 - `screenshots/`: 캡처된 슬라이드 이미지
 - `exports/`: 생성된 PPTX 파일
 
@@ -398,3 +399,4 @@ exports/
 
 - [`yetone/kill-ai-slop`](https://github.com/yetone/kill-ai-slop) — [Apache-2.0](.agents/skills/kill-ai-slop/LICENSE), [`.agents/skills/kill-ai-slop/`](.agents/skills/kill-ai-slop/)에 보존
 - [`zarazhangrui/beautiful-html-templates`](https://github.com/zarazhangrui/beautiful-html-templates) — [MIT](designs/beautiful-html-templates/LICENSE), [`designs/beautiful-html-templates/`](designs/beautiful-html-templates/)에 보존
+- [`corazzon/pptx-design-styles`](https://github.com/corazzon/pptx-design-styles) — [MIT 선언](designs/pptx-design-styles/LICENSE), 분할된 스타일 레퍼런스로 [`designs/pptx-design-styles/`](designs/pptx-design-styles/)에 보존

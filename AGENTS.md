@@ -25,40 +25,47 @@ src/
   edit-mode/               # browser element-reference helpers
   styles/global.css        # app-wide font and runtime styling only
 designs/
-  README.md                # theme-collection catalog and selection policy
-  basics/                  # project-owned starter theme collection
-  beautiful-html-templates/  # source-preserved external theme collection
+  README.md                # design-collection catalog and selection policy
+  basics/                  # project-owned design systems
+  beautiful-html-templates/  # source-preserved slide templates
+  pptx-design-styles/      # source-preserved style references
 skills/                    # procedural authoring guidance
 scripts/                   # screenshot and export tooling
 public/assets/             # stable browser assets when needed
 ```
 
-## Theme selection
+## Design direction selection
 
 Read [`designs/README.md`](designs/README.md) before creating a deck, a slide
 batch, or a broad visual redesign. Its immediate child directories are peer
-theme collections; choose one **theme leaf**, not a collection, as the task's
-theme:
+collections with different design levels. Choose one **design leaf**, not a
+collection, as the deck's controlling direction:
 
-- A `<theme>.md` file listed in `designs/basics/README.md` is one
-  project-owned theme leaf.
-- A `designs/beautiful-html-templates/templates/<theme>/` directory is one
-  source-preserved theme leaf.
+- A `basics` index entry identifies a project-owned **design system**: it is a
+  complete contract for hierarchy, composition, evidence, and motion.
+- A `beautiful-html-templates` template directory is a source-preserved
+  **slide template**: it also supplies repeatable slide structures to adapt.
+- A `pptx-design-styles` index entry identifies a **style reference**: it
+  supplies visual cues, but the deck's claims, evidence, and compositions must
+  still be planned by the author.
 - A user may name a leaf or explicitly delegate the choice. If neither occurs,
-  ask before starting broad visual work; collection README files, `index.json`,
-  licenses, and provenance are browsing metadata, never selectable leaves.
-- Do not persist that choice in code or config, and do not blend two themes as
-  co-equal visual systems. Their maintenance models differ; their authority at
-  deck-selection time does not.
-- For a narrow edit, keep the current deck's theme unless the user asks to
+  ask before starting broad visual work. Collection README files, `index.json`,
+  licenses, and provenance help with browsing; they are never selectable
+  leaves.
+- State the selected leaf and its design level in the handoff. Do not persist
+  the choice in code or config.
+- Do not blend two design leaves as co-equal systems. A narrow property from
+  another collection is acceptable only when stated explicitly and the selected
+  leaf remains in control.
+- For a narrow edit, keep the current deck's design direction unless the user asks to
   change it.
 
-For `basics/`, read the collection README and the selected theme completely. For
-`beautiful-html-templates/`, read `index.json` to shortlist, then only the
-candidate metadata and `design.md`, then the selected `template.html` if a
-structural implementation detail is needed. The upstream HTML, `deck-stage.js`,
-sample content, remote-font setup, and navigation code are never runtime code
-for this project.
+Use the selected collection's local guide and metadata to locate its design
+leaf. The upstream HTML, `deck-stage.js`, sample content, remote-font setup,
+and navigation code from templates are never runtime code for this project. For
+all external collections, adapt the selected design to the fixed 1920×1080
+React stage, the installed Inter and Noto Sans KR stack, and the deck's real
+content.
 
 ## Slide authoring method
 

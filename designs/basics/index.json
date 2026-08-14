@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "theme_count": 4,
+  "themes": [
+    {
+      "slug": "minimal-dark",
+      "name": "Minimal Dark",
+      "file": "themes/minimal-dark.md",
+      "best_fit": "Focused technical explainers and concise internal updates",
+      "character": "Sparse, quiet, and precise"
+    },
+    {
+      "slug": "executive-clean",
+      "name": "Executive Clean",
+      "file": "themes/executive-clean.md",
+      "best_fit": "Decision memos, status reports, and management reviews",
+      "character": "Clear, restrained, and scan-friendly"
+    },
+    {
+      "slug": "technical-grid",
+      "name": "Technical Grid",
+      "file": "themes/technical-grid.md",
+      "best_fit": "Architecture, APIs, infrastructure, and workflows",
+      "character": "Structured, analytical, and implementation-aware"
+    },
+    {
+      "slug": "startup-pitch",
+      "name": "Startup Pitch",
+      "file": "themes/startup-pitch.md",
+      "best_fit": "Product vision, launches, demos, and energetic storytelling",
+      "character": "Bold, optimistic, and product-led"
+    }
+  ]
+}

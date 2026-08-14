@@ -66,7 +66,7 @@ export default function Slide002Agenda() {
 
           <div className="border-l-2 border-teal-200 pl-6">
             <p className="font-mono text-[19px] tracking-[0.1em] text-slate-500">SELECTED LEAF / BASICS</p>
-            <p className="mt-3 break-all font-mono text-[23px] text-teal-100">designs/basics/technical-grid.md</p>
+            <p className="mt-3 break-all font-mono text-[23px] text-teal-100">designs/basics/themes/technical-grid.md</p>
             <div className="mt-5 flex flex-wrap gap-2 font-mono text-[15px] tracking-[0.08em]">
               <span className="border border-teal-200/35 px-3 py-2 text-teal-100">BASICS · 4 LEAVES</span>
               <span className="border border-sky-300/35 px-3 py-2 text-sky-200">BEAUTIFUL HTML · 34 LEAVES</span>

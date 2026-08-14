@@ -29,7 +29,7 @@ React source code       = slide source
 Vite dev server         = live preview
 Browser                 = slide viewer
 Coding AI agent         = slide author/editor
-designs/basics/<theme>.md = project-owned selectable theme leaves
+designs/basics/themes/<theme>.md = project-owned selectable theme leaves
 designs/beautiful-html-templates/templates/<theme>/ = source-preserved selectable theme leaves
 Playwright screenshots  = visual feedback mechanism
 Edit Inspect Mode       = element reference helper
@@ -365,8 +365,8 @@ selection policy, and provenance boundary for vendored source themes.
 
 The catalog contains peer theme collections. The MVP includes:
 
-* `designs/basics/`, a project-owned collection whose `<theme>.md` files listed
-  in its README are theme leaves
+* `designs/basics/`, a project-owned collection whose `themes/<theme>.md` files
+  listed in its `index.json` are theme leaves
 * `designs/beautiful-html-templates/`, a source-preserved collection whose
   `templates/<theme>/` directories are theme leaves
 
@@ -382,7 +382,7 @@ deck.
 Example user intent:
 
 ```txt
-Use designs/basics/technical-grid.md.
+Use designs/basics/themes/technical-grid.md.
 Create a 6-slide presentation about the internal AI agent platform.
 ```
 
@@ -531,13 +531,13 @@ Use dark navy backgrounds, thin slate borders, emerald accent lines, compact tec
 
 ## 13. Project-Owned Basics Collection
 
-The MVP should include these theme leaves in `designs/basics/`:
+The MVP should include these theme leaves in `designs/basics/themes/`:
 
 ```txt
-basics/minimal-dark.md
-basics/executive-clean.md
-basics/technical-grid.md
-basics/startup-pitch.md
+basics/themes/minimal-dark.md
+basics/themes/executive-clean.md
+basics/themes/technical-grid.md
+basics/themes/startup-pitch.md
 ```
 
 Each theme leaf must be complete enough to be usable without additional explanation.

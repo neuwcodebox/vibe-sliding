@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "style_count": 30,
+  "styles": [
+    {
+      "number": 1,
+      "name": "Glassmorphism",
+      "file": "styles/01-glassmorphism.md",
+      "mood": "Premium · Tech",
+      "best_for": "SaaS, AI"
+    },
+    {
+      "number": 2,
+      "name": "Neo-Brutalism",
+      "file": "styles/02-neo-brutalism.md",
+      "mood": "Bold · Startup",
+      "best_for": "Pitch decks"
+    },
+    {
+      "number": 3,
+      "name": "Bento Grid",
+      "file": "styles/03-bento-grid.md",
+      "mood": "Modular · Structured",
+      "best_for": "Product features"
+    },
+    {
+      "number": 4,
+      "name": "Dark Academia",
+      "file": "styles/04-dark-academia.md",
+      "mood": "Scholarly · Refined",
+      "best_for": "Education, research"
+    },
+    {
+      "number": 5,
+      "name": "Gradient Mesh",
+      "file": "styles/05-gradient-mesh.md",
+      "mood": "Artistic · Vibrant",
+      "best_for": "Brand launches"
+    },
+    {
+      "number": 6,
+      "name": "Claymorphism",
+      "file": "styles/06-claymorphism.md",
+      "mood": "Friendly · 3D",
+      "best_for": "Apps, education"
+    },
+    {
+      "number": 7,
+      "name": "Swiss International Style",
+      "file": "styles/07-swiss-international-style.md",
+      "mood": "Functional · Corporate",
+      "best_for": "Consulting, finance"
+    },
+    {
+      "number": 8,
+      "name": "Aurora Neon Glow",
+      "file": "styles/08-aurora-neon-glow.md",
+      "mood": "Futuristic · AI",
+      "best_for": "AI, cybersecurity"
+    },
+    {
+      "number": 9,
+      "name": "Retro Y2K",
+      "file": "styles/09-retro-y2k.md",
+      "mood": "Nostalgic · Pop",
+      "best_for": "Events, marketing"
+    },
+    {
+      "number": 10,
+      "name": "Nordic Minimalism",
+      "file": "styles/10-nordic-minimalism.md",
+      "mood": "Calm · Natural",
+      "best_for": "Wellness, non-profit"
+    },
+    {
+      "number": 11,
+      "name": "Typographic Bold",
+      "file": "styles/11-typographic-bold.md",
+      "mood": "Editorial · Impact",
+      "best_for": "Brand statements"
+    },
+    {
+      "number": 12,
+      "name": "Duotone / Color Split",
+      "file": "styles/12-duotone-color-split.md",
+      "mood": "Dramatic · Contrast",
+      "best_for": "Strategy decks"
+    },
+    {
+      "number": 13,
+      "name": "Monochrome Minimal",
+      "file": "styles/13-monochrome-minimal.md",
+      "mood": "Restrained · Luxury",
+      "best_for": "Luxury brands"
+    },
+    {
+      "number": 14,
+      "name": "Cyberpunk Outline",
+      "file": "styles/14-cyberpunk-outline.md",
+      "mood": "HUD · Sci-Fi",
+      "best_for": "Gaming, infra"
+    },
+    {
+      "number": 15,
+      "name": "Editorial Magazine",
+      "file": "styles/15-editorial-magazine.md",
+      "mood": "Magazine · Story",
+      "best_for": "Annual reviews"
+    },
+    {
+      "number": 16,
+      "name": "Pastel Soft UI",
+      "file": "styles/16-pastel-soft-ui.md",
+      "mood": "Soft · App-like",
+      "best_for": "Healthcare, beauty"
+    },
+    {
+      "number": 17,
+      "name": "Dark Neon Miami",
+      "file": "styles/17-dark-neon-miami.md",
+      "mood": "Synthwave · 80s",
+      "best_for": "Entertainment"
+    },
+    {
+      "number": 18,
+      "name": "Hand-crafted Organic",
+      "file": "styles/18-hand-crafted-organic.md",
+      "mood": "Natural · Eco",
+      "best_for": "Eco brands"
+    },
+    {
+      "number": 19,
+      "name": "Isometric 3D Flat",
+      "file": "styles/19-isometric-3d-flat.md",
+      "mood": "Technical · Structured",
+      "best_for": "IT architecture"
+    },
+    {
+      "number": 20,
+      "name": "Vaporwave",
+      "file": "styles/20-vaporwave.md",
+      "mood": "Dreamy · Subculture",
+      "best_for": "Creative agencies"
+    },
+    {
+      "number": 21,
+      "name": "Art Deco Luxe",
+      "file": "styles/21-art-deco-luxe.md",
+      "mood": "Gold · Geometric",
+      "best_for": "Luxury, gala events"
+    },
+    {
+      "number": 22,
+      "name": "Brutalist Newspaper",
+      "file": "styles/22-brutalist-newspaper.md",
+      "mood": "Editorial · Raw",
+      "best_for": "Media, research"
+    },
+    {
+      "number": 23,
+      "name": "Stained Glass Mosaic",
+      "file": "styles/23-stained-glass-mosaic.md",
+      "mood": "Colorful · Artistic",
+      "best_for": "Culture, museums"
+    },
+    {
+      "number": 24,
+      "name": "Liquid Blob Morphing",
+      "file": "styles/24-liquid-blob-morphing.md",
+      "mood": "Fluid · Organic Tech",
+      "best_for": "Biotech, innovation"
+    },
+    {
+      "number": 25,
+      "name": "Memphis Pop Pattern",
+      "file": "styles/25-memphis-pop-pattern.md",
+      "mood": "80s · Geometric",
+      "best_for": "Fashion, lifestyle"
+    },
+    {
+      "number": 26,
+      "name": "Dark Forest Nature",
+      "file": "styles/26-dark-forest-nature.md",
+      "mood": "Mysterious · Atmospheric",
+      "best_for": "Eco premium"
+    },
+    {
+      "number": 27,
+      "name": "Architectural Blueprint",
+      "file": "styles/27-architectural-blueprint.md",
+      "mood": "Technical · Precise",
+      "best_for": "Architecture"
+    },
+    {
+      "number": 28,
+      "name": "Maximalist Collage",
+      "file": "styles/28-maximalist-collage.md",
+      "mood": "Energetic · Layered",
+      "best_for": "Advertising, fashion"
+    },
+    {
+      "number": 29,
+      "name": "SciFi Holographic Data",
+      "file": "styles/29-scifi-holographic-data.md",
+      "mood": "Hologram · HUD",
+      "best_for": "AI, quantum"
+    },
+    {
+      "number": 30,
+      "name": "Risograph Print",
+      "file": "styles/30-risograph-print.md",
+      "mood": "CMYK · Indie",
+      "best_for": "Publishing, art"
+    }
+  ]
+}

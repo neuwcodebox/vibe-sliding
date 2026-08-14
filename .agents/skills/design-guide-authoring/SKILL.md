@@ -18,7 +18,7 @@ the work to the smallest correct artifact.
 | --- | --- |
 | An existing theme fits | Select that theme leaf; do not author another one |
 | A complete upstream visual system fits | Select one source theme leaf; do not paraphrase it into a local theme |
-| A durable direction is missing for future decks | Create one new basic theme at `designs/basics/<name>.md` |
+| A durable direction is missing for future decks | Create one new basic theme at `designs/basics/themes/<name>.md` and index it |
 | A basic theme is inaccurate or incomplete | Revise that leaf and its collection entry if needed |
 | A one-off slide or deck issue | Preserve its current theme and use `react-slide-authoring` |
 | Upstream template material needs refreshing | Update the pinned, source-preserving snapshot and provenance together |
@@ -116,9 +116,9 @@ prescribing viewport-responsive or vertically scrolling layouts.
 ## Maintain collection boundaries
 
 When adding or materially revising a Basics theme, update
-`designs/basics/README.md` and `designs/README.md` only enough to keep the
-collection entry and catalog structure accurate. Do not turn either README into
-a second full copy of every theme.
+`designs/basics/index.json` and `designs/README.md` only enough to keep the
+collection entry and catalog structure accurate. Do not turn the README into a
+second full copy of every theme.
 
 When updating `designs/beautiful-html-templates`, work from a temporary upstream clone,
 pin the exact commit in `UPSTREAM.md`, and replace the source payload as a
