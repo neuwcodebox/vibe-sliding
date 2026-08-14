@@ -26,6 +26,9 @@ const publish = (message: PresenterMessage) => {
     publisherChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(PRESENTER_CHANNEL) : null
   }
   publisherChannel?.postMessage(message)
+  if (window.opener && !window.opener.closed) {
+    window.opener.postMessage({ source: PRESENTER_CHANNEL, message }, window.location.origin)
+  }
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(message))
   } catch {
@@ -39,15 +42,22 @@ const subscribe = (onMessage: (message: PresenterMessage) => void) => {
     if (isPresenterMessage(message)) onMessage(message)
   }
   const onChannelMessage = (event: MessageEvent<unknown>) => handleMessage(event.data)
+  const onWindowMessage = (event: MessageEvent<unknown>) => {
+    if (event.origin !== window.location.origin || typeof event.data !== 'object' || event.data === null) return
+    const { message, source } = event.data as { message?: unknown; source?: unknown }
+    if (source === PRESENTER_CHANNEL) handleMessage(message)
+  }
   const onStorage = (event: StorageEvent) => {
     if (event.key !== STORAGE_KEY || !event.newValue) return
     try { handleMessage(JSON.parse(event.newValue) as unknown) } catch { /* Ignore malformed values. */ }
   }
   channel?.addEventListener('message', onChannelMessage)
+  window.addEventListener('message', onWindowMessage)
   window.addEventListener('storage', onStorage)
   return () => {
     channel?.removeEventListener('message', onChannelMessage)
     channel?.close()
+    window.removeEventListener('message', onWindowMessage)
     window.removeEventListener('storage', onStorage)
   }
 }

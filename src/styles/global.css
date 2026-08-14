@@ -159,6 +159,7 @@ select {
 .presenter-note-size-controls button:disabled { cursor: not-allowed; opacity: .4; }
 .presenter-panel-label { gap: 8px; margin: 0 0 10px; color: #94a9c6; font-size: 13px; font-weight: 600; letter-spacing: .06em; }
 .presenter-preview { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid #2d405d; border-radius: 10px; background: #111827; box-shadow: 0 14px 40px rgb(0 0 0 / 25%); container-type: inline-size; }
+.presenter-preview, .presenter-preview * { user-select: none; -webkit-user-select: none; }
 .presenter-preview-stage { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; transform: scale(calc(100cqw / 1920px)); transform-origin: top left; }
 .presenter-file { margin: 10px 0 0; color: #6e839f; font: 12px/1.4 monospace; }
 .presenter-notes { min-height: 0; flex: 1 1 auto; overflow-y: auto; border: 1px solid #2d405d; border-radius: 10px; background: #101a2a; padding: 18px; scrollbar-color: #496789 transparent; }
