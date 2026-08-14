@@ -64,6 +64,17 @@ export function PresenterView() {
   const [connectionCheckTime, setConnectionCheckTime] = useState(() => Date.now())
   const activeInkStroke = useRef<number | null>(null)
   const inkStrokesBySlideRef = useRef<Record<number, InkStroke[]>>({})
+  const suppressPointerControlFocus = useRef(false)
+
+  useEffect(() => {
+    const removePointerFocus = (event: FocusEvent) => {
+      if (!suppressPointerControlFocus.current || !(event.target instanceof HTMLButtonElement) || !event.target.closest('.presenter-view')) return
+      event.target.blur()
+      suppressPointerControlFocus.current = false
+    }
+    window.addEventListener('focusin', removePointerFocus, true)
+    return () => window.removeEventListener('focusin', removePointerFocus, true)
+  }, [])
 
   useEffect(() => subscribeToSlideChanges((index) => {
     setCurrentIndex(index)
@@ -251,11 +262,15 @@ export function PresenterView() {
       className="presenter-view"
       data-ai-id="presenter-view"
       onPointerDownCapture={(event) => {
-        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
-        if (button instanceof HTMLButtonElement) event.preventDefault()
+        const button = event.target instanceof Element ? event.target.closest('button') : null
+        if (button instanceof HTMLButtonElement) suppressPointerControlFocus.current = true
+      }}
+      onMouseDownCapture={(event) => {
+        const button = event.target instanceof Element ? event.target.closest('button') : null
+        if (button instanceof HTMLButtonElement) suppressPointerControlFocus.current = true
       }}
       onClickCapture={(event) => {
-        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
+        const button = event.target instanceof Element ? event.target.closest('button') : null
         if (button instanceof HTMLButtonElement) window.setTimeout(() => {
           if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
         }, 0)

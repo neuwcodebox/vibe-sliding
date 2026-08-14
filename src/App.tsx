@@ -40,6 +40,16 @@ type AudienceToolStatus = { icon: LucideIcon; id: 'screen' | 'laser' | 'pen'; la
 
 function AudienceQuickControls({ audienceScreenMode, hasInk, isFullscreen, isLaserActive, isPenActive, onClearActiveTool, onClearInk, onSetAudienceScreen, onToggleFullscreen, onToggleLaser, onTogglePen, onUndoInk }: AudienceQuickControlsProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const suppressPointerFocus = useRef(false)
+  useEffect(() => {
+    const removePointerFocus = (event: FocusEvent) => {
+      if (!suppressPointerFocus.current || !(event.target instanceof HTMLButtonElement) || !event.target.closest('.audience-quick-controls')) return
+      event.target.blur()
+      suppressPointerFocus.current = false
+    }
+    window.addEventListener('focusin', removePointerFocus, true)
+    return () => window.removeEventListener('focusin', removePointerFocus, true)
+  }, [])
   const selectMenuAction = (action: () => void) => {
     action()
     setIsOpen(false)
@@ -54,11 +64,15 @@ function AudienceQuickControls({ audienceScreenMode, hasInk, isFullscreen, isLas
     <div
       className={`audience-quick-controls${isOpen ? ' is-open' : ''}`}
       onPointerDownCapture={(event) => {
-        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
-        if (button instanceof HTMLButtonElement) event.preventDefault()
+        const button = event.target instanceof Element ? event.target.closest('button') : null
+        if (button instanceof HTMLButtonElement) suppressPointerFocus.current = true
+      }}
+      onMouseDownCapture={(event) => {
+        const button = event.target instanceof Element ? event.target.closest('button') : null
+        if (button instanceof HTMLButtonElement) suppressPointerFocus.current = true
       }}
       onClickCapture={(event) => {
-        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
+        const button = event.target instanceof Element ? event.target.closest('button') : null
         if (button instanceof HTMLButtonElement) window.setTimeout(() => {
           if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
         }, 0)
@@ -268,7 +282,7 @@ function PresentationApp() {
     if (isEditMode) return
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLElement && event.target.closest('input, textarea, select, [contenteditable="true"]')) return
+      if (event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable="true"]')) return
 
       if (event.key.toLowerCase() === 'b') {
         event.preventDefault()
