@@ -49,29 +49,19 @@ The intended workflow is: you describe the slide show, the agent edits the sourc
 - `P`: open Presenter View in a popup
 
 Presenter View keeps the audience screen clear while showing the current and next
-slide, optional speaker notes, elapsed time controls, a slide jump menu, and note
-text-size controls.
+slide, speaker notes, elapsed time, and slide navigation.
 
-Its presentation controls are available as labelled toolbar buttons and keyboard
-shortcuts:
+Presentation shortcuts:
 
 - `B` / `W`: toggle the audience screen to black / white
-- `F`: freeze the audience screen while navigating ahead in Presenter View; toggle
-  again to sync the audience to the selected slide
-- `R`: toggle the laser pointer; move over the current-slide preview to point on
-  both screens
-- `D`: toggle pen annotations; drag over the current-slide preview to draw on both
-  screens
-- `C`: clear the current slide's pen annotations
-
-Pen annotations are temporary, but stay with their slide while the presentation is
-open. Presentation stages do not allow text selection or native drag behavior.
+- `F`: freeze or resume the audience screen
+- `R`: toggle the laser pointer
+- `D`: toggle pen annotations
+- `C`: clear the current slide's annotations
 
 For a one-monitor presentation, use the small translucent expand button at the
-bottom-center of the audience screen. It opens black/white, laser, pen, and clear
-controls directly on that screen. Those controls also support `B`, `W`, `R`, `D`,
-and `C` shortcuts; timer and audience-freeze controls stay in Presenter View because
-they require a separate presenter surface.
+bottom-center of the audience screen. It provides black/white, laser, pen, and clear
+controls, with the same `B`, `W`, `R`, `D`, and `C` shortcuts.
 
 Examples:
 
