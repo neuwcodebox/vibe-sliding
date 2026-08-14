@@ -123,7 +123,7 @@ select {
   padding-bottom: 20px;
 }
 
-.presenter-header-actions, .presenter-timer-controls, .presenter-audience-controls { display: flex; align-items: center; gap: 8px; }
+.presenter-header-actions, .presenter-timer-controls, .presenter-audience-controls, .presenter-tool-group { display: flex; align-items: center; gap: 8px; }
 .presenter-kicker { margin: 0; color: #72e4df; font: 600 12px/1.2 Inter, sans-serif; letter-spacing: .13em; }
 .presenter-title-row { display: flex; align-items: center; gap: 10px; margin-top: 7px; }
 .presenter-counter { margin: 0; font-size: 20px; font-weight: 600; }
@@ -131,6 +131,10 @@ select {
 .presenter-timer { gap: 8px; border: 1px solid #2d405d; background: #111b2c; padding: 9px 12px; border-radius: 8px; font-variant-numeric: tabular-nums; }
 .presenter-icon-button { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #2d405d; border-radius: 8px; background: #111b2c; color: inherit; cursor: pointer; }
 .presenter-icon-button.is-active { border-color: #72e4df; background: #143a43; color: #b6fffb; }
+.presenter-audience-controls { gap: 10px; }
+.presenter-tool-group { gap: 4px; border: 1px solid #2d405d; border-radius: 10px; background: #0d1625; padding: 3px; }
+.presenter-tool-group .presenter-icon-button { border-color: transparent; background: transparent; }
+.presenter-tool-group .presenter-icon-button.is-active { border-color: #72e4df; background: #143a43; }
 .presenter-slide-menu { position: absolute; z-index: 10; top: 94px; left: 24px; width: min(380px, calc(100vw - 48px)); max-height: calc(100dvh - 176px); overflow: hidden; border: 1px solid #385276; border-radius: 10px; background: #101a2a; box-shadow: 0 18px 45px rgb(0 0 0 / 42%); }
 .presenter-slide-menu-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2d405d; padding: 14px 16px; }
 .presenter-slide-menu-header p { margin: 0; font-size: 14px; font-weight: 600; }
@@ -182,4 +186,14 @@ select {
   .presenter-side-panel > section:last-child { display: none; }
   .presenter-notes { min-height: 0; }
   .presenter-controls { flex: 0 0 auto; padding-top: 14px; }
+}
+
+@media (max-width: 1180px) {
+  .presenter-header { align-items: stretch; flex-direction: column; gap: 14px; }
+  .presenter-header-actions { justify-content: space-between; }
+}
+
+@media (max-width: 620px) {
+  .presenter-header-actions, .presenter-audience-controls { flex-wrap: wrap; }
+  .presenter-header-actions { justify-content: flex-start; }
 }
