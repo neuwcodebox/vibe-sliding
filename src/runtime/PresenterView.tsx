@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Clock3, MonitorUp, Pause, Play, RotateCcw, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Clock3, List, MonitorUp, Pause, Play, RotateCcw, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { slides } from '../slides'
 import { SlideErrorBoundary } from './SlideErrorBoundary'
@@ -43,6 +43,7 @@ export function PresenterView() {
   const [currentIndex, setCurrentIndex] = useState(() => readSlideIndexFromUrl(slideCount))
   const [elapsed, setElapsed] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(true)
+  const [isSlideMenuOpen, setIsSlideMenuOpen] = useState(false)
 
   useEffect(() => subscribeToSlideChanges(setCurrentIndex), [])
 
@@ -99,6 +100,15 @@ export function PresenterView() {
           <p className="presenter-counter">슬라이드 {slideLabel}</p>
         </div>
         <div className="presenter-header-actions">
+          <button
+            className="presenter-icon-button"
+            onClick={() => setIsSlideMenuOpen((open) => !open)}
+            aria-label="슬라이드 목록 열기"
+            aria-expanded={isSlideMenuOpen}
+            title="슬라이드 목록"
+          >
+            <List size={20} aria-hidden />
+          </button>
           <div className="presenter-timer-controls">
             <div className="presenter-timer" aria-label={`경과 시간 ${formatElapsed(elapsed)}${isTimerRunning ? '' : ', 일시 정지됨'}`}>
               <Clock3 size={18} aria-hidden /> {formatElapsed(elapsed)}
@@ -125,6 +135,32 @@ export function PresenterView() {
           </button>
         </div>
       </header>
+
+      {isSlideMenuOpen && (
+        <section className="presenter-slide-menu" aria-label="슬라이드 목록">
+          <div className="presenter-slide-menu-header">
+            <p>슬라이드로 이동</p>
+            <button onClick={() => setIsSlideMenuOpen(false)} aria-label="슬라이드 목록 닫기">
+              <X size={18} aria-hidden />
+            </button>
+          </div>
+          <div className="presenter-slide-menu-list">
+            {slides.map((slide, index) => (
+              <button
+                className={index === currentIndex ? 'is-active' : undefined}
+                key={slide.file}
+                onClick={() => {
+                  goToSlide(index)
+                  setIsSlideMenuOpen(false)
+                }}
+              >
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <span>{slide.file.replace('src/slides/', '')}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="presenter-layout">
         <div className="presenter-current-panel">
