@@ -268,9 +268,6 @@ export function PresenterView() {
               <RotateCcw size={18} aria-hidden />
             </button>
           </div>
-          <button className="presenter-icon-button" onClick={() => window.close()} aria-label="발표자 보기 닫기">
-            <X size={20} aria-hidden />
-          </button>
         </div>
       </header>
 
