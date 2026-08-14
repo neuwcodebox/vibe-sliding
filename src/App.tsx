@@ -53,9 +53,15 @@ function AudienceQuickControls({ audienceScreenMode, hasInk, isFullscreen, isLas
   return (
     <div
       className={`audience-quick-controls${isOpen ? ' is-open' : ''}`}
+      onPointerDownCapture={(event) => {
+        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
+        if (button instanceof HTMLButtonElement) event.preventDefault()
+      }}
       onClickCapture={(event) => {
         const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
-        if (button instanceof HTMLButtonElement) window.requestAnimationFrame(() => button.blur())
+        if (button instanceof HTMLButtonElement) window.setTimeout(() => {
+          if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+        }, 0)
       }}
     >
       {!isOpen && activeTools.length > 0 && (
@@ -262,7 +268,7 @@ function PresentationApp() {
     if (isEditMode) return
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.target instanceof HTMLElement && event.target.closest('input, textarea, select, button, [contenteditable="true"]')) return
+      if (event.target instanceof HTMLElement && event.target.closest('input, textarea, select, [contenteditable="true"]')) return
 
       if (event.key.toLowerCase() === 'b') {
         event.preventDefault()

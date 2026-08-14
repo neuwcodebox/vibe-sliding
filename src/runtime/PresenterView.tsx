@@ -250,9 +250,15 @@ export function PresenterView() {
     <main
       className="presenter-view"
       data-ai-id="presenter-view"
+      onPointerDownCapture={(event) => {
+        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
+        if (button instanceof HTMLButtonElement) event.preventDefault()
+      }}
       onClickCapture={(event) => {
         const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
-        if (button instanceof HTMLButtonElement) window.requestAnimationFrame(() => button.blur())
+        if (button instanceof HTMLButtonElement) window.setTimeout(() => {
+          if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+        }, 0)
       }}
     >
       <header className="presenter-header">
