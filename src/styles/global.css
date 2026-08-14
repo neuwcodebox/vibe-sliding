@@ -75,7 +75,7 @@ select {
 }
 
 .audience-screen-overlay { inset: 0; }
-.audience-ink-overlay { position: absolute; z-index: 19; width: 100%; height: 100%; pointer-events: none; }
+.audience-ink-overlay { position: absolute; z-index: 19; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .audience-screen-overlay-black { background: #000; }
 .audience-screen-overlay-white { background: #fff; }
 .audience-laser-pointer { width: 28px; height: 28px; border: 4px solid #ff4d4f; border-radius: 999px; background: rgb(255 77 79 / 25%); box-shadow: 0 0 18px rgb(255 77 79 / 90%); transform: translate(-50%, -50%); }
