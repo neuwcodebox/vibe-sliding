@@ -35,6 +35,10 @@ type AudienceToolStatus = { icon: LucideIcon; id: 'screen' | 'laser' | 'pen'; la
 
 function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive, onClearActiveTool, onClearInk, onSetAudienceScreen, onToggleLaser, onTogglePen }: AudienceQuickControlsProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const selectMenuAction = (action: () => void) => {
+    action()
+    setIsOpen(false)
+  }
   const activeTools: AudienceToolStatus[] = [
     audienceScreenMode === 'black' ? { id: 'screen', label: '검정 화면', icon: MonitorOff } : audienceScreenMode === 'white' ? { id: 'screen', label: '흰색 화면', icon: Sun } : null,
     isLaserActive ? { id: 'laser', label: '레이저 포인터', icon: MousePointer2 } : null,
@@ -64,11 +68,11 @@ function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive,
       )}
       {isOpen && (
         <div className="audience-quick-menu" aria-label="발표 도구">
-          <button className={audienceScreenMode === 'black' ? 'is-active' : undefined} onClick={() => onSetAudienceScreen('black')} aria-label="검정 화면 전환" title="검정 화면 (B)"><MonitorOff size={18} aria-hidden /></button>
-          <button className={audienceScreenMode === 'white' ? 'is-active' : undefined} onClick={() => onSetAudienceScreen('white')} aria-label="흰색 화면 전환" title="흰색 화면 (W)"><Sun size={18} aria-hidden /></button>
-          <button className={isLaserActive ? 'is-active' : undefined} onClick={onToggleLaser} aria-label="레이저 포인터" title="레이저 포인터 (R)"><MousePointer2 size={18} aria-hidden /></button>
-          <button className={isPenActive ? 'is-active' : undefined} onClick={onTogglePen} aria-label="펜 주석" title="펜 주석 (D)"><PenLine size={18} aria-hidden /></button>
-          <button onClick={onClearInk} aria-label="이 슬라이드 주석 지우기" title="이 슬라이드 주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
+          <button className={audienceScreenMode === 'black' ? 'is-active' : undefined} onClick={() => selectMenuAction(() => onSetAudienceScreen('black'))} aria-label="검정 화면 전환" title="검정 화면 (B)"><MonitorOff size={18} aria-hidden /></button>
+          <button className={audienceScreenMode === 'white' ? 'is-active' : undefined} onClick={() => selectMenuAction(() => onSetAudienceScreen('white'))} aria-label="흰색 화면 전환" title="흰색 화면 (W)"><Sun size={18} aria-hidden /></button>
+          <button className={isLaserActive ? 'is-active' : undefined} onClick={() => selectMenuAction(onToggleLaser)} aria-label="레이저 포인터" title="레이저 포인터 (R)"><MousePointer2 size={18} aria-hidden /></button>
+          <button className={isPenActive ? 'is-active' : undefined} onClick={() => selectMenuAction(onTogglePen)} aria-label="펜 주석" title="펜 주석 (D)"><PenLine size={18} aria-hidden /></button>
+          <button onClick={() => selectMenuAction(onClearInk)} aria-label="이 슬라이드 주석 지우기" title="이 슬라이드 주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
         </div>
       )}
       <button className="audience-quick-toggle" onClick={() => setIsOpen((open) => !open)} aria-label={isOpen ? '발표 도구 접기' : '발표 도구 펼치기'} aria-expanded={isOpen} title={isOpen ? '발표 도구 접기' : '발표 도구 펼치기'}>
