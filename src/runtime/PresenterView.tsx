@@ -225,7 +225,14 @@ export function PresenterView() {
   const currentFile = useMemo(() => currentSlide?.file ?? '—', [currentSlide])
 
   return (
-    <main className="presenter-view" data-ai-id="presenter-view">
+    <main
+      className="presenter-view"
+      data-ai-id="presenter-view"
+      onClickCapture={(event) => {
+        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
+        if (button instanceof HTMLButtonElement) window.requestAnimationFrame(() => button.blur())
+      }}
+    >
       <header className="presenter-header">
         <div>
           <p className="presenter-kicker">PRESENTER VIEW</p>

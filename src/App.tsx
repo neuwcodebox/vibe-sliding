@@ -1,4 +1,4 @@
-import { Eraser, type LucideIcon, MonitorOff, MousePointer2, PanelBottomClose, PanelBottomOpen, PenLine, Sun } from 'lucide-react'
+import { Eraser, type LucideIcon, MonitorOff, MousePointer2, PanelBottomClose, PanelBottomOpen, PenLine, Sun, X } from 'lucide-react'
 import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { EditInspectMode } from './edit-mode/EditInspectMode'
 import { EditablePptxExportMode } from './export-mode/EditablePptxExportMode'
@@ -24,29 +24,41 @@ type AudienceQuickControlsProps = {
   audienceScreenMode: AudienceScreenMode
   isLaserActive: boolean
   isPenActive: boolean
+  onClearActiveTool: (tool: AudienceToolStatus['id']) => void
   onClearInk: () => void
   onSetAudienceScreen: (mode: Exclude<AudienceScreenMode, 'visible'>) => void
   onToggleLaser: () => void
   onTogglePen: () => void
 }
 
-type AudienceToolStatus = { icon: LucideIcon; label: string }
+type AudienceToolStatus = { icon: LucideIcon; id: 'screen' | 'laser' | 'pen'; label: string }
 
-function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive, onClearInk, onSetAudienceScreen, onToggleLaser, onTogglePen }: AudienceQuickControlsProps) {
+function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive, onClearActiveTool, onClearInk, onSetAudienceScreen, onToggleLaser, onTogglePen }: AudienceQuickControlsProps) {
   const [isOpen, setIsOpen] = useState(false)
   const activeTools: AudienceToolStatus[] = [
-    audienceScreenMode === 'black' ? { label: '검정 화면', icon: MonitorOff } : audienceScreenMode === 'white' ? { label: '흰색 화면', icon: Sun } : null,
-    isLaserActive ? { label: '레이저 포인터', icon: MousePointer2 } : null,
-    isPenActive ? { label: '펜 주석', icon: PenLine } : null,
+    audienceScreenMode === 'black' ? { id: 'screen', label: '검정 화면', icon: MonitorOff } : audienceScreenMode === 'white' ? { id: 'screen', label: '흰색 화면', icon: Sun } : null,
+    isLaserActive ? { id: 'laser', label: '레이저 포인터', icon: MousePointer2 } : null,
+    isPenActive ? { id: 'pen', label: '펜 주석', icon: PenLine } : null,
   ].filter((tool): tool is AudienceToolStatus => tool !== null)
 
   return (
-    <div className={`audience-quick-controls${isOpen ? ' is-open' : ''}`}>
+    <div
+      className={`audience-quick-controls${isOpen ? ' is-open' : ''}`}
+      onClickCapture={(event) => {
+        const button = event.target instanceof HTMLElement ? event.target.closest('button') : null
+        if (button instanceof HTMLButtonElement) window.requestAnimationFrame(() => button.blur())
+      }}
+    >
       {!isOpen && activeTools.length > 0 && (
-        <div className="audience-quick-status" aria-label={`활성 도구: ${activeTools.map((tool) => tool.label).join(', ')}`} aria-live="polite">
+        <div className="audience-quick-statuses" aria-live="polite">
           {activeTools.map((tool) => {
             const Icon = tool.icon
-            return <Icon key={tool.label} size={14} aria-hidden />
+            return (
+              <div className="audience-quick-status" key={tool.id} aria-label={`활성 도구: ${tool.label}`}>
+                <Icon size={14} aria-hidden />
+                <button className="audience-quick-status-cancel" onClick={() => onClearActiveTool(tool.id)} aria-label={`${tool.label} 해제`} title={`${tool.label} 해제`}><X size={13} aria-hidden /></button>
+              </div>
+            )
           })}
         </div>
       )}
@@ -163,6 +175,18 @@ function PresentationApp() {
     setIsAudiencePenActive((active) => !active)
     setIsAudienceLaserActive(false)
     setLaserPointer(null)
+  }, [])
+
+  const clearAudienceActiveTool = useCallback((tool: AudienceToolStatus['id']) => {
+    if (tool === 'screen') setAudienceScreenMode('visible')
+    if (tool === 'laser') {
+      setIsAudienceLaserActive(false)
+      setLaserPointer(null)
+    }
+    if (tool === 'pen') {
+      activeInkStroke.current = null
+      setIsAudiencePenActive(false)
+    }
   }, [])
 
   const onAudiencePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
@@ -319,6 +343,7 @@ function PresentationApp() {
           audienceScreenMode={audienceScreenMode}
           isLaserActive={isAudienceLaserActive}
           isPenActive={isAudiencePenActive}
+          onClearActiveTool={clearAudienceActiveTool}
           onClearInk={clearAudienceInk}
           onSetAudienceScreen={setAudienceScreen}
           onToggleLaser={toggleAudienceLaser}

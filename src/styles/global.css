@@ -84,11 +84,16 @@ select {
 .audience-quick-menu { display: flex; gap: 5px; border: 1px solid rgb(148 163 184 / 40%); border-radius: 10px; background: rgb(15 23 42 / 82%); padding: 5px; backdrop-filter: blur(10px); }
 .audience-quick-menu button, .audience-quick-toggle { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgb(148 163 184 / 48%); border-radius: 7px; background: rgb(15 23 42 / 70%); color: #e2e8f0; cursor: pointer; }
 .audience-quick-menu button.is-active { border-color: #72e4df; background: #143a43; color: #b6fffb; }
-.audience-quick-status { display: flex; align-items: center; gap: 5px; border: 1px solid rgb(148 163 184 / 42%); border-radius: 999px; background: rgb(15 23 42 / 76%); color: #d8e5f7; padding: 5px 8px; line-height: 1; backdrop-filter: blur(8px); }
+.audience-quick-statuses { display: flex; gap: 5px; }
+.audience-quick-status { position: relative; display: grid; width: 25px; height: 25px; place-items: center; border: 1px solid rgb(148 163 184 / 42%); border-radius: 999px; background: rgb(15 23 42 / 76%); color: #d8e5f7; line-height: 1; backdrop-filter: blur(8px); }
+.audience-quick-status > svg { transition: opacity 120ms ease, transform 120ms ease; }
+.audience-quick-status-cancel { position: absolute; inset: 0; display: grid; width: 100%; height: 100%; place-items: center; border: 0; border-radius: inherit; background: rgb(148 163 184 / 18%); color: #e2e8f0; cursor: pointer; opacity: 0; padding: 0; transition: opacity 120ms ease; }
+.audience-quick-status:hover > svg, .audience-quick-status:focus-within > svg { opacity: 0; transform: scale(.7); }
+.audience-quick-status:hover .audience-quick-status-cancel, .audience-quick-status:focus-within .audience-quick-status-cancel { opacity: 1; }
 .audience-quick-toggle { width: 68px; height: 10px; overflow: hidden; border-bottom: 0; border-radius: 7px 7px 0 0; background: rgb(15 23 42 / 62%); color: #cbd5e1; opacity: .38; transition: width 160ms ease, height 160ms ease, opacity 160ms ease; }
 .audience-quick-toggle svg { opacity: 0; transition: opacity 120ms ease; }
-.audience-quick-controls:hover .audience-quick-toggle, .audience-quick-controls.is-open .audience-quick-toggle, .audience-quick-toggle:focus-visible { width: 96px; height: 26px; opacity: .92; }
-.audience-quick-controls:hover .audience-quick-toggle svg, .audience-quick-controls.is-open .audience-quick-toggle svg, .audience-quick-toggle:focus-visible svg { opacity: 1; }
+.audience-quick-toggle:hover, .audience-quick-controls.is-open .audience-quick-toggle, .audience-quick-toggle:focus-visible { width: 96px; height: 26px; opacity: .92; }
+.audience-quick-toggle:hover svg, .audience-quick-controls.is-open .audience-quick-toggle svg, .audience-quick-toggle:focus-visible svg { opacity: 1; }
 
 .edit-inspect-active .slide-stage {
   cursor: crosshair;
