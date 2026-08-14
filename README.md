@@ -424,3 +424,8 @@ Deck-specific content:
 - `exports/`: generated PPTX files
 
 Most deck content and visual changes should live under `src/slides/`. `runtime/`, `edit-mode/`, and `styles/global.css` should stay generic across many slide shows.
+
+## Third-Party Sources
+
+- [`yetone/kill-ai-slop`](https://github.com/yetone/kill-ai-slop) — [Apache-2.0](.agents/skills/kill-ai-slop/LICENSE), preserved in [`.agents/skills/kill-ai-slop/`](.agents/skills/kill-ai-slop/).
+- [`zarazhangrui/beautiful-html-templates`](https://github.com/zarazhangrui/beautiful-html-templates) — [MIT](designs/beautiful-html-templates/LICENSE), preserved in [`designs/beautiful-html-templates/`](designs/beautiful-html-templates/).

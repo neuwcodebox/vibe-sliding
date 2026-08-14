@@ -393,3 +393,8 @@ exports/
 - `exports/`: 생성된 PPTX 파일
 
 대부분의 발표 내용과 시각 수정은 `src/slides/` 안에서 해결해야 합니다. `runtime/`, `edit-mode/`, `styles/global.css`는 여러 슬라이드 쇼에서 재사용되는 일반 인프라로 유지해야 합니다.
+
+## 외부 프로젝트 출처
+
+- [`yetone/kill-ai-slop`](https://github.com/yetone/kill-ai-slop) — [Apache-2.0](.agents/skills/kill-ai-slop/LICENSE), [`.agents/skills/kill-ai-slop/`](.agents/skills/kill-ai-slop/)에 보존
+- [`zarazhangrui/beautiful-html-templates`](https://github.com/zarazhangrui/beautiful-html-templates) — [MIT](designs/beautiful-html-templates/LICENSE), [`designs/beautiful-html-templates/`](designs/beautiful-html-templates/)에 보존
