@@ -31,6 +31,7 @@ Open the local URL printed by Vite. It is usually something like `http://localho
 - A React slide codebase that AI agents can edit reliably.
 - A single catalog of peer theme collections under `designs/`.
 - Edit Inspect Mode for pointing at slide elements and copying precise references.
+- A separate Presenter View with speaker notes, slide navigation, timing, and audience controls.
 - Screenshot capture scripts for reviewing generated slides.
 - Image-based and experimental editable PPTX export for sharing rendered decks in PowerPoint.
 - Mermaid diagram rendering for flowcharts, sequence diagrams, and other technical visuals.
@@ -45,12 +46,34 @@ The intended workflow is: you describe the slide show, the agent edits the sourc
 - End: last slide
 - `?slide=N`: open slide N directly
 - `?edit=1`: enable Edit Inspect Mode
+- `P`: open Presenter View in a popup
+
+Presenter View keeps the audience screen clear while showing the current and next
+slide, optional speaker notes, elapsed time controls, a slide jump menu, and note
+text-size controls. Add optional per-slide notes as `notes: string[]` in
+`src/slides.ts`.
+
+Its presentation controls are available as labelled toolbar buttons and keyboard
+shortcuts:
+
+- `B` / `W`: toggle the audience screen to black / white
+- `F`: freeze the audience screen while navigating ahead in Presenter View; toggle
+  again to sync the audience to the selected slide
+- `L`: toggle the laser pointer; move over the current-slide preview to point on
+  both screens
+- `D`: toggle pen annotations; drag over the current-slide preview to draw on both
+  screens
+- `C`: clear the current slide's pen annotations
+
+Pen annotations are temporary and clear automatically when the presenter changes
+slides. Presentation stages do not allow text selection or native drag behavior.
 
 Examples:
 
 ```txt
 http://localhost:5173/?slide=3
 http://localhost:5173/?slide=3&edit=1
+http://localhost:5173/?slide=3&presenter=1
 ```
 
 ## Ask An Agent To Create A Deck

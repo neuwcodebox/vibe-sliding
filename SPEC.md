@@ -208,14 +208,41 @@ The runtime must not introduce a heavy slide abstraction, slide DSL, or framewor
 
 ### Presenter View
 
-The runtime may provide a lightweight presenter view in a separate browser popup.
-It must keep the audience screen free of persistent chrome and support current-slide
-and next-slide previews, optional per-slide speaker notes, elapsed time, and slide
-navigation synchronized with the audience window. It may also provide presenter-only
-audience controls such as blackout/whiteout, a synchronized laser pointer or
-temporary pen annotations, and a mode that freezes the audience screen while the
-presenter previews another slide. It is opened with `P` or `?presenter=1`; notes
-remain optional metadata in `src/slides.ts`.
+The runtime provides a lightweight Presenter View in a separate browser popup. It is
+opened with `P` from the audience window or directly with `?presenter=1`. It must
+keep the audience screen free of persistent chrome.
+
+Presenter View must provide:
+
+* the current-slide and next-slide previews
+* optional per-slide speaker notes, declared as `notes?: string[]` in the explicit
+  `src/slides.ts` registry
+* adjustable speaker-note text size with a fixed note-panel layout; long notes scroll
+  inside that panel rather than changing the page layout
+* an elapsed timer with start, pause, and reset controls
+* a slide list that can jump directly to a registered slide
+* keyboard navigation synchronized with the audience window
+
+The presenter and audience windows must synchronize slide, pointer, annotation, and
+audience-screen events through same-origin browser messaging. A popup may use its
+opener directly, with `BroadcastChannel` and storage events as same-origin fallback
+transports.
+
+Presenter-only audience controls must include:
+
+* blackout and whiteout: `B` and `W` toggle a full-stage black or white audience
+  overlay without adding persistent chrome to slides
+* audience freeze: `F` lets the presenter navigate privately; unfreezing synchronizes
+  the audience to the presenter-selected slide
+* laser pointer: `L` enables a normalized pointer from the current-slide preview on
+  both screens
+* temporary pen annotations: `D` enables drawing over the current-slide preview and
+  synchronizes its strokes to the audience screen; `C` clears them, and slide changes
+  clear them automatically
+
+Presentation stages and Presenter View previews must suppress native text selection
+and browser drag behavior. Pointer and ink overlays are transient presentation aids;
+they are not slide-source content and must not be exported as part of the deck.
 
 The runtime must not render persistent slide chrome such as page numbers, progress bars, headers, footers, logos, or design-specific overlays on top of every slide. If a deck needs those elements, individual slide components should render them directly.
 
@@ -1267,7 +1294,8 @@ The project should implement only the small amount of navigation and scaling beh
 
 This keeps the source structure simple and allows Edit Inspect Mode to work without framework interference.
 
-Future versions may reconsider this if the project needs mature presenter tooling, fragments, speaker notes, PDF export, or overview mode.
+Future versions may reconsider this if the project needs fragments, PDF export, or a
+more advanced presentation overview mode.
 
 ## 28. Accessibility and Semantics
 
@@ -1365,8 +1393,6 @@ The following are explicitly future work, not MVP requirements:
 
 * PDF export
 * full-fidelity editable/native PPTX export
-* presenter mode
-* speaker notes
 * slide thumbnail overview
 * slide reorder helper
 * screenshot diff
