@@ -73,12 +73,16 @@ function AudienceQuickControls({ audienceScreenMode, hasInk, isFullscreen, isLas
       )}
       {isOpen && (
         <div className="audience-quick-menu" aria-label="발표 도구">
-          <button className={audienceScreenMode === 'black' ? 'is-active' : undefined} onClick={() => selectMenuAction(() => onSetAudienceScreen('black'))} aria-label="검정 화면 전환" title="검정 화면 (B)"><MonitorOff size={18} aria-hidden /></button>
-          <button className={audienceScreenMode === 'white' ? 'is-active' : undefined} onClick={() => selectMenuAction(() => onSetAudienceScreen('white'))} aria-label="흰색 화면 전환" title="흰색 화면 (W)"><Sun size={18} aria-hidden /></button>
           <button className={isLaserActive ? 'is-active' : undefined} onClick={() => selectMenuAction(onToggleLaser)} aria-label="레이저 포인터" title="레이저 포인터 (R)"><MousePointer2 size={18} aria-hidden /></button>
-          <button className={isPenActive ? 'is-active' : undefined} onClick={() => selectMenuAction(onTogglePen)} aria-label="펜 주석" title="펜 주석 (D)"><PenLine size={18} aria-hidden /></button>
-          <button onClick={() => selectMenuAction(onUndoInk)} disabled={!hasInk} aria-label="마지막 펜 주석 되돌리기" title="마지막 획 되돌리기 (Z)"><Undo2 size={18} aria-hidden /></button>
-          <button onClick={() => selectMenuAction(onClearInk)} aria-label="이 슬라이드 주석 지우기" title="이 슬라이드 주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
+          <div className="audience-quick-tool-group" aria-label="청중 화면 색상">
+            <button className={audienceScreenMode === 'black' ? 'is-active' : undefined} onClick={() => selectMenuAction(() => onSetAudienceScreen('black'))} aria-label="검정 화면 전환" title="검정 화면 (B)"><MonitorOff size={18} aria-hidden /></button>
+            <button className={audienceScreenMode === 'white' ? 'is-active' : undefined} onClick={() => selectMenuAction(() => onSetAudienceScreen('white'))} aria-label="흰색 화면 전환" title="흰색 화면 (W)"><Sun size={18} aria-hidden /></button>
+          </div>
+          <div className="audience-quick-tool-group" aria-label="펜 주석">
+            <button className={isPenActive ? 'is-active' : undefined} onClick={() => selectMenuAction(onTogglePen)} aria-label="펜 주석" title="펜 주석 (D)"><PenLine size={18} aria-hidden /></button>
+            <button onClick={() => selectMenuAction(onUndoInk)} disabled={!hasInk} aria-label="마지막 펜 주석 되돌리기" title="마지막 획 되돌리기 (Z)"><Undo2 size={18} aria-hidden /></button>
+            <button onClick={() => selectMenuAction(onClearInk)} aria-label="이 슬라이드 주석 지우기" title="이 슬라이드 주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
+          </div>
           <button className={isFullscreen ? 'is-active' : undefined} onClick={() => selectMenuAction(onToggleFullscreen)} aria-label={isFullscreen ? '전체 화면 종료' : '전체 화면'} title={`${isFullscreen ? '전체 화면 종료' : '전체 화면'} (F)`}>{isFullscreen ? <Shrink size={18} aria-hidden /> : <Expand size={18} aria-hidden />}</button>
         </div>
       )}
