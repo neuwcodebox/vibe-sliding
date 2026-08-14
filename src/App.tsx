@@ -42,7 +42,7 @@ function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive,
 
   return (
     <div className={`audience-quick-controls${isOpen ? ' is-open' : ''}`}>
-      {activeTools.length > 0 && (
+      {!isOpen && activeTools.length > 0 && (
         <div className="audience-quick-status" aria-label={`활성 도구: ${activeTools.map((tool) => tool.label).join(', ')}`} aria-live="polite">
           {activeTools.map((tool) => {
             const Icon = tool.icon
