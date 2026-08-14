@@ -50,8 +50,7 @@ The intended workflow is: you describe the slide show, the agent edits the sourc
 
 Presenter View keeps the audience screen clear while showing the current and next
 slide, optional speaker notes, elapsed time controls, a slide jump menu, and note
-text-size controls. Add optional per-slide notes as `notes: string[]` in
-`src/slides.ts`.
+text-size controls.
 
 Its presentation controls are available as labelled toolbar buttons and keyboard
 shortcuts:
@@ -67,6 +66,11 @@ shortcuts:
 
 Pen annotations are temporary, but stay with their slide while the presentation is
 open. Presentation stages do not allow text selection or native drag behavior.
+
+For a one-monitor presentation, use the small translucent expand button at the
+bottom-right of the audience screen. It opens black/white, laser, pen, and clear
+controls directly on that screen; timer and audience-freeze controls stay in
+Presenter View because they require a separate presenter surface.
 
 Examples:
 
@@ -158,11 +162,15 @@ export const slides = [
   {
     component: Slide004,
     file: 'src/slides/004-topic.tsx',
+    // Optional Presenter View script. It is never shown to the audience.
+    notes: ['Introduce the decision first.', 'Pause here for questions.'],
   },
 ]
 ```
 
-You do not need to memorize this pattern, but it helps to know what the agent is expected to change.
+`notes` is optional. When present, each string becomes a separate paragraph in the
+Presenter View script panel; it never appears on the audience screen. You do not
+need to memorize this pattern, but it helps to know what the agent is expected to change.
 
 ## Add Mermaid Diagrams
 

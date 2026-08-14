@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Eraser, MonitorOff, MousePointer2, PanelBottomClose, PanelBottomOpen, PenLine, Sun } from 'lucide-react'
+import { type PointerEvent as ReactPointerEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { EditInspectMode } from './edit-mode/EditInspectMode'
 import { EditablePptxExportMode } from './export-mode/EditablePptxExportMode'
 import { SlideErrorBoundary } from './runtime/SlideErrorBoundary'
@@ -9,6 +10,7 @@ import {
   type InkStroke,
   type LaserPointerPosition,
   publishSlideChange,
+  publishInkStrokes,
   subscribeToAudienceScreenMode,
   subscribeToInkStrokes,
   subscribeToLaserPointer,
@@ -17,6 +19,37 @@ import {
 import { usePresentationCursorAutoHide } from './runtime/usePresentationCursorAutoHide'
 import { useSlideNavigation } from './runtime/useSlideNavigation'
 import { slides } from './slides'
+
+type AudienceQuickControlsProps = {
+  audienceScreenMode: AudienceScreenMode
+  isLaserActive: boolean
+  isPenActive: boolean
+  onClearInk: () => void
+  onSetAudienceScreen: (mode: Exclude<AudienceScreenMode, 'visible'>) => void
+  onToggleLaser: () => void
+  onTogglePen: () => void
+}
+
+function AudienceQuickControls({ audienceScreenMode, isLaserActive, isPenActive, onClearInk, onSetAudienceScreen, onToggleLaser, onTogglePen }: AudienceQuickControlsProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <div className="audience-quick-controls">
+      {isOpen && (
+        <div className="audience-quick-menu" aria-label="발표 도구">
+          <button className={audienceScreenMode === 'black' ? 'is-active' : undefined} onClick={() => onSetAudienceScreen('black')} aria-label="검정 화면 전환" title="검정 화면"><MonitorOff size={18} aria-hidden /></button>
+          <button className={audienceScreenMode === 'white' ? 'is-active' : undefined} onClick={() => onSetAudienceScreen('white')} aria-label="흰색 화면 전환" title="흰색 화면"><Sun size={18} aria-hidden /></button>
+          <button className={isLaserActive ? 'is-active' : undefined} onClick={onToggleLaser} aria-label="레이저 포인터" title="레이저 포인터"><MousePointer2 size={18} aria-hidden /></button>
+          <button className={isPenActive ? 'is-active' : undefined} onClick={onTogglePen} aria-label="펜 주석" title="펜 주석"><PenLine size={18} aria-hidden /></button>
+          <button onClick={onClearInk} aria-label="이 슬라이드 주석 지우기" title="주석 지우기"><Eraser size={18} aria-hidden /></button>
+        </div>
+      )}
+      <button className="audience-quick-toggle" onClick={() => setIsOpen((open) => !open)} aria-label={isOpen ? '발표 도구 접기' : '발표 도구 펼치기'} aria-expanded={isOpen} title={isOpen ? '발표 도구 접기' : '발표 도구 펼치기'}>
+        {isOpen ? <PanelBottomClose size={18} aria-hidden /> : <PanelBottomOpen size={18} aria-hidden />}
+      </button>
+    </div>
+  )
+}
 
 const readEditQuery = () =>
   typeof window !== 'undefined' &&
@@ -36,6 +69,10 @@ function PresentationApp() {
   const [audienceScreenMode, setAudienceScreenMode] = useState<AudienceScreenMode>('visible')
   const [laserPointer, setLaserPointer] = useState<LaserPointerPosition>(null)
   const [inkStrokesBySlide, setInkStrokesBySlide] = useState<Record<number, InkStroke[]>>({})
+  const [isAudienceLaserActive, setIsAudienceLaserActive] = useState(false)
+  const [isAudiencePenActive, setIsAudiencePenActive] = useState(false)
+  const activeInkStroke = useRef<number | null>(null)
+  const inkStrokesBySlideRef = useRef<Record<number, InkStroke[]>>({})
   const {
     currentIndex,
     currentSlide,
@@ -75,9 +112,68 @@ function PresentationApp() {
   useEffect(() => subscribeToSlideChanges(goToSlide), [goToSlide])
   useEffect(() => subscribeToAudienceScreenMode(setAudienceScreenMode), [])
   useEffect(() => subscribeToLaserPointer(setLaserPointer), [])
-  useEffect(() => subscribeToInkStrokes((index, strokes) => {
+  const setSlideInkStrokes = useCallback((index: number, strokes: InkStroke[]) => {
+    inkStrokesBySlideRef.current = { ...inkStrokesBySlideRef.current, [index]: strokes }
     setInkStrokesBySlide((current) => ({ ...current, [index]: strokes }))
-  }), [])
+  }, [])
+
+  useEffect(() => subscribeToInkStrokes(setSlideInkStrokes), [setSlideInkStrokes])
+
+  const setAudienceScreen = useCallback((mode: Exclude<AudienceScreenMode, 'visible'>) => {
+    const nextMode = audienceScreenMode === mode ? 'visible' : mode
+    setAudienceScreenMode(nextMode)
+  }, [audienceScreenMode])
+
+  const getStagePoint = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect()
+    return {
+      x: Math.min(Math.max((event.clientX - bounds.left) / bounds.width, 0), 1),
+      y: Math.min(Math.max((event.clientY - bounds.top) / bounds.height, 0), 1),
+    }
+  }, [])
+
+  const clearAudienceInk = useCallback(() => {
+    activeInkStroke.current = null
+    setSlideInkStrokes(currentIndex, [])
+    publishInkStrokes(currentIndex, [])
+  }, [currentIndex, setSlideInkStrokes])
+
+  const toggleAudienceLaser = useCallback(() => {
+    setIsAudienceLaserActive((active) => !active)
+    setIsAudiencePenActive(false)
+    setLaserPointer(null)
+  }, [])
+
+  const toggleAudiencePen = useCallback(() => {
+    setIsAudiencePenActive((active) => !active)
+    setIsAudienceLaserActive(false)
+    setLaserPointer(null)
+  }, [])
+
+  const onAudiencePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isAudiencePenActive) return
+    event.preventDefault()
+    event.currentTarget.setPointerCapture(event.pointerId)
+    const strokes = [...(inkStrokesBySlideRef.current[currentIndex] ?? []), { points: [getStagePoint(event)] }]
+    activeInkStroke.current = strokes.length - 1
+    setSlideInkStrokes(currentIndex, strokes)
+    publishInkStrokes(currentIndex, strokes)
+  }, [currentIndex, getStagePoint, isAudiencePenActive, setSlideInkStrokes])
+
+  const onAudiencePointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (isAudienceLaserActive) setLaserPointer(getStagePoint(event))
+    if (!isAudiencePenActive || activeInkStroke.current === null) return
+    event.preventDefault()
+    const strokeIndex = activeInkStroke.current
+    const strokes = (inkStrokesBySlideRef.current[currentIndex] ?? []).map((stroke, index) => index === strokeIndex ? { points: [...stroke.points, getStagePoint(event)] } : stroke)
+    setSlideInkStrokes(currentIndex, strokes)
+    publishInkStrokes(currentIndex, strokes)
+  }, [currentIndex, getStagePoint, isAudienceLaserActive, isAudiencePenActive, setSlideInkStrokes])
+
+  const onAudiencePointerUp = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (activeInkStroke.current !== null && event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
+    activeInkStroke.current = null
+  }, [])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -110,10 +206,15 @@ function PresentationApp() {
   const currentSlideFile = slides[currentIndex]?.file ?? 'src/slides.ts'
 
   return (
-    <SlideStage
+    <>
+      <SlideStage
       isCursorHidden={isCursorHidden}
       ref={stageRef}
-      onStageClick={isEditMode ? undefined : nextSlide}
+      onStageClick={isEditMode || isAudiencePenActive ? undefined : nextSlide}
+      onStagePointerDown={onAudiencePointerDown}
+      onStagePointerLeave={() => { activeInkStroke.current = null; if (isAudienceLaserActive) setLaserPointer(null) }}
+      onStagePointerMove={onAudiencePointerMove}
+      onStagePointerUp={onAudiencePointerUp}
     >
       {isEndScreen ? (
         <div className="flex h-full w-full flex-col items-center justify-center bg-black px-24 text-center text-white">
@@ -165,7 +266,19 @@ function PresentationApp() {
         slideNumber={currentIndex + 1}
         stageRef={stageRef}
       />
-    </SlideStage>
+      </SlideStage>
+      {!isEditMode && (
+        <AudienceQuickControls
+          audienceScreenMode={audienceScreenMode}
+          isLaserActive={isAudienceLaserActive}
+          isPenActive={isAudiencePenActive}
+          onClearInk={clearAudienceInk}
+          onSetAudienceScreen={setAudienceScreen}
+          onToggleLaser={toggleAudienceLaser}
+          onTogglePen={toggleAudiencePen}
+        />
+      )}
+    </>
   )
 }
 
