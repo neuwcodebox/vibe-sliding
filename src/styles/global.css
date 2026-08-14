@@ -187,7 +187,7 @@ select {
   .presenter-controls { flex: 0 0 auto; padding-top: 14px; }
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 720px) {
   .presenter-header { align-items: stretch; flex-direction: column; gap: 14px; }
   .presenter-header-actions { justify-content: space-between; }
 }
