@@ -15,7 +15,7 @@ const isEditableTarget = (target: EventTarget | null) => {
   )
 }
 
-const readSlideIndexFromUrl = (slideCount: number) => {
+export const readSlideIndexFromUrl = (slideCount: number) => {
   if (typeof window === 'undefined' || slideCount < 1) {
     return 0
   }
@@ -34,7 +34,7 @@ const readSlideIndexFromUrl = (slideCount: number) => {
   return clamp(parsedSlide - 1, 0, slideCount - 1)
 }
 
-const writeSlideIndexToUrl = (index: number, slideCount: number) => {
+export const writeSlideIndexToUrl = (index: number, slideCount: number) => {
   const url = new URL(window.location.href)
   url.searchParams.set('slide', index >= slideCount ? 'end' : String(index + 1))
   window.history.replaceState(null, '', url)

@@ -52,8 +52,6 @@ The initial implementation must not attempt to provide:
 * complex theme engine
 * collaborative editing
 * remote hosting workflow
-* full presenter mode
-* speaker notes
 * automatic PDF export
 * slide library integration such as Reveal.js, Spectacle, or Slidev
 
@@ -207,6 +205,14 @@ Required runtime features:
 * hide the idle cursor during normal presentation mode
 
 The runtime must not introduce a heavy slide abstraction, slide DSL, or framework-like API.
+
+### Presenter View
+
+The runtime may provide a lightweight presenter view in a separate browser popup.
+It must keep the audience screen free of persistent chrome and support current-slide
+and next-slide previews, optional per-slide speaker notes, elapsed time, and slide
+navigation synchronized with the audience window. It is opened with `P` or
+`?presenter=1`; notes remain optional metadata in `src/slides.ts`.
 
 The runtime must not render persistent slide chrome such as page numbers, progress bars, headers, footers, logos, or design-specific overlays on top of every slide. If a deck needs those elements, individual slide components should render them directly.
 

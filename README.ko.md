@@ -45,12 +45,14 @@ Vite가 출력한 로컬 URL을 브라우저에서 열면 슬라이드 쇼를 �
 - End: 마지막 슬라이드
 - `?slide=N`: N번째 슬라이드 바로 열기
 - `?edit=1`: Edit Inspect Mode 켜기
+- `P`: Presenter View 팝업 열기 (대본, 다음 슬라이드, 경과 시간)
 
 예시:
 
 ```txt
 http://localhost:5173/?slide=3
 http://localhost:5173/?slide=3&edit=1
+http://localhost:5173/?slide=3&presenter=1
 ```
 
 ## Agent에게 슬라이드 쇼 생성 요청하기

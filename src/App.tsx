@@ -3,6 +3,8 @@ import { EditInspectMode } from './edit-mode/EditInspectMode'
 import { EditablePptxExportMode } from './export-mode/EditablePptxExportMode'
 import { SlideErrorBoundary } from './runtime/SlideErrorBoundary'
 import { SlideStage } from './runtime/SlideStage'
+import { PresenterView } from './runtime/PresenterView'
+import { publishSlideChange, subscribeToSlideChanges } from './runtime/presenterSync'
 import { usePresentationCursorAutoHide } from './runtime/usePresentationCursorAutoHide'
 import { useSlideNavigation } from './runtime/useSlideNavigation'
 import { slides } from './slides'
@@ -15,12 +17,17 @@ const readExportQuery = () =>
   typeof window !== 'undefined' &&
   new URLSearchParams(window.location.search).get('export') === 'editable-pptx'
 
+const readPresenterQuery = () =>
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).get('presenter') === '1'
+
 function PresentationApp() {
   const stageRef = useRef<HTMLDivElement>(null)
   const [isEditMode, setIsEditMode] = useState(readEditQuery)
   const {
     currentIndex,
     currentSlide,
+    goToSlide,
     isEndScreen,
     nextSlide,
   } = useSlideNavigation(slides.length)
@@ -50,7 +57,22 @@ function PresentationApp() {
   }, [])
 
   useEffect(() => {
+    publishSlideChange(currentIndex)
+  }, [currentIndex])
+
+  useEffect(() => subscribeToSlideChanges(goToSlide), [goToSlide])
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === 'p' && !isEditMode) {
+        event.preventDefault()
+        const url = new URL(window.location.href)
+        url.searchParams.set('presenter', '1')
+        url.searchParams.delete('edit')
+        window.open(url.toString(), 'vibe-sliding-presenter', 'popup,width=1440,height=920')
+        return
+      }
+
       if (event.key.toLowerCase() === 'e') {
         event.preventDefault()
         setEditMode(!isEditMode)
@@ -116,6 +138,10 @@ function PresentationApp() {
 function App() {
   if (readExportQuery()) {
     return <EditablePptxExportMode />
+  }
+
+  if (readPresenterQuery()) {
+    return <PresenterView />
   }
 
   return <PresentationApp />
