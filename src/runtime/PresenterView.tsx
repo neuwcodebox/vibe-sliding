@@ -1,9 +1,9 @@
-import { ChevronLeft, ChevronRight, Clock3, List, MonitorUp, Pause, Play, RotateCcw, X } from 'lucide-react'
-import { type CSSProperties, useEffect, useMemo, useState } from 'react'
+import { CircleHelp, ChevronLeft, ChevronRight, Clock3, Eraser, List, Lock, MonitorOff, MonitorUp, MousePointer2, Pause, PenLine, Play, RotateCcw, Sun, X } from 'lucide-react'
+import { type CSSProperties, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { slides } from '../slides'
 import { SlideErrorBoundary } from './SlideErrorBoundary'
 import { readSlideIndexFromUrl, writeSlideIndexToUrl } from './useSlideNavigation'
-import { publishSlideChange, subscribeToSlideChanges } from './presenterSync'
+import { publishAudienceScreenMode, publishInkStrokes, publishLaserPointer, publishSlideChange, subscribeToSlideChanges, type AudienceScreenMode, type InkStroke } from './presenterSync'
 
 const formatElapsed = (seconds: number) => {
   const hours = Math.floor(seconds / 3600)
@@ -16,11 +16,16 @@ const formatElapsed = (seconds: number) => {
 
 const NOTE_FONT_SIZES = [15, 17, 19, 21]
 
-function SlidePreview({ index, label }: { index: number; label: string }) {
+function InkOverlay({ strokes }: { strokes: InkStroke[] }) {
+  if (strokes.length === 0) return null
+  return <svg className="presenter-preview-ink" aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none">{strokes.map((stroke, index) => <polyline fill="none" key={index} points={stroke.points.map((point) => `${point.x},${point.y}`).join(' ')} stroke="#ff4d4f" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.006" />)}</svg>
+}
+
+function SlidePreview({ index, label, inkStrokes = [], onPointerDown, onPointerLeave, onPointerMove, onPointerUp }: { index: number; label: string; inkStrokes?: InkStroke[]; onPointerDown?: (event: ReactPointerEvent<HTMLElement>) => void; onPointerLeave?: () => void; onPointerMove?: (event: ReactPointerEvent<HTMLElement>) => void; onPointerUp?: (event: ReactPointerEvent<HTMLElement>) => void }) {
   const Slide = slides[index]?.component
 
   return (
-    <section className="presenter-preview" aria-label={label}>
+    <section className="presenter-preview" aria-label={label} onPointerDown={onPointerDown} onPointerLeave={onPointerLeave} onPointerMove={onPointerMove} onPointerUp={onPointerUp}>
       <div className="presenter-preview-stage">
         {Slide ? (
           <SlideErrorBoundary
@@ -36,6 +41,7 @@ function SlidePreview({ index, label }: { index: number; label: string }) {
           </div>
         )}
       </div>
+      <InkOverlay strokes={inkStrokes} />
     </section>
   )
 }
@@ -47,6 +53,14 @@ export function PresenterView() {
   const [isTimerRunning, setIsTimerRunning] = useState(true)
   const [isSlideMenuOpen, setIsSlideMenuOpen] = useState(false)
   const [noteFontSizeIndex, setNoteFontSizeIndex] = useState(1)
+  const [audienceScreenMode, setAudienceScreenMode] = useState<AudienceScreenMode>('visible')
+  const [isAudienceFrozen, setIsAudienceFrozen] = useState(false)
+  const [isLaserActive, setIsLaserActive] = useState(false)
+  const [isPenActive, setIsPenActive] = useState(false)
+  const [inkStrokes, setInkStrokes] = useState<InkStroke[]>([])
+  const [isHelpOpen, setIsHelpOpen] = useState(false)
+  const activeInkStroke = useRef<number | null>(null)
+  const inkStrokesRef = useRef<InkStroke[]>([])
 
   useEffect(() => subscribeToSlideChanges(setCurrentIndex), [])
 
@@ -63,7 +77,81 @@ export function PresenterView() {
     const nextIndex = Math.min(Math.max(index, 0), slideCount)
     setCurrentIndex(nextIndex)
     writeSlideIndexToUrl(nextIndex, slideCount)
-    publishSlideChange(nextIndex)
+    publishLaserPointer(null)
+    clearInkStrokes()
+    if (!isAudienceFrozen) publishSlideChange(nextIndex)
+  }
+
+  const setAudienceScreen = (mode: AudienceScreenMode) => {
+    const nextMode = audienceScreenMode === mode ? 'visible' : mode
+    setAudienceScreenMode(nextMode)
+    publishAudienceScreenMode(nextMode)
+  }
+
+  const toggleAudienceFreeze = () => {
+    if (isAudienceFrozen) {
+      setIsAudienceFrozen(false)
+      publishSlideChange(currentIndex)
+    } else {
+      setIsAudienceFrozen(true)
+      publishLaserPointer(null)
+    }
+  }
+
+  const toggleLaser = () => {
+    setIsLaserActive((active) => !active)
+    setIsPenActive(false)
+    publishLaserPointer(null)
+  }
+
+  const clearInkStrokes = () => {
+    activeInkStroke.current = null
+    inkStrokesRef.current = []
+    setInkStrokes([])
+    publishInkStrokes([])
+  }
+
+  const togglePen = () => {
+    setIsPenActive((active) => !active)
+    setIsLaserActive(false)
+    publishLaserPointer(null)
+  }
+
+  const getPreviewPoint = (event: ReactPointerEvent<HTMLElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect()
+    return {
+      x: Math.min(Math.max((event.clientX - bounds.left) / bounds.width, 0), 1),
+      y: Math.min(Math.max((event.clientY - bounds.top) / bounds.height, 0), 1),
+    }
+  }
+
+  const updateLaserPointer = (event: ReactPointerEvent<HTMLElement>) => {
+    if (!isLaserActive) return
+    publishLaserPointer(getPreviewPoint(event))
+  }
+
+  const startInkStroke = (event: ReactPointerEvent<HTMLElement>) => {
+    if (!isPenActive) return
+    event.currentTarget.setPointerCapture(event.pointerId)
+    const strokes = [...inkStrokesRef.current, { points: [getPreviewPoint(event)] }]
+    activeInkStroke.current = strokes.length - 1
+    inkStrokesRef.current = strokes
+    setInkStrokes(strokes)
+    publishInkStrokes(strokes)
+  }
+
+  const extendInkStroke = (event: ReactPointerEvent<HTMLElement>) => {
+    if (!isPenActive || activeInkStroke.current === null) return
+    const strokeIndex = activeInkStroke.current
+    const strokes = inkStrokesRef.current.map((stroke, index) => index === strokeIndex ? { points: [...stroke.points, getPreviewPoint(event)] } : stroke)
+    inkStrokesRef.current = strokes
+    setInkStrokes(strokes)
+    publishInkStrokes(strokes)
+  }
+
+  const finishInkStroke = (event: ReactPointerEvent<HTMLElement>) => {
+    if (activeInkStroke.current !== null && event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
+    activeInkStroke.current = null
   }
 
   useEffect(() => {
@@ -83,6 +171,34 @@ export function PresenterView() {
       if (event.key === 'End') {
         event.preventDefault()
         goToSlide(slideCount - 1)
+      }
+      if (event.key.toLowerCase() === 'b') {
+        event.preventDefault()
+        setAudienceScreen('black')
+      }
+      if (event.key.toLowerCase() === 'w') {
+        event.preventDefault()
+        setAudienceScreen('white')
+      }
+      if (event.key.toLowerCase() === 'l') {
+        event.preventDefault()
+        toggleLaser()
+      }
+      if (event.key.toLowerCase() === 'd') {
+        event.preventDefault()
+        togglePen()
+      }
+      if (event.key.toLowerCase() === 'c') {
+        event.preventDefault()
+        clearInkStrokes()
+      }
+      if (event.key.toLowerCase() === 'f') {
+        event.preventDefault()
+        toggleAudienceFreeze()
+      }
+      if (event.key === '?') {
+        event.preventDefault()
+        setIsHelpOpen((open) => !open)
       }
     }
     window.addEventListener('keydown', onKeyDown)
@@ -115,6 +231,15 @@ export function PresenterView() {
           </div>
         </div>
         <div className="presenter-header-actions">
+          <div className="presenter-audience-controls" aria-label="청중 화면 제어">
+            <button className={`presenter-icon-button${audienceScreenMode === 'black' ? ' is-active' : ''}`} onClick={() => setAudienceScreen('black')} aria-label="청중 화면 검정 전환" aria-pressed={audienceScreenMode === 'black'} title="검정 화면 (B)"><MonitorOff size={18} aria-hidden /></button>
+            <button className={`presenter-icon-button${audienceScreenMode === 'white' ? ' is-active' : ''}`} onClick={() => setAudienceScreen('white')} aria-label="청중 화면 흰색 전환" aria-pressed={audienceScreenMode === 'white'} title="흰색 화면 (W)"><Sun size={18} aria-hidden /></button>
+            <button className={`presenter-icon-button${isAudienceFrozen ? ' is-active' : ''}`} onClick={toggleAudienceFreeze} aria-label="청중 화면 고정" aria-pressed={isAudienceFrozen} title="청중 화면 고정 (F)"><Lock size={18} aria-hidden /></button>
+            <button className={`presenter-icon-button${isLaserActive ? ' is-active' : ''}`} onClick={toggleLaser} aria-label="레이저 포인터" aria-pressed={isLaserActive} title="레이저 포인터 (L)"><MousePointer2 size={18} aria-hidden /></button>
+            <button className={`presenter-icon-button${isPenActive ? ' is-active' : ''}`} onClick={togglePen} aria-label="펜 주석" aria-pressed={isPenActive} title="펜 주석 (D)"><PenLine size={18} aria-hidden /></button>
+            <button className="presenter-icon-button" onClick={clearInkStrokes} aria-label="펜 주석 지우기" title="주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
+            <button className="presenter-icon-button" onClick={() => setIsHelpOpen((open) => !open)} aria-label="단축키 도움말" title="단축키 도움말 (?)"><CircleHelp size={18} aria-hidden /></button>
+          </div>
           <div className="presenter-timer-controls">
             <div className="presenter-timer" aria-label={`경과 시간 ${formatElapsed(elapsed)}${isTimerRunning ? '' : ', 일시 정지됨'}`}>
               <Clock3 size={18} aria-hidden /> {formatElapsed(elapsed)}
@@ -141,6 +266,13 @@ export function PresenterView() {
           </button>
         </div>
       </header>
+
+      {isHelpOpen && (
+        <section className="presenter-help-dialog" role="dialog" aria-label="단축키 도움말">
+          <div className="presenter-slide-menu-header"><p>발표 단축키</p><button onClick={() => setIsHelpOpen(false)} aria-label="도움말 닫기"><X size={18} aria-hidden /></button></div>
+          <dl><div><dt>← → · Space</dt><dd>슬라이드 이동</dd></div><div><dt>B · W</dt><dd>청중 화면 검정 · 흰색 전환</dd></div><div><dt>F</dt><dd>청중 화면 고정</dd></div><div><dt>L · D · C</dt><dd>레이저 · 펜 · 주석 지우기</dd></div><div><dt>?</dt><dd>이 도움말 열기 · 닫기</dd></div></dl>
+        </section>
+      )}
 
       {isSlideMenuOpen && (
         <section className="presenter-slide-menu" aria-label="슬라이드 목록">
@@ -171,7 +303,7 @@ export function PresenterView() {
       <div className="presenter-layout">
         <div className="presenter-current-panel">
           <p className="presenter-panel-label"><MonitorUp size={16} aria-hidden /> 현재 화면</p>
-          <SlidePreview index={currentIndex} label="현재 슬라이드 미리보기" />
+          <SlidePreview index={currentIndex} inkStrokes={inkStrokes} label="현재 슬라이드 미리보기" onPointerDown={startInkStroke} onPointerLeave={() => { if (isLaserActive) publishLaserPointer(null); activeInkStroke.current = null }} onPointerMove={(event) => { updateLaserPointer(event); extendInkStroke(event) }} onPointerUp={finishInkStroke} />
           <p className="presenter-file">{currentFile}</p>
         </div>
 

@@ -1,28 +1,31 @@
 export const PRESENTER_CHANNEL = 'vibe-sliding-presenter'
-const STORAGE_KEY = 'vibe-sliding-presenter-slide'
+const STORAGE_KEY = 'vibe-sliding-presenter-event'
 
-type SlideChangeMessage = {
-  type: 'slide-change'
-  index: number
+export type AudienceScreenMode = 'visible' | 'black' | 'white'
+export type LaserPointerPosition = { x: number; y: number } | null
+export type InkStroke = { points: { x: number; y: number }[] }
+
+type SlideChangeMessage = { type: 'slide-change'; index: number }
+type AudienceScreenMessage = { type: 'audience-screen'; mode: AudienceScreenMode }
+type LaserPointerMessage = { type: 'laser-pointer'; position: LaserPointerPosition }
+type InkMessage = { type: 'ink-strokes'; strokes: InkStroke[] }
+type PresenterMessage = SlideChangeMessage | AudienceScreenMessage | LaserPointerMessage | InkMessage
+
+const isPresenterMessage = (value: unknown): value is PresenterMessage => {
+  if (typeof value !== 'object' || value === null || !('type' in value)) return false
+  if (value.type === 'slide-change') return 'index' in value && typeof value.index === 'number'
+  if (value.type === 'audience-screen') return 'mode' in value && ['visible', 'black', 'white'].includes(String(value.mode))
+  if (value.type === 'ink-strokes') return 'strokes' in value && Array.isArray(value.strokes)
+  return value.type === 'laser-pointer' && 'position' in value
 }
 
-const isSlideChangeMessage = (value: unknown): value is SlideChangeMessage =>
-  typeof value === 'object' &&
-  value !== null &&
-  'type' in value &&
-  'index' in value &&
-  value.type === 'slide-change' &&
-  typeof value.index === 'number'
+let publisherChannel: BroadcastChannel | null | undefined
 
-export const publishSlideChange = (index: number) => {
-  const message: SlideChangeMessage = { type: 'slide-change', index }
-
-  if (typeof BroadcastChannel !== 'undefined') {
-    const channel = new BroadcastChannel(PRESENTER_CHANNEL)
-    channel.postMessage(message)
-    channel.close()
+const publish = (message: PresenterMessage) => {
+  if (publisherChannel === undefined) {
+    publisherChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(PRESENTER_CHANNEL) : null
   }
-
+  publisherChannel?.postMessage(message)
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(message))
   } catch {
@@ -30,38 +33,38 @@ export const publishSlideChange = (index: number) => {
   }
 }
 
-export const subscribeToSlideChanges = (onSlideChange: (index: number) => void) => {
-  const channel =
-    typeof BroadcastChannel !== 'undefined'
-      ? new BroadcastChannel(PRESENTER_CHANNEL)
-      : null
-
-  const onMessage = (event: MessageEvent<unknown>) => {
-    if (isSlideChangeMessage(event.data)) {
-      onSlideChange(event.data.index)
-    }
+const subscribe = (onMessage: (message: PresenterMessage) => void) => {
+  const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(PRESENTER_CHANNEL) : null
+  const handleMessage = (message: unknown) => {
+    if (isPresenterMessage(message)) onMessage(message)
   }
+  const onChannelMessage = (event: MessageEvent<unknown>) => handleMessage(event.data)
   const onStorage = (event: StorageEvent) => {
-    if (event.key !== STORAGE_KEY || !event.newValue) {
-      return
-    }
-
-    try {
-      const message: unknown = JSON.parse(event.newValue)
-      if (isSlideChangeMessage(message)) {
-        onSlideChange(message.index)
-      }
-    } catch {
-      // Ignore malformed values from other pages sharing this origin.
-    }
+    if (event.key !== STORAGE_KEY || !event.newValue) return
+    try { handleMessage(JSON.parse(event.newValue) as unknown) } catch { /* Ignore malformed values. */ }
   }
-
-  channel?.addEventListener('message', onMessage)
+  channel?.addEventListener('message', onChannelMessage)
   window.addEventListener('storage', onStorage)
-
   return () => {
-    channel?.removeEventListener('message', onMessage)
+    channel?.removeEventListener('message', onChannelMessage)
     channel?.close()
     window.removeEventListener('storage', onStorage)
   }
 }
+
+export const publishSlideChange = (index: number) => publish({ type: 'slide-change', index })
+export const publishAudienceScreenMode = (mode: AudienceScreenMode) => publish({ type: 'audience-screen', mode })
+export const publishLaserPointer = (position: LaserPointerPosition) => publish({ type: 'laser-pointer', position })
+export const publishInkStrokes = (strokes: InkStroke[]) => publish({ type: 'ink-strokes', strokes })
+
+export const subscribeToSlideChanges = (callback: (index: number) => void) =>
+  subscribe((message) => { if (message.type === 'slide-change') callback(message.index) })
+
+export const subscribeToAudienceScreenMode = (callback: (mode: AudienceScreenMode) => void) =>
+  subscribe((message) => { if (message.type === 'audience-screen') callback(message.mode) })
+
+export const subscribeToLaserPointer = (callback: (position: LaserPointerPosition) => void) =>
+  subscribe((message) => { if (message.type === 'laser-pointer') callback(message.position) })
+
+export const subscribeToInkStrokes = (callback: (strokes: InkStroke[]) => void) =>
+  subscribe((message) => { if (message.type === 'ink-strokes') callback(message.strokes) })

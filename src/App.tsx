@@ -4,7 +4,16 @@ import { EditablePptxExportMode } from './export-mode/EditablePptxExportMode'
 import { SlideErrorBoundary } from './runtime/SlideErrorBoundary'
 import { SlideStage } from './runtime/SlideStage'
 import { PresenterView } from './runtime/PresenterView'
-import { publishSlideChange, subscribeToSlideChanges } from './runtime/presenterSync'
+import {
+  type AudienceScreenMode,
+  type InkStroke,
+  type LaserPointerPosition,
+  publishSlideChange,
+  subscribeToAudienceScreenMode,
+  subscribeToInkStrokes,
+  subscribeToLaserPointer,
+  subscribeToSlideChanges,
+} from './runtime/presenterSync'
 import { usePresentationCursorAutoHide } from './runtime/usePresentationCursorAutoHide'
 import { useSlideNavigation } from './runtime/useSlideNavigation'
 import { slides } from './slides'
@@ -24,6 +33,9 @@ const readPresenterQuery = () =>
 function PresentationApp() {
   const stageRef = useRef<HTMLDivElement>(null)
   const [isEditMode, setIsEditMode] = useState(readEditQuery)
+  const [audienceScreenMode, setAudienceScreenMode] = useState<AudienceScreenMode>('visible')
+  const [laserPointer, setLaserPointer] = useState<LaserPointerPosition>(null)
+  const [inkStrokes, setInkStrokes] = useState<InkStroke[]>([])
   const {
     currentIndex,
     currentSlide,
@@ -61,6 +73,9 @@ function PresentationApp() {
   }, [currentIndex])
 
   useEffect(() => subscribeToSlideChanges(goToSlide), [goToSlide])
+  useEffect(() => subscribeToAudienceScreenMode(setAudienceScreenMode), [])
+  useEffect(() => subscribeToLaserPointer(setLaserPointer), [])
+  useEffect(() => subscribeToInkStrokes(setInkStrokes), [])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -125,6 +140,23 @@ function PresentationApp() {
           </p>
         </div>
       ) : null}
+      {laserPointer && audienceScreenMode === 'visible' && (
+        <div
+          className="audience-laser-pointer"
+          aria-hidden
+          style={{ left: `${laserPointer.x * 100}%`, top: `${laserPointer.y * 100}%` }}
+        />
+      )}
+      {inkStrokes.length > 0 && audienceScreenMode === 'visible' && (
+        <svg className="audience-ink-overlay" aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none">
+          {inkStrokes.map((stroke, index) => (
+            <polyline fill="none" key={index} points={stroke.points.map((point) => `${point.x},${point.y}`).join(' ')} stroke="#ff4d4f" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.006" />
+          ))}
+        </svg>
+      )}
+      {audienceScreenMode !== 'visible' && (
+        <div className={`audience-screen-overlay audience-screen-overlay-${audienceScreenMode}`} aria-hidden />
+      )}
       <EditInspectMode
         active={isEditMode && !isEndScreen}
         slideFile={currentSlideFile}

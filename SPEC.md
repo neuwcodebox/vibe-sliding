@@ -211,8 +211,11 @@ The runtime must not introduce a heavy slide abstraction, slide DSL, or framewor
 The runtime may provide a lightweight presenter view in a separate browser popup.
 It must keep the audience screen free of persistent chrome and support current-slide
 and next-slide previews, optional per-slide speaker notes, elapsed time, and slide
-navigation synchronized with the audience window. It is opened with `P` or
-`?presenter=1`; notes remain optional metadata in `src/slides.ts`.
+navigation synchronized with the audience window. It may also provide presenter-only
+audience controls such as blackout/whiteout, a synchronized laser pointer or
+temporary pen annotations, and a mode that freezes the audience screen while the
+presenter previews another slide. It is opened with `P` or `?presenter=1`; notes
+remain optional metadata in `src/slides.ts`.
 
 The runtime must not render persistent slide chrome such as page numbers, progress bars, headers, footers, logos, or design-specific overlays on top of every slide. If a deck needs those elements, individual slide components should render them directly.
 
