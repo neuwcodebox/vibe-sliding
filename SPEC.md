@@ -234,14 +234,14 @@ Presenter-only audience controls must include:
   overlay without adding persistent chrome to slides
 * audience freeze: `F` lets the presenter navigate privately; unfreezing synchronizes
   the audience to the presenter-selected slide
-* laser pointer: `L` enables a normalized pointer from the current-slide preview on
+* laser pointer: `R` enables a normalized pointer from the current-slide preview on
   both screens
 * temporary pen annotations: `D` enables drawing over the current-slide preview and
   synchronizes its strokes to the audience screen; `C` clears them, and slide changes
   preserve each slide's annotations until they are cleared or the presentation closes
 
 When Presenter View is unavailable, the audience screen must expose a small,
-translucent, bottom-center expand tab. Its menu and `B`, `W`, `L`, `D`, and `C`
+translucent, bottom-center expand tab. Its menu and `B`, `W`, `R`, `D`, and `C`
 shortcuts provide black/white, laser, pen, and clear-annotation controls directly on
 the audience stage. It must not expose the timer or audience-freeze controls, because
 those require an independent presenter surface.

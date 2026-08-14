@@ -58,7 +58,7 @@ shortcuts:
 - `B` / `W`: toggle the audience screen to black / white
 - `F`: freeze the audience screen while navigating ahead in Presenter View; toggle
   again to sync the audience to the selected slide
-- `L`: toggle the laser pointer; move over the current-slide preview to point on
+- `R`: toggle the laser pointer; move over the current-slide preview to point on
   both screens
 - `D`: toggle pen annotations; drag over the current-slide preview to draw on both
   screens
@@ -69,7 +69,7 @@ open. Presentation stages do not allow text selection or native drag behavior.
 
 For a one-monitor presentation, use the small translucent expand button at the
 bottom-center of the audience screen. It opens black/white, laser, pen, and clear
-controls directly on that screen. Those controls also support `B`, `W`, `L`, `D`,
+controls directly on that screen. Those controls also support `B`, `W`, `R`, `D`,
 and `C` shortcuts; timer and audience-freeze controls stay in Presenter View because
 they require a separate presenter surface.
 

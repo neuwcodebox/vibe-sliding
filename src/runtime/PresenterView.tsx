@@ -196,7 +196,7 @@ export function PresenterView() {
         event.preventDefault()
         setAudienceScreen('white')
       }
-      if (event.key.toLowerCase() === 'l') {
+      if (event.key.toLowerCase() === 'r') {
         event.preventDefault()
         toggleLaser()
       }
@@ -252,7 +252,7 @@ export function PresenterView() {
         <div className="presenter-header-actions">
           <div className="presenter-audience-controls" aria-label="청중 화면 제어">
             <button className={`presenter-icon-button${isAudienceFrozen ? ' is-active' : ''}`} onClick={toggleAudienceFreeze} aria-label="청중 화면 고정" aria-pressed={isAudienceFrozen} title="청중 화면 고정 (F)"><Lock size={18} aria-hidden /></button>
-            <button className={`presenter-icon-button${isLaserActive ? ' is-active' : ''}`} onClick={toggleLaser} aria-label="레이저 포인터" aria-pressed={isLaserActive} title="레이저 포인터 (L)"><MousePointer2 size={18} aria-hidden /></button>
+            <button className={`presenter-icon-button${isLaserActive ? ' is-active' : ''}`} onClick={toggleLaser} aria-label="레이저 포인터" aria-pressed={isLaserActive} title="레이저 포인터 (R)"><MousePointer2 size={18} aria-hidden /></button>
             <div className="presenter-tool-group" aria-label="청중 화면 색상">
               <button className={`presenter-icon-button${audienceScreenMode === 'black' ? ' is-active' : ''}`} onClick={() => setAudienceScreen('black')} aria-label="청중 화면 검정 전환" aria-pressed={audienceScreenMode === 'black'} title="검정 화면 (B)"><MonitorOff size={18} aria-hidden /></button>
               <button className={`presenter-icon-button${audienceScreenMode === 'white' ? ' is-active' : ''}`} onClick={() => setAudienceScreen('white')} aria-label="청중 화면 흰색 전환" aria-pressed={audienceScreenMode === 'white'} title="흰색 화면 (W)"><Sun size={18} aria-hidden /></button>
