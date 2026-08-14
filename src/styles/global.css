@@ -80,11 +80,11 @@ select {
 .audience-screen-overlay-white { background: #fff; }
 .audience-laser-pointer { width: 28px; height: 28px; border: 4px solid #ff4d4f; border-radius: 999px; background: rgb(255 77 79 / 25%); box-shadow: 0 0 18px rgb(255 77 79 / 90%); transform: translate(-50%, -50%); }
 
-.audience-quick-controls { position: fixed; z-index: 30; right: 20px; bottom: 18px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.audience-quick-controls { position: fixed; z-index: 30; bottom: 0; left: 50%; display: flex; flex-direction: column; align-items: center; gap: 8px; transform: translateX(-50%); }
 .audience-quick-menu { display: flex; gap: 5px; border: 1px solid rgb(148 163 184 / 40%); border-radius: 10px; background: rgb(15 23 42 / 82%); padding: 5px; backdrop-filter: blur(10px); }
 .audience-quick-menu button, .audience-quick-toggle { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgb(148 163 184 / 48%); border-radius: 7px; background: rgb(15 23 42 / 70%); color: #e2e8f0; cursor: pointer; }
 .audience-quick-menu button.is-active { border-color: #72e4df; background: #143a43; color: #b6fffb; }
-.audience-quick-toggle { border-radius: 999px; background: rgb(15 23 42 / 64%); color: #cbd5e1; opacity: .62; }
+.audience-quick-toggle { width: 96px; height: 26px; border-bottom: 0; border-radius: 10px 10px 0 0; background: rgb(15 23 42 / 72%); color: #cbd5e1; opacity: .62; }
 .audience-quick-controls:hover .audience-quick-toggle, .audience-quick-toggle:focus-visible { opacity: 1; }
 
 .edit-inspect-active .slide-stage {

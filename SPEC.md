@@ -241,10 +241,10 @@ Presenter-only audience controls must include:
   preserve each slide's annotations until they are cleared or the presentation closes
 
 When Presenter View is unavailable, the audience screen must expose a small,
-translucent bottom-corner expand control. Its menu provides black/white, laser, pen,
-and clear-annotation controls directly on the audience stage. It must not expose the
-timer or audience-freeze controls, because those require an independent presenter
-surface.
+translucent, bottom-center expand tab. Its menu and `B`, `W`, `L`, `D`, and `C`
+shortcuts provide black/white, laser, pen, and clear-annotation controls directly on
+the audience stage. It must not expose the timer or audience-freeze controls, because
+those require an independent presenter surface.
 
 Presentation stages and Presenter View previews must suppress native text selection
 and browser drag behavior. Pointer and ink overlays are transient presentation aids;

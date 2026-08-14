@@ -68,9 +68,10 @@ Pen annotations are temporary, but stay with their slide while the presentation 
 open. Presentation stages do not allow text selection or native drag behavior.
 
 For a one-monitor presentation, use the small translucent expand button at the
-bottom-right of the audience screen. It opens black/white, laser, pen, and clear
-controls directly on that screen; timer and audience-freeze controls stay in
-Presenter View because they require a separate presenter surface.
+bottom-center of the audience screen. It opens black/white, laser, pen, and clear
+controls directly on that screen. Those controls also support `B`, `W`, `L`, `D`,
+and `C` shortcuts; timer and audience-freeze controls stay in Presenter View because
+they require a separate presenter surface.
 
 Examples:
 

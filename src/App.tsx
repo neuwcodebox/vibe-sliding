@@ -176,6 +176,38 @@ function PresentationApp() {
   }, [])
 
   useEffect(() => {
+    if (isEditMode) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.target instanceof HTMLElement && event.target.closest('input, textarea, select, button, [contenteditable="true"]')) return
+
+      if (event.key.toLowerCase() === 'b') {
+        event.preventDefault()
+        setAudienceScreen('black')
+      }
+      if (event.key.toLowerCase() === 'w') {
+        event.preventDefault()
+        setAudienceScreen('white')
+      }
+      if (event.key.toLowerCase() === 'l') {
+        event.preventDefault()
+        toggleAudienceLaser()
+      }
+      if (event.key.toLowerCase() === 'd') {
+        event.preventDefault()
+        toggleAudiencePen()
+      }
+      if (event.key.toLowerCase() === 'c') {
+        event.preventDefault()
+        clearAudienceInk()
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [clearAudienceInk, isEditMode, setAudienceScreen, toggleAudienceLaser, toggleAudiencePen])
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() === 'p' && !isEditMode) {
         event.preventDefault()
