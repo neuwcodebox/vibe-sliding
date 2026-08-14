@@ -101,18 +101,20 @@ export function PresenterView() {
       <header className="presenter-header">
         <div>
           <p className="presenter-kicker">PRESENTER VIEW</p>
-          <p className="presenter-counter">슬라이드 {slideLabel}</p>
+          <div className="presenter-title-row">
+            <p className="presenter-counter">슬라이드 {slideLabel}</p>
+            <button
+              className="presenter-icon-button presenter-slide-menu-button"
+              onClick={() => setIsSlideMenuOpen((open) => !open)}
+              aria-label="슬라이드 목록 열기"
+              aria-expanded={isSlideMenuOpen}
+              title="슬라이드 목록"
+            >
+              <List size={20} aria-hidden />
+            </button>
+          </div>
         </div>
         <div className="presenter-header-actions">
-          <button
-            className="presenter-icon-button"
-            onClick={() => setIsSlideMenuOpen((open) => !open)}
-            aria-label="슬라이드 목록 열기"
-            aria-expanded={isSlideMenuOpen}
-            title="슬라이드 목록"
-          >
-            <List size={20} aria-hidden />
-          </button>
           <div className="presenter-timer-controls">
             <div className="presenter-timer" aria-label={`경과 시간 ${formatElapsed(elapsed)}${isTimerRunning ? '' : ', 일시 정지됨'}`}>
               <Clock3 size={18} aria-hidden /> {formatElapsed(elapsed)}
