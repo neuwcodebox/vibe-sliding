@@ -8,14 +8,14 @@ export type InkStroke = { points: { x: number; y: number }[] }
 type SlideChangeMessage = { type: 'slide-change'; index: number }
 type AudienceScreenMessage = { type: 'audience-screen'; mode: AudienceScreenMode }
 type LaserPointerMessage = { type: 'laser-pointer'; position: LaserPointerPosition }
-type InkMessage = { type: 'ink-strokes'; strokes: InkStroke[] }
+type InkMessage = { type: 'ink-strokes'; index: number; strokes: InkStroke[] }
 type PresenterMessage = SlideChangeMessage | AudienceScreenMessage | LaserPointerMessage | InkMessage
 
 const isPresenterMessage = (value: unknown): value is PresenterMessage => {
   if (typeof value !== 'object' || value === null || !('type' in value)) return false
   if (value.type === 'slide-change') return 'index' in value && typeof value.index === 'number'
   if (value.type === 'audience-screen') return 'mode' in value && ['visible', 'black', 'white'].includes(String(value.mode))
-  if (value.type === 'ink-strokes') return 'strokes' in value && Array.isArray(value.strokes)
+  if (value.type === 'ink-strokes') return 'index' in value && typeof value.index === 'number' && 'strokes' in value && Array.isArray(value.strokes)
   return value.type === 'laser-pointer' && 'position' in value
 }
 
@@ -65,7 +65,7 @@ const subscribe = (onMessage: (message: PresenterMessage) => void) => {
 export const publishSlideChange = (index: number) => publish({ type: 'slide-change', index })
 export const publishAudienceScreenMode = (mode: AudienceScreenMode) => publish({ type: 'audience-screen', mode })
 export const publishLaserPointer = (position: LaserPointerPosition) => publish({ type: 'laser-pointer', position })
-export const publishInkStrokes = (strokes: InkStroke[]) => publish({ type: 'ink-strokes', strokes })
+export const publishInkStrokes = (index: number, strokes: InkStroke[]) => publish({ type: 'ink-strokes', index, strokes })
 
 export const subscribeToSlideChanges = (callback: (index: number) => void) =>
   subscribe((message) => { if (message.type === 'slide-change') callback(message.index) })
@@ -76,5 +76,5 @@ export const subscribeToAudienceScreenMode = (callback: (mode: AudienceScreenMod
 export const subscribeToLaserPointer = (callback: (position: LaserPointerPosition) => void) =>
   subscribe((message) => { if (message.type === 'laser-pointer') callback(message.position) })
 
-export const subscribeToInkStrokes = (callback: (strokes: InkStroke[]) => void) =>
-  subscribe((message) => { if (message.type === 'ink-strokes') callback(message.strokes) })
+export const subscribeToInkStrokes = (callback: (index: number, strokes: InkStroke[]) => void) =>
+  subscribe((message) => { if (message.type === 'ink-strokes') callback(message.index, message.strokes) })

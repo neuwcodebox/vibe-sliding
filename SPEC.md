@@ -238,7 +238,7 @@ Presenter-only audience controls must include:
   both screens
 * temporary pen annotations: `D` enables drawing over the current-slide preview and
   synchronizes its strokes to the audience screen; `C` clears them, and slide changes
-  clear them automatically
+  preserve each slide's annotations until they are cleared or the presentation closes
 
 Presentation stages and Presenter View previews must suppress native text selection
 and browser drag behavior. Pointer and ink overlays are transient presentation aids;

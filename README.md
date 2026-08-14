@@ -65,8 +65,8 @@ shortcuts:
   screens
 - `C`: clear the current slide's pen annotations
 
-Pen annotations are temporary and clear automatically when the presenter changes
-slides. Presentation stages do not allow text selection or native drag behavior.
+Pen annotations are temporary, but stay with their slide while the presentation is
+open. Presentation stages do not allow text selection or native drag behavior.
 
 Examples:
 

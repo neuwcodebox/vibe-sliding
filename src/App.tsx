@@ -35,7 +35,7 @@ function PresentationApp() {
   const [isEditMode, setIsEditMode] = useState(readEditQuery)
   const [audienceScreenMode, setAudienceScreenMode] = useState<AudienceScreenMode>('visible')
   const [laserPointer, setLaserPointer] = useState<LaserPointerPosition>(null)
-  const [inkStrokes, setInkStrokes] = useState<InkStroke[]>([])
+  const [inkStrokesBySlide, setInkStrokesBySlide] = useState<Record<number, InkStroke[]>>({})
   const {
     currentIndex,
     currentSlide,
@@ -75,7 +75,9 @@ function PresentationApp() {
   useEffect(() => subscribeToSlideChanges(goToSlide), [goToSlide])
   useEffect(() => subscribeToAudienceScreenMode(setAudienceScreenMode), [])
   useEffect(() => subscribeToLaserPointer(setLaserPointer), [])
-  useEffect(() => subscribeToInkStrokes(setInkStrokes), [])
+  useEffect(() => subscribeToInkStrokes((index, strokes) => {
+    setInkStrokesBySlide((current) => ({ ...current, [index]: strokes }))
+  }), [])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -147,9 +149,9 @@ function PresentationApp() {
           style={{ left: `${laserPointer.x * 100}%`, top: `${laserPointer.y * 100}%` }}
         />
       )}
-      {inkStrokes.length > 0 && audienceScreenMode === 'visible' && (
+      {(inkStrokesBySlide[currentIndex] ?? []).length > 0 && audienceScreenMode === 'visible' && (
         <svg className="audience-ink-overlay" aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none">
-          {inkStrokes.map((stroke, index) => (
+          {(inkStrokesBySlide[currentIndex] ?? []).map((stroke, index) => (
             <polyline fill="none" key={index} points={stroke.points.map((point) => `${point.x},${point.y}`).join(' ')} stroke="#ff4d4f" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.006" />
           ))}
         </svg>

@@ -61,9 +61,12 @@ export function PresenterView() {
   const [inkStrokes, setInkStrokes] = useState<InkStroke[]>([])
   const [laserPointer, setLaserPointer] = useState<{ x: number; y: number } | null>(null)
   const activeInkStroke = useRef<number | null>(null)
-  const inkStrokesRef = useRef<InkStroke[]>([])
+  const inkStrokesBySlideRef = useRef<Record<number, InkStroke[]>>({})
 
-  useEffect(() => subscribeToSlideChanges(setCurrentIndex), [])
+  useEffect(() => subscribeToSlideChanges((index) => {
+    setCurrentIndex(index)
+    setInkStrokes(inkStrokesBySlideRef.current[index] ?? [])
+  }), [])
 
   useEffect(() => {
     if (!isTimerRunning) {
@@ -76,12 +79,16 @@ export function PresenterView() {
 
   const goToSlide = (index: number) => {
     const nextIndex = Math.min(Math.max(index, 0), slideCount)
+    const nextInkStrokes = inkStrokesBySlideRef.current[nextIndex] ?? []
     setCurrentIndex(nextIndex)
+    setInkStrokes(nextInkStrokes)
     writeSlideIndexToUrl(nextIndex, slideCount)
     publishLaserPointer(null)
     setLaserPointer(null)
-    clearInkStrokes()
-    if (!isAudienceFrozen) publishSlideChange(nextIndex)
+    if (!isAudienceFrozen) {
+      publishSlideChange(nextIndex)
+      publishInkStrokes(nextIndex, nextInkStrokes)
+    }
   }
 
   const setAudienceScreen = (mode: AudienceScreenMode) => {
@@ -94,6 +101,7 @@ export function PresenterView() {
     if (isAudienceFrozen) {
       setIsAudienceFrozen(false)
       publishSlideChange(currentIndex)
+      publishInkStrokes(currentIndex, inkStrokesBySlideRef.current[currentIndex] ?? [])
     } else {
       setIsAudienceFrozen(true)
       publishLaserPointer(null)
@@ -109,9 +117,9 @@ export function PresenterView() {
 
   const clearInkStrokes = () => {
     activeInkStroke.current = null
-    inkStrokesRef.current = []
+    inkStrokesBySlideRef.current[currentIndex] = []
     setInkStrokes([])
-    publishInkStrokes([])
+    publishInkStrokes(currentIndex, [])
   }
 
   const togglePen = () => {
@@ -140,21 +148,21 @@ export function PresenterView() {
     if (!isPenActive) return
     event.preventDefault()
     event.currentTarget.setPointerCapture(event.pointerId)
-    const strokes = [...inkStrokesRef.current, { points: [getPreviewPoint(event)] }]
+    const strokes = [...(inkStrokesBySlideRef.current[currentIndex] ?? []), { points: [getPreviewPoint(event)] }]
     activeInkStroke.current = strokes.length - 1
-    inkStrokesRef.current = strokes
+    inkStrokesBySlideRef.current[currentIndex] = strokes
     setInkStrokes(strokes)
-    publishInkStrokes(strokes)
+    publishInkStrokes(currentIndex, strokes)
   }
 
   const extendInkStroke = (event: ReactPointerEvent<HTMLElement>) => {
     if (!isPenActive || activeInkStroke.current === null) return
     event.preventDefault()
     const strokeIndex = activeInkStroke.current
-    const strokes = inkStrokesRef.current.map((stroke, index) => index === strokeIndex ? { points: [...stroke.points, getPreviewPoint(event)] } : stroke)
-    inkStrokesRef.current = strokes
+    const strokes = (inkStrokesBySlideRef.current[currentIndex] ?? []).map((stroke, index) => index === strokeIndex ? { points: [...stroke.points, getPreviewPoint(event)] } : stroke)
+    inkStrokesBySlideRef.current[currentIndex] = strokes
     setInkStrokes(strokes)
-    publishInkStrokes(strokes)
+    publishInkStrokes(currentIndex, strokes)
   }
 
   const finishInkStroke = (event: ReactPointerEvent<HTMLElement>) => {
@@ -244,7 +252,7 @@ export function PresenterView() {
             </div>
             <div className="presenter-tool-group" aria-label="펜 주석">
               <button className={`presenter-icon-button${isPenActive ? ' is-active' : ''}`} onClick={togglePen} aria-label="펜 주석" aria-pressed={isPenActive} title="펜 주석 (D)"><PenLine size={18} aria-hidden /></button>
-              <button className="presenter-icon-button" onClick={clearInkStrokes} aria-label="펜 주석 지우기" title="주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
+            <button className="presenter-icon-button" onClick={clearInkStrokes} aria-label="펜 주석 지우기" title="이 슬라이드 주석 지우기 (C)"><Eraser size={18} aria-hidden /></button>
             </div>
           </div>
           <div className="presenter-timer-controls">
