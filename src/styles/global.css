@@ -131,12 +131,16 @@ select {
 .presenter-current-panel .presenter-preview { width: min(100cqw, calc((100cqh - 54px) * 16 / 9)); height: auto; flex: 0 0 auto; align-self: center; }
 .presenter-side-panel { display: flex; min-height: 0; flex-direction: column; gap: 24px; }
 .presenter-notes-section { display: flex; min-height: 0; flex: 1 1 auto; flex-direction: column; }
+.presenter-notes-heading { display: flex; align-items: flex-start; justify-content: space-between; }
+.presenter-note-size-controls { display: flex; gap: 4px; }
+.presenter-note-size-controls button { min-width: 30px; height: 26px; border: 1px solid #385276; border-radius: 5px; background: #17243a; color: #d8e5f7; font-size: 12px; cursor: pointer; }
+.presenter-note-size-controls button:disabled { cursor: not-allowed; opacity: .4; }
 .presenter-panel-label { gap: 8px; margin: 0 0 10px; color: #94a9c6; font-size: 13px; font-weight: 600; letter-spacing: .06em; }
 .presenter-preview { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid #2d405d; border-radius: 10px; background: #111827; box-shadow: 0 14px 40px rgb(0 0 0 / 25%); container-type: inline-size; }
 .presenter-preview-stage { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; transform: scale(calc(100cqw / 1920px)); transform-origin: top left; }
 .presenter-file { margin: 10px 0 0; color: #6e839f; font: 12px/1.4 monospace; }
 .presenter-notes { min-height: 0; flex: 1 1 auto; overflow-y: auto; border: 1px solid #2d405d; border-radius: 10px; background: #101a2a; padding: 18px; scrollbar-color: #496789 transparent; }
-.presenter-notes p { margin: 0 0 14px; color: #d2ddee; font-size: 17px; line-height: 1.65; word-break: keep-all; }
+.presenter-notes p { margin: 0 0 14px; color: #d2ddee; font-size: var(--presenter-notes-font-size, 17px); line-height: 1.65; word-break: keep-all; }
 .presenter-notes p:last-child { margin-bottom: 0; }
 .presenter-notes .presenter-empty { color: #7e91ac; }
 .presenter-controls { flex: 0 0 auto; justify-content: space-between; border-top: 1px solid #243247; padding-top: 20px; color: #8295b1; font-size: 13px; }

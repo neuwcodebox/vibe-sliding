@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Clock3, List, MonitorUp, Pause, Play, RotateCcw, X } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { type CSSProperties, useEffect, useMemo, useState } from 'react'
 import { slides } from '../slides'
 import { SlideErrorBoundary } from './SlideErrorBoundary'
 import { readSlideIndexFromUrl, writeSlideIndexToUrl } from './useSlideNavigation'
@@ -13,6 +13,8 @@ const formatElapsed = (seconds: number) => {
     .map((value, index) => (index === 0 ? String(value).padStart(2, '0') : String(value).padStart(2, '0')))
     .join(':')
 }
+
+const NOTE_FONT_SIZES = [15, 17, 19, 21]
 
 function SlidePreview({ index, label }: { index: number; label: string }) {
   const Slide = slides[index]?.component
@@ -44,6 +46,7 @@ export function PresenterView() {
   const [elapsed, setElapsed] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(true)
   const [isSlideMenuOpen, setIsSlideMenuOpen] = useState(false)
+  const [noteFontSizeIndex, setNoteFontSizeIndex] = useState(1)
 
   useEffect(() => subscribeToSlideChanges(setCurrentIndex), [])
 
@@ -88,6 +91,7 @@ export function PresenterView() {
 
   const currentSlide = slides[currentIndex]
   const notes = currentSlide?.notes ?? []
+  const noteFontSize = NOTE_FONT_SIZES[noteFontSizeIndex]
   const nextIndex = Math.min(currentIndex + 1, slideCount)
   const slideLabel = currentIndex >= slideCount ? '발표 종료 화면' : `${currentIndex + 1} / ${slideCount}`
   const currentFile = useMemo(() => currentSlide?.file ?? '—', [currentSlide])
@@ -171,8 +175,28 @@ export function PresenterView() {
 
         <aside className="presenter-side-panel">
           <section className="presenter-notes-section">
-            <p className="presenter-panel-label">발표 대본</p>
-            <div className="presenter-notes">
+            <div className="presenter-notes-heading">
+              <p className="presenter-panel-label">발표 대본</p>
+              <div className="presenter-note-size-controls" aria-label="대본 글자 크기">
+                <button
+                  onClick={() => setNoteFontSizeIndex((index) => index - 1)}
+                  disabled={noteFontSizeIndex === 0}
+                  aria-label="대본 글자 작게"
+                  title="글자 작게"
+                >
+                  A−
+                </button>
+                <button
+                  onClick={() => setNoteFontSizeIndex((index) => index + 1)}
+                  disabled={noteFontSizeIndex === NOTE_FONT_SIZES.length - 1}
+                  aria-label="대본 글자 크게"
+                  title="글자 크게"
+                >
+                  A+
+                </button>
+              </div>
+            </div>
+            <div className="presenter-notes" style={{ '--presenter-notes-font-size': `${noteFontSize}px` } as CSSProperties}>
               {notes.length > 0 ? notes.map((note, index) => <p key={index}>{note}</p>) : <p className="presenter-empty">이 슬라이드에는 등록된 대본이 없습니다.</p>}
             </div>
           </section>
