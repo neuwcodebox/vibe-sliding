@@ -1,113 +1,58 @@
 # Vibe Sliding
 
-[Korean README](README.ko.md)
+[한국어 README](README.ko.md)
 
 ![Vibe Sliding workspace preview](docs/hero.png)
 
-Vibe Sliding is a local workspace for asking an AI coding agent to generate, edit, and review a slide show. You run the preview server, choose a theme, describe the deck you want, and let the agent write the React slide components.
+Vibe Sliding is a local workspace for creating, presenting, and reviewing slide decks with an AI coding agent. You describe the deck, the agent edits plain React components, and the browser becomes the preview and presentation surface.
 
-This is not a GUI-first PowerPoint replacement. The browser is the preview and presentation surface. The files under `src/slides/` are the source files that the AI agent edits on your behalf.
+It is not a GUI-first PowerPoint replacement. The source of truth is the code under `src/slides/`; screenshots and PPTX files are outputs generated from the same browser rendering path.
 
-## Demo Deck
-
-The included demo deck introduces the project workflow: choose a theme leaf, ask the agent for a deck, inspect specific elements, and review the generated slides.
-
-View the hosted demo at [https://neuwcodebox.github.io/vibe-sliding/](https://neuwcodebox.github.io/vibe-sliding/).
+The included demo deck walks through that workflow. A hosted copy is available at [neuwcodebox.github.io/vibe-sliding](https://neuwcodebox.github.io/vibe-sliding/).
 
 ![Vibe Sliding demo slide grid](docs/demo-slides-grid.png)
 
-## Quick Start
+## Quick start
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. It is usually something like `http://localhost:5173/`.
+Open the local URL printed by Vite, usually `http://localhost:5173/`.
 
-## What This Project Gives You
+The normal workflow is:
 
-- A local browser-based slide viewer.
-- A React slide codebase that AI agents can edit reliably.
-- A single catalog of peer theme collections under `designs/`.
-- Edit Inspect Mode for pointing at slide elements and copying precise references.
-- A separate Presenter View with speaker notes, slide navigation, timing, and audience controls.
-- Screenshot capture scripts for reviewing generated slides.
-- Image-based and experimental editable PPTX export for sharing rendered decks in PowerPoint.
-- Mermaid diagram rendering for flowcharts, sequence diagrams, and other technical visuals.
+1. Choose one design leaf, or explicitly let the agent choose it.
+2. Describe the audience, purpose, slide count, tone, and required content.
+3. Let the agent create or revise `src/slides/` and `src/slides.ts`.
+4. Review the rendered deck in the browser.
+5. Use Edit Mode or screenshots to request precise revisions.
+6. Present in the browser or export the finished deck to PPTX.
 
-The intended workflow is: you describe the slide show, the agent edits the source, and you review the result in the browser.
+## Create or revise a deck
 
-## Controls
+### Brief the agent
 
-- Right arrow, Down arrow, Space, or click: next slide
-- Left arrow or Up arrow: previous slide
-- Home: first slide
-- End: last slide
-- `?slide=N`: open slide N directly
-- `?edit=1`: enable Edit Inspect Mode
-- `P`: open Presenter View in a popup
-
-Presenter View keeps the audience screen clear while showing the current and next
-slide, speaker notes, elapsed time, and slide navigation.
-
-Presentation shortcuts:
-
-- `B` / `W`: toggle the audience screen to black / white
-- `F`: freeze or resume the audience screen
-- `R`: toggle the laser pointer
-- `D`: toggle pen annotations
-- `Z`: undo the last pen stroke
-- `C`: clear the current slide's annotations
-
-For a one-monitor presentation, use the small translucent expand button at the
-bottom-center of the audience screen. It provides black/white, laser, pen, and clear
-controls, with the same `B`, `W`, `R`, `D`, `Z`, and `C` shortcuts. Use `F` there to enter
-or exit fullscreen.
-
-Examples:
-
-```txt
-http://localhost:5173/?slide=3
-http://localhost:5173/?slide=3&edit=1
-http://localhost:5173/?slide=3&presenter=1
-```
-
-## Ask An Agent To Create A Deck
-
-1. Choose one theme leaf from a collection in `designs/README.md`, or explicitly ask the agent to choose one for you.
-2. Tell the agent what deck you want: topic, audience, number of slides, tone, and any required content.
-3. Ask the agent to create or revise the slide components.
-4. Preview the result in the browser.
-5. Use screenshots or Edit Inspect Mode to request targeted fixes.
-
-Example prompt:
+A useful request identifies both the content job and the controlling design direction.
 
 ```txt
 Use designs/basics/themes/technical-grid.md. Create a 5-slide deck about our internal AI agent platform for an engineering leadership audience. Keep the style technical, structured, and presentation-ready.
 ```
 
-For broad visual changes, name one theme leaf explicitly or delegate that choice
-to the agent. If neither happens, the agent should ask before changing the
-visual system. For small copy edits, typo fixes, or narrow bug fixes, ask the
-agent to preserve the current slide style.
+For a new deck or broad redesign, name one design leaf or explicitly delegate the choice. If neither happens, the agent should ask before changing the visual system. For a typo, copy adjustment, or other narrow fix, preserve the current deck style.
 
-## Choose A Theme Leaf
+### Choose one design leaf
 
-[`designs/README.md`](designs/README.md) is the catalog and selection guide.
-Its collections are peers: their maintenance and licensing differ, but neither
-outranks the other at deck-selection time.
+[`designs/README.md`](designs/README.md) is the catalog and selection guide. Its immediate child directories are peer collections, but they supply different levels of design guidance.
 
-| Collection | Selectable leaf | Browse it with |
+| Collection | Selectable leaf | Design level |
 | --- | --- | --- |
-| [`basics/`](designs/basics/README.md) | One `themes/<theme>.md` file listed in its `index.json` | `index.json`, then the selected theme |
-| [`beautiful-html-templates/`](designs/beautiful-html-templates/) | One `templates/<theme>/` directory | `index.json`, then shortlisted metadata |
+| [`basics/`](designs/basics/README.md) | A `themes/<theme>.md` file listed in `index.json` | Complete design system |
+| [`beautiful-html-templates/`](designs/beautiful-html-templates/) | A `templates/<theme>/` directory | Slide template and repeatable structures |
+| [`pptx-design-styles/`](designs/pptx-design-styles/) | A file under `styles/` listed in `index.json` | Visual style reference |
 
-Name one leaf for a new deck or broad redesign, or explicitly ask the agent to
-choose one. The collection README, `index.json`, license, and provenance files
-help with browsing; they are not themes themselves. Two themes should not be
-co-equal systems in the same deck, and the selected theme is never stored in a
-config file.
+A collection README, `index.json`, license, or provenance file helps with browsing; it is not a selectable leaf. Use one leaf as the deck's controlling direction rather than blending two themes as co-equal systems. The choice belongs in the task and is never stored in project configuration.
 
 Examples:
 
@@ -119,25 +64,22 @@ Use designs/basics/themes/technical-grid.md as the theme. Create a 5-slide archi
 Use designs/beautiful-html-templates/templates/cobalt-grid/ as the theme. Create a 5-slide product demo for engineering leaders.
 ```
 
-For Beautiful HTML Templates, the agent first searches `index.json`, reads only
-the most relevant candidates' metadata and design notes, and opens a selected
-template's HTML source only when an implementation detail is needed. It keeps
-the template's visual grammar while using your content, the fixed 1920×1080
-React stage, and the installed font stack. It never imports upstream HTML
-runtime, sample copy, navigation, or remote-font setup.
+Browse each collection according to its design level:
 
-## What The Agent Edits
+- For Basics, shortlist with `basics/index.json`, then read the selected Markdown design system.
+- For Beautiful HTML Templates, shortlist with `index.json`, then read only the relevant `template.json` and `design.md`. Open `template.html` only when a structural implementation detail is needed. Adapt its visual grammar to the fixed 1920×1080 React stage and installed fonts; never import its HTML runtime, sample copy, navigation, or remote-font setup.
+- For PPTX Design Styles, shortlist with `index.json`, then read the selected style file. A style reference supplies visual cues, so the deck's claims, evidence, and compositions still need to be authored.
 
-For ordinary deck creation or revision, the agent usually changes these files:
+### Understand what the agent edits
 
-- `src/slides/`: generated slide components
-- `src/slides.ts`: slide registration order
+Ordinary deck work should stay in:
 
-`designs/` changes only when you explicitly request a reusable theme addition or
-revision, or an update to the source-preserving external snapshot. Choosing a
-theme for a deck does not modify its collection.
+- `src/slides/`: deck-specific React slide components
+- `src/slides.ts`: explicit registration order, source paths, and optional speaker notes
 
-A generated slide is a default-exported React component whose root fills the fixed 16:9 stage.
+Choosing a design leaf does not modify `designs/`. That directory changes only when you explicitly request a reusable design addition, revision, or upstream snapshot update.
+
+Each slide is a default-exported component whose root fills the fixed 16:9 stage.
 
 ```tsx
 export default function Slide004Topic() {
@@ -145,29 +87,27 @@ export default function Slide004Topic() {
 }
 ```
 
-The agent should register that slide in `src/slides.ts`.
+Register it in `src/slides.ts`:
 
 ```ts
 import Slide004 from './slides/004-topic'
 
 export const slides = [
-  // existing slides
   {
     component: Slide004,
     file: 'src/slides/004-topic.tsx',
-    // Optional Presenter View script. It is never shown to the audience.
     notes: ['Introduce the decision first.', 'Pause here for questions.'],
   },
 ]
 ```
 
-`notes` is optional. When present, each string becomes a separate paragraph in the
-Presenter View script panel; it never appears on the audience screen. You do not
-need to memorize this pattern, but it helps to know what the agent is expected to change.
+`notes` is optional. Each string becomes a paragraph in Presenter View and never appears on the audience screen.
 
-## Add Mermaid Diagrams
+Shared viewer behavior belongs in `src/runtime/` and `src/edit-mode/`; deck-specific layout fixes should not be implemented there or in `src/styles/global.css`.
 
-Use `MermaidDiagram` when a slide needs a flowchart, sequence diagram, or other Mermaid-supported visual.
+### Add Mermaid diagrams
+
+Use `MermaidDiagram` for flowcharts, sequence diagrams, and other Mermaid-supported visuals.
 
 ```tsx
 import { MermaidDiagram } from '../runtime/MermaidDiagram'
@@ -194,201 +134,220 @@ export default function Slide004Topic() {
 }
 ```
 
-Set per-diagram themes in the chart string with YAML frontmatter. Mermaid `%%{init:...}%%` directives may still work, but frontmatter is the preferred style for new slides.
+YAML frontmatter is the preferred way to set a per-diagram theme. Mermaid `%%{init:...}%%` directives may remain compatible, but new slides should use frontmatter.
 
-## Make Agent Edits Precise
+### Make future edits targetable
 
-Important titles, cards, charts, and sections should have `data-ai-id` attributes so future edits can target them clearly.
+Give important titles, cards, charts, and sections stable `data-ai-id` attributes.
 
 ```tsx
 <h1 data-ai-id="main-title">Quarterly Roadmap</h1>
 ```
 
-Good names:
+Prefer meaning-based names such as `main-title`, `cost-chart`, and `workflow-summary`. Avoid appearance-based names such as `blue-box`, `left-thing`, or `big-text`.
 
-- `main-title`
-- `cost-chart`
-- `workflow-summary`
+## Review and refine
 
-Avoid names like:
+### Use Edit Mode for exact references and feedback
 
-- `blue-box`
-- `left-thing`
-- `big-text`
-
-## Edit Inspect Mode
-
-Use Edit Inspect Mode when you want to point at an element in the browser and ask the agent to change exactly that element.
+Open Edit Mode with `?edit=1`.
 
 ```txt
 http://localhost:5173/?slide=3&edit=1
 ```
 
-When it is active, the element under the cursor is highlighted. Clicking a visible element copies a one-line reference.
+Normal click-to-advance is disabled while editing. Hovering slide content outlines the exact element that will be targeted. The bottom presentation toolbar is replaced by an edit toolbar with these shortcuts:
+
+| Input | Action |
+| --- | --- |
+| `E` | Toggle Edit Mode |
+| `Esc` | Leave Edit Mode; close an open feedback dialog or list first |
+| `R` | Select Reference, then click an element to copy its one-line `@element(...)` reference |
+| `F` | Select Feedback, then click an element to add or edit anchored feedback |
+| `V` | Open or close the accumulated feedback list |
+
+A copied reference looks like this:
 
 ```txt
 @element(slide=3 file="src/slides/003-content.tsx" target="data-ai-id=runtime-flow-title" text="Runtime flow")
 ```
 
-Paste that reference into your next agent prompt. For example:
+Paste it into a focused request:
 
 ```txt
 Change @element(slide=3 file="src/slides/003-content.tsx" target="data-ai-id=runtime-flow-title" text="Runtime flow") to make the heading shorter and align it with the chart below.
 ```
 
-If clipboard access fails, the reference is shown on screen.
+Feedback is numbered across the session. Each saved item appears as a numbered bubble beside its element. Hover the bubble to outline the referenced element; select the bubble to edit or delete the feedback. In the feedback list you can:
 
-## Review With Screenshots
+- select a number to jump to and focus its bubble, including on another slide;
+- edit or delete an individual item;
+- clear all feedback;
+- copy all references and feedback as one prompt.
 
-Start the dev server first.
+![Edit Mode with anchored feedback and the feedback list](docs/edit-mode-feedback.png)
 
-```bash
-npm run dev
+The copied batch format is:
+
+```txt
+1. @element(...)
+First feedback item
+
+---
+
+2. @element(...)
+Second feedback item
 ```
 
-Capture one slide:
+Feedback is kept in the current browser session and is cleared by a page reload. If clipboard access fails, the content is shown on screen for manual copying.
+
+### Review with screenshots
+
+Keep the dev server running, then capture one slide or the full registered deck.
 
 ```bash
 npm run capture:slide -- 3
-```
-
-Capture all slides:
-
-```bash
 npm run capture:all
 ```
 
-Screenshots are written as `screenshots/slide-001.png`, `screenshots/slide-002.png`, and so on. Generated PNG files are ignored by git.
+Images are written as `screenshots/slide-001.png`, `screenshots/slide-002.png`, and so on. Generated screenshots are ignored by git.
 
-After changing the included demo deck, refresh the checked-in grid used above:
+After changing the included demo deck, refresh the checked-in grid used in this README:
 
 ```bash
 npm run capture:all
 npm run capture:demo-grid
 ```
 
-The grid uses only the slides currently registered in `src/slides.ts` and is
-written to `docs/demo-slides-grid.png`.
-
-Slides with charts or animations wait briefly before capture. You can adjust the wait time when needed.
+The grid is generated from the slides currently registered in `src/slides.ts` and written to `docs/demo-slides-grid.png`. Increase the settling time for charts or animations when needed:
 
 ```bash
 SLIDE_CAPTURE_SETTLE_MS=2000 npm run capture:slide -- 3
 ```
 
-## Export To PowerPoint
+## Present the deck
 
-PPTX export uses the same browser rendering path as screenshots. Start the dev
-server first.
+### Navigate the audience view
 
-```bash
-npm run dev
+| Input | Action |
+| --- | --- |
+| `Right` / `Down` / `Space` / stage click | Next slide |
+| `Left` / `Up` | Previous slide |
+| `Home` / `End` | First / last slide |
+| `?slide=N` | Open slide N directly |
+| `P` | Open Presenter View in a popup |
+
+Useful direct URLs:
+
+```txt
+http://localhost:5173/?slide=3
+http://localhost:5173/?slide=3&edit=1
+http://localhost:5173/?slide=3&presenter=1
 ```
 
-Export all registered slides as image-based slides to the default path:
+When Presenter View is not open, a small translucent tab at the bottom center expands the audience controls. It provides black/white screen, laser, pen, undo, clear, and fullscreen actions without adding persistent slide chrome.
+
+Audience controls:
+
+| Input | Action |
+| --- | --- |
+| `B` / `W` | Toggle a black / white audience screen |
+| `R` | Toggle the laser pointer |
+| `D` | Toggle pen annotations |
+| `Z` | Undo the latest pen stroke |
+| `C` | Clear annotations on the current slide |
+| `F` | Enter or exit browser fullscreen |
+
+![Presentation mode with pen drawing and the laser pointer](docs/presentation-drawing-laser.png)
+
+### Use Presenter View
+
+Press `P` in the audience view to open Presenter View as a separate popup, or open `?presenter=1` directly. Keep the popup on the presenter's monitor and the original window on the audience display. Presenter View shows the current and next slide, optional speaker notes, elapsed timer, and a slide list without adding presenter UI to the audience screen. It synchronizes slide changes, pointer position, pen strokes, and audience-screen states with the audience window.
+
+![Presenter View with the current slide, speaker notes, next-slide preview, timer, and audience controls](docs/presenter-view.png)
+
+Presenter controls:
+
+| Input | Action |
+| --- | --- |
+| `B` / `W` | Toggle a black / white audience screen |
+| `R` | Toggle the synchronized laser pointer |
+| `D` | Toggle synchronized pen annotations |
+| `Z` | Undo the latest pen stroke |
+| `C` | Clear annotations on the current slide |
+| `F` | Freeze or resume audience synchronization |
+
+## Export to PowerPoint
+
+Both export paths use the browser renderer, so start the dev server first.
+
+Image-based export offers the highest visual fidelity:
 
 ```bash
 npm run export:pptx
-```
-
-Export to a custom path:
-
-```bash
 npm run export:pptx -- exports/demo.pptx
 ```
 
-The output is written as `exports/vibe-sliding.pptx` by default. Generated PPTX
-files are image-based: each slide is inserted as a full-slide PNG, so PowerPoint
-can present the deck but cannot edit individual text boxes, shapes, charts, or
-diagrams.
+The default file is `exports/vibe-sliding.pptx`. Each slide is a full-slide PNG, so it presents reliably in PowerPoint but its individual text, shapes, charts, and diagrams are not editable.
 
-You can also create an experimental editable PPTX:
+Experimental editable export converts the unscaled 1920×1080 DOM with `dom-to-pptx`:
 
 ```bash
 npm run export:pptx:editable
-```
-
-Custom editable output paths work the same way:
-
-```bash
 npm run export:pptx:editable -- exports/demo-editable.pptx
 ```
 
-Editable export writes `exports/vibe-sliding-editable.pptx` by default. It uses
-`dom-to-pptx` to convert the unscaled 1920x1080 slide DOM into PowerPoint text,
-shape, image, and SVG objects where possible. Use this when editability matters,
-but prefer the image-based export when visual fidelity is more important. Some
-charts, Mermaid diagrams, SVGs, advanced CSS, and effects may be partially
-converted or exported as SVG/image objects instead of fully native PowerPoint
-objects.
+The default file is `exports/vibe-sliding-editable.pptx`. Use it when editability matters, but expect some charts, Mermaid diagrams, SVGs, advanced CSS, and effects to be partially converted or preserved as image/SVG objects.
 
-You can point either export script at a different dev server URL:
+Point either exporter at another server or increase the settling time when needed:
 
 ```bash
 SLIDE_BASE_URL=http://localhost:4173 npm run export:pptx
-SLIDE_BASE_URL=http://localhost:4173 npm run export:pptx:editable
-```
-
-Slides with charts or animations wait briefly before export. Adjust the wait time
-when needed.
-
-```bash
-SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx
 SLIDE_CAPTURE_SETTLE_MS=2000 npm run export:pptx:editable
 ```
 
-## Ask An Agent To Add A Basics Theme
+## Extend and publish the workspace
 
-Ask for a new Basics theme only when no existing leaf in either collection
-provides a direction you expect to reuse. The agent should create a Markdown
-file under `designs/basics/`.
+### Add a reusable Basics design system
 
-Useful prompt:
+Ask for a new Basics leaf only when none of the existing leaves across the collections provides a direction worth reusing.
 
 ```txt
 Create a new Basics theme under designs/basics/ for executive product strategy reviews. Use a restrained, high-density style with strong chart readability.
 ```
 
-The agent should use `skills/design-guide-authoring/assets/design-guide-template.md` as the structure and `skills/design-guide-authoring/assets/design-guide-example.md` as a completed reference.
+The agent should use `.agents/skills/design-guide-authoring/assets/design-guide-template.md` as the structure and `.agents/skills/design-guide-authoring/assets/design-guide-example.md` as a completed reference. A Basics leaf defines reusable rules across decks; it should not be a single-slide outline or a duplicate restatement of an upstream design.
 
-A Basics theme should define reusable visual rules across slides. It should not
-be a single-slide outline or a duplicate restatement of an upstream theme.
+### Deploy to GitHub Pages
 
-## Deploy To GitHub Pages
+The included GitHub Actions workflow builds `dist/` on pushes to `main` and can also be run manually. In GitHub, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
 
-This project can publish the production build in `dist/` with GitHub Actions. The included workflow deploys automatically when `main` is pushed, and it can also be started manually from the Actions tab.
-
-The deployment base path is controlled with `VITE_BASE_PATH` instead of being hard-coded in `vite.config.ts`. For this repository's project site, the workflow sets:
+The workflow controls the deployment base path with `VITE_BASE_PATH`:
 
 ```txt
 VITE_BASE_PATH=/vibe-sliding/
 ```
 
-If you fork the project, rename the repository, or use a custom domain, update `VITE_BASE_PATH` in `.github/workflows/deploy-pages.yml`. Use `/` when the app is served from the domain root. See `.env.example` for local examples.
+If you fork or rename the repository, or use a custom domain, update the value in `.github/workflows/deploy-pages.yml`. Use `/` when serving from a domain root. See `.env.example` for local examples.
 
-In GitHub, set **Settings → Pages → Build and deployment → Source** to **GitHub Actions**.
+## Development reference
 
-## Validation
+### Commands
 
-Run typecheck:
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Vite development server |
+| `npm run preview` | Preview the production build |
+| `npm run typecheck` | Run TypeScript checks |
+| `npm run lint` | Run ESLint |
+| `npm run build` | Typecheck and create `dist/` |
+| `npm run capture:slide -- N` | Capture one registered slide |
+| `npm run capture:all` | Capture all registered slides |
+| `npm run capture:demo-grid` | Rebuild the checked-in demo grid |
+| `npm run export:pptx` | Export an image-based PPTX |
+| `npm run export:pptx:editable` | Export an experimental editable PPTX |
 
-```bash
-npm run typecheck
-```
-
-Run a production build:
-
-```bash
-npm run build
-```
-
-Run lint:
-
-```bash
-npm run lint
-```
-
-## Project Structure
+### Project structure
 
 ```txt
 src/
@@ -410,24 +369,17 @@ screenshots/
 exports/
 ```
 
-Shared infrastructure:
-
-- `src/runtime/`: viewer runtime, scaling, navigation
-- `src/edit-mode/`: element inspection and copied references
-- `src/styles/global.css`: app-wide base styling
-
-Deck-specific content:
-
-- `src/slides/`: slide components generated by the agent
-- `src/slides.ts`: slide registration order
+- `src/runtime/`: generic viewer, scaling, navigation, and presenter behavior
+- `src/edit-mode/`: generic element inspection, references, and feedback UI
+- `src/styles/global.css`: app-wide runtime and font styling
+- `src/slides/`: deck-specific React components
+- `src/slides.ts`: explicit slide registry and optional notes
 - `designs/`: design-system, slide-template, and style-reference collections
-- `screenshots/`: captured slide images
+- `screenshots/`: generated review images
 - `exports/`: generated PPTX files
 
-Most deck content and visual changes should live under `src/slides/`. `runtime/`, `edit-mode/`, and `styles/global.css` should stay generic across many slide shows.
+## Third-party sources
 
-## Third-Party Sources
-
-- [`yetone/kill-ai-slop`](https://github.com/yetone/kill-ai-slop) — [Apache-2.0](.agents/skills/kill-ai-slop/LICENSE), preserved in [`.agents/skills/kill-ai-slop/`](.agents/skills/kill-ai-slop/).
-- [`zarazhangrui/beautiful-html-templates`](https://github.com/zarazhangrui/beautiful-html-templates) — [MIT](designs/beautiful-html-templates/LICENSE), preserved in [`designs/beautiful-html-templates/`](designs/beautiful-html-templates/).
-- [`corazzon/pptx-design-styles`](https://github.com/corazzon/pptx-design-styles) — [MIT declaration](designs/pptx-design-styles/LICENSE), preserved as split style references in [`designs/pptx-design-styles/`](designs/pptx-design-styles/).
+- [`yetone/kill-ai-slop`](https://github.com/yetone/kill-ai-slop) — [Apache-2.0](.agents/skills/kill-ai-slop/LICENSE), preserved in [`.agents/skills/kill-ai-slop/`](.agents/skills/kill-ai-slop/)
+- [`zarazhangrui/beautiful-html-templates`](https://github.com/zarazhangrui/beautiful-html-templates) — [MIT](designs/beautiful-html-templates/LICENSE), preserved in [`designs/beautiful-html-templates/`](designs/beautiful-html-templates/)
+- [`corazzon/pptx-design-styles`](https://github.com/corazzon/pptx-design-styles) — [MIT declaration](designs/pptx-design-styles/LICENSE), preserved as split style references in [`designs/pptx-design-styles/`](designs/pptx-design-styles/)

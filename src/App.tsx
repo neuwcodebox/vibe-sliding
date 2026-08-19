@@ -145,7 +145,16 @@ function PresentationApp() {
   } = useSlideNavigation(slides.length)
   const isCursorHidden = usePresentationCursorAutoHide(!isEditMode)
 
+  const deactivateAudienceTools = useCallback(() => {
+    activeInkStroke.current = null
+    setAudienceScreenMode('visible')
+    setIsAudienceLaserActive(false)
+    setIsAudiencePenActive(false)
+    setLaserPointer(null)
+  }, [])
+
   const setEditMode = useCallback((enabled: boolean) => {
+    if (enabled) deactivateAudienceTools()
     setIsEditMode(enabled)
 
     const url = new URL(window.location.href)
@@ -155,7 +164,7 @@ function PresentationApp() {
       url.searchParams.delete('edit')
     }
     window.history.replaceState(null, '', url)
-  }, [])
+  }, [deactivateAudienceTools])
 
   useEffect(() => {
     document.body.classList.toggle('edit-inspect-active', isEditMode)
@@ -163,18 +172,26 @@ function PresentationApp() {
   }, [isEditMode])
 
   useEffect(() => {
-    const onPopState = () => setIsEditMode(readEditQuery())
+    const onPopState = () => {
+      const enabled = readEditQuery()
+      if (enabled) deactivateAudienceTools()
+      setIsEditMode(enabled)
+    }
     window.addEventListener('popstate', onPopState)
     return () => window.removeEventListener('popstate', onPopState)
-  }, [])
+  }, [deactivateAudienceTools])
 
   useEffect(() => {
     publishSlideChange(currentIndex)
   }, [currentIndex])
 
   useEffect(() => subscribeToSlideChanges(goToSlide), [goToSlide])
-  useEffect(() => subscribeToAudienceScreenMode(setAudienceScreenMode), [])
-  useEffect(() => subscribeToLaserPointer(setLaserPointer), [])
+  useEffect(() => subscribeToAudienceScreenMode((mode) => {
+    if (!isEditMode) setAudienceScreenMode(mode)
+  }), [isEditMode])
+  useEffect(() => subscribeToLaserPointer((pointer) => {
+    if (!isEditMode) setLaserPointer(pointer)
+  }), [isEditMode])
   const setSlideInkStrokes = useCallback((index: number, strokes: InkStroke[]) => {
     inkStrokesBySlideRef.current = { ...inkStrokesBySlideRef.current, [index]: strokes }
     setInkStrokesBySlide((current) => ({ ...current, [index]: strokes }))
@@ -254,16 +271,17 @@ function PresentationApp() {
   }, [])
 
   const onAudiencePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
-    if (!isAudiencePenActive) return
+    if (isEditMode || !isAudiencePenActive) return
     event.preventDefault()
     event.currentTarget.setPointerCapture(event.pointerId)
     const strokes = [...(inkStrokesBySlideRef.current[currentIndex] ?? []), { points: [getStagePoint(event)] }]
     activeInkStroke.current = strokes.length - 1
     setSlideInkStrokes(currentIndex, strokes)
     publishInkStrokes(currentIndex, strokes)
-  }, [currentIndex, getStagePoint, isAudiencePenActive, setSlideInkStrokes])
+  }, [currentIndex, getStagePoint, isAudiencePenActive, isEditMode, setSlideInkStrokes])
 
   const onAudiencePointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (isEditMode) return
     if (isAudienceLaserActive) setLaserPointer(getStagePoint(event))
     if (!isAudiencePenActive || activeInkStroke.current === null) return
     event.preventDefault()
@@ -271,7 +289,7 @@ function PresentationApp() {
     const strokes = (inkStrokesBySlideRef.current[currentIndex] ?? []).map((stroke, index) => index === strokeIndex ? { points: [...stroke.points, getStagePoint(event)] } : stroke)
     setSlideInkStrokes(currentIndex, strokes)
     publishInkStrokes(currentIndex, strokes)
-  }, [currentIndex, getStagePoint, isAudienceLaserActive, isAudiencePenActive, setSlideInkStrokes])
+  }, [currentIndex, getStagePoint, isAudienceLaserActive, isAudiencePenActive, isEditMode, setSlideInkStrokes])
 
   const onAudiencePointerUp = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     if (activeInkStroke.current !== null && event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
@@ -320,6 +338,8 @@ function PresentationApp() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable="true"]')) return
+
       if (event.key.toLowerCase() === 'p' && !isEditMode) {
         event.preventDefault()
         const url = new URL(window.location.href)
@@ -386,25 +406,26 @@ function PresentationApp() {
           </p>
         </div>
       ) : null}
-      {laserPointer && audienceScreenMode === 'visible' && (
+      {!isEditMode && laserPointer && audienceScreenMode === 'visible' && (
         <div
           className="audience-laser-pointer"
           aria-hidden
           style={{ left: `${laserPointer.x * 100}%`, top: `${laserPointer.y * 100}%` }}
         />
       )}
-      {(inkStrokesBySlide[currentIndex] ?? []).length > 0 && audienceScreenMode === 'visible' && (
+      {!isEditMode && (inkStrokesBySlide[currentIndex] ?? []).length > 0 && audienceScreenMode === 'visible' && (
         <svg className="audience-ink-overlay" aria-hidden viewBox="0 0 1 1" preserveAspectRatio="none">
           {(inkStrokesBySlide[currentIndex] ?? []).map((stroke, index) => (
             <polyline fill="none" key={index} points={stroke.points.map((point) => `${point.x},${point.y}`).join(' ')} stroke="#ff4d4f" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.006" />
           ))}
         </svg>
       )}
-      {audienceScreenMode !== 'visible' && (
+      {!isEditMode && audienceScreenMode !== 'visible' && (
         <div className={`audience-screen-overlay audience-screen-overlay-${audienceScreenMode}`} aria-hidden />
       )}
       <EditInspectMode
         active={isEditMode && !isEndScreen}
+        onGoToSlide={goToSlide}
         slideFile={currentSlideFile}
         slideNumber={currentIndex + 1}
         stageRef={stageRef}

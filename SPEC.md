@@ -596,11 +596,32 @@ Keyboard shortcuts are optional for MVP, but recommended.
 When Edit Inspect Mode is active:
 
 * normal click-to-next-slide navigation must be disabled
+* audience presentation tools must be deactivated; their pointer handlers and visual overlays must not operate in Edit Inspect Mode
+* existing pen strokes may remain stored for presentation, but must be hidden while editing
 * moving the cursor over slide content must highlight the element that would be selected
 * the currently selectable element must be visually indicated in real time
 * a compact floating label should describe the current target
-* clicking an element must copy a one-line edit reference to the clipboard
+* a bottom edit toolbar must replace the audience presentation controls while preserving their compact expand-tab styling and open/select/collapse behavior
+* related edit tools must use the same grouped-control treatment as related audience tools
+* while the toolbar is collapsed, the selected edit tool must appear in the same bottom status-bubble treatment as active audience tools; the existing top-left Edit Mode badge remains separate and visible
+* the pointer tool must copy a one-line edit reference when an element is clicked
+* the feedback tool must let the user attach one editable feedback item to a selected element
+* saved feedback items must render numbered bubbles beside their elements on the relevant slide
+* hovering a numbered bubble must highlight its referenced element with the same target outline used by element inspection
+* selecting a numbered bubble must allow its feedback to be edited or deleted
+* a feedback list must support editing, deleting, clearing, and copying all accumulated feedback
+* selecting a feedback number in the list must navigate to its slide, close the list, and focus its numbered element bubble
+* saving new or edited feedback must preserve the feedback list's existing open or closed state
+* copied feedback prompts must preserve list order and separate numbered element references with horizontal-rule markers
 * after copying, a small confirmation toast or indicator should appear
+
+Recommended left-side QWERTY shortcuts while Edit Inspect Mode is active:
+
+```txt
+R   reference-copy tool
+F   element-feedback tool
+V   view or hide the accumulated feedback list
+```
 
 The experience should be similar to the browser developer tools element picker, but simplified for AI-assisted slide editing.
 
@@ -1383,6 +1404,7 @@ The MVP is complete when all of the following are true:
 * `?edit=1` enables Edit Inspect Mode
 * hover in Edit Inspect Mode highlights the target element
 * clicking in Edit Inspect Mode copies a one-line edit reference
+* Edit Inspect Mode can collect, edit, delete, clear, and batch-copy numbered element feedback
 * `npm run capture:slide -- 1` creates `screenshots/slide-001.png`
 * `npm run capture:all` captures all registered slides
 * `npm run capture:demo-grid` refreshes `docs/demo-slides-grid.png` from the current registered slides
