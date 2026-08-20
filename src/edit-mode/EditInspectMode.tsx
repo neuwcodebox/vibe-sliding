@@ -74,7 +74,7 @@ const resolveLocator = (locator: number[], root: HTMLElement) => {
 }
 
 const sameLocator = (left: number[], right: number[]) => left.length === right.length && left.every((value, index) => value === right[index])
-const formatPrompt = (comments: Comment[]) => comments.map((comment, index) => `${index + 1}. ${comment.reference}\n${comment.text}`).join('\n\n---\n\n')
+const formatPrompt = (comments: Comment[]) => comments.map((comment) => `${comment.id}. ${comment.reference}\n${comment.text}`).join('\n\n---\n\n')
 
 export function EditInspectMode({ active, onGoToSlide, slideFile, slideNumber, stageRef }: Props) {
   const [tool, setTool] = useState<Tool>('copy')
@@ -110,7 +110,11 @@ export function EditInspectMode({ active, onGoToSlide, slideFile, slideNumber, s
 
   const editComment = useCallback((comment: Comment) => setDraft({ ...comment, commentId: comment.id }), [])
   const deleteComment = useCallback((id: number) => {
-    setComments((current) => current.filter((comment) => comment.id !== id))
+    setComments((current) => {
+      const next = current.filter((comment) => comment.id !== id)
+      if (next.length === 0) nextId.current = 1
+      return next
+    })
     setDraft((current) => current?.commentId === id ? null : current)
   }, [])
 
@@ -135,7 +139,9 @@ export function EditInspectMode({ active, onGoToSlide, slideFile, slideNumber, s
       setComments((current) => current.map((comment) => comment.id === draft.commentId ? { ...comment, text: draft.text.trim() } : comment))
       showToast({ message: '피드백을 수정했습니다.' })
     } else {
-      setComments((current) => [...current, { id: nextId.current++, locator: draft.locator, reference: draft.reference, slideFile: draft.slideFile, slideNumber: draft.slideNumber, text: draft.text.trim() }])
+      const id = nextId.current
+      nextId.current += 1
+      setComments((current) => [...current, { id, locator: draft.locator, reference: draft.reference, slideFile: draft.slideFile, slideNumber: draft.slideNumber, text: draft.text.trim() }])
       showToast({ message: '피드백을 추가했습니다.' })
     }
     setDraft(null)
@@ -268,7 +274,7 @@ export function EditInspectMode({ active, onGoToSlide, slideFile, slideNumber, s
       {currentComments.map((comment) => {
         const rect = bubbleRects[comment.id]
         if (!rect) return null
-        const number = comments.findIndex((item) => item.id === comment.id) + 1
+        const number = comment.id
         return <button key={comment.id} type="button" data-edit-comment-id={comment.id} className={`pointer-events-auto absolute grid h-8 min-w-8 place-items-center rounded-full border-2 border-white bg-amber-400 px-2 text-sm font-bold text-slate-950 shadow-lg transition-transform hover:scale-110 focus-visible:outline-none ${locatedCommentId === comment.id ? 'scale-125 ring-4 ring-amber-300/50' : ''}`} style={{ left: rect.left + rect.width, top: rect.top, translate: '-50% -50%' }} onPointerEnter={() => { setHover(null); setHoveredBubbleId(comment.id) }} onPointerLeave={() => setHoveredBubbleId(null)} onClick={() => editComment(comment)} aria-label={`${number}번 피드백 편집`} title={`${number}. ${comment.text}`}>{number}</button>
       })}
 
@@ -277,13 +283,13 @@ export function EditInspectMode({ active, onGoToSlide, slideFile, slideNumber, s
       {listOpen && <section className="pointer-events-auto absolute bottom-20 right-5 flex max-h-[min(680px,calc(100vh-120px))] w-[min(460px,calc(100vw-40px))] flex-col overflow-hidden rounded-xl border border-slate-600 bg-slate-950 text-white shadow-2xl" aria-label="피드백 목록">
         <header className="flex items-center justify-between border-b border-slate-700 px-4 py-3"><div><h2 className="m-0 text-base font-semibold">피드백</h2><p className="m-0 mt-0.5 text-xs text-slate-400">전체 {comments.length}개 · 현재 슬라이드 {currentComments.length}개</p></div><button type="button" className="grid h-8 w-8 place-items-center rounded-md text-slate-400 hover:bg-slate-800 hover:text-white" onClick={() => setListOpen(false)} aria-label="목록 닫기"><X size={18} /></button></header>
         <div className="min-h-0 flex-1 overflow-y-auto p-2">
-          {comments.length === 0 ? <div className="px-6 py-12 text-center text-sm text-slate-400">말풍선 도구로 요소를 선택해 첫 피드백을 추가하세요.</div> : comments.map((comment, index) => <article key={comment.id} className="mb-2 grid grid-cols-[32px_minmax(0,1fr)_auto] gap-2 rounded-lg border border-slate-800 bg-slate-900/70 p-3 last:mb-0">
-            <button type="button" className="grid h-7 w-7 place-items-center rounded-full bg-amber-400 text-xs font-bold text-slate-950 transition-transform hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300" onClick={() => locateComment(comment)} aria-label={`${index + 1}번 피드백 위치로 이동`} title="피드백 위치로 이동">{index + 1}</button>
+          {comments.length === 0 ? <div className="px-6 py-12 text-center text-sm text-slate-400">말풍선 도구로 요소를 선택해 첫 피드백을 추가하세요.</div> : comments.map((comment) => <article key={comment.id} className="mb-2 grid grid-cols-[32px_minmax(0,1fr)_auto] gap-2 rounded-lg border border-slate-800 bg-slate-900/70 p-3 last:mb-0">
+            <button type="button" className="grid h-7 w-7 place-items-center rounded-full bg-amber-400 text-xs font-bold text-slate-950 transition-transform hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300" onClick={() => locateComment(comment)} aria-label={`${comment.id}번 피드백 위치로 이동`} title="피드백 위치로 이동">{comment.id}</button>
             <button type="button" className="min-w-0 text-left" onClick={() => editComment(comment)}><span className="block text-[11px] font-semibold text-cyan-300">슬라이드 {comment.slideNumber}</span><code className="mt-1 block truncate text-[11px] text-slate-400">{comment.reference}</code><span className="mt-2 block whitespace-pre-wrap text-sm leading-5 text-slate-100">{comment.text}</span></button>
-            <div className="flex items-start gap-1"><button type="button" className="grid h-7 w-7 place-items-center rounded text-slate-400 hover:bg-slate-700 hover:text-white" onClick={() => editComment(comment)} aria-label={`${index + 1}번 피드백 편집`}><Pencil size={14} /></button><button type="button" className="grid h-7 w-7 place-items-center rounded text-slate-400 hover:bg-red-950 hover:text-red-300" onClick={() => deleteComment(comment.id)} aria-label={`${index + 1}번 피드백 삭제`}><Trash2 size={14} /></button></div>
+            <div className="flex items-start gap-1"><button type="button" className="grid h-7 w-7 place-items-center rounded text-slate-400 hover:bg-slate-700 hover:text-white" onClick={() => editComment(comment)} aria-label={`${comment.id}번 피드백 편집`}><Pencil size={14} /></button><button type="button" className="grid h-7 w-7 place-items-center rounded text-slate-400 hover:bg-red-950 hover:text-red-300" onClick={() => deleteComment(comment.id)} aria-label={`${comment.id}번 피드백 삭제`}><Trash2 size={14} /></button></div>
           </article>)}
         </div>
-        <footer className="flex items-center justify-between gap-2 border-t border-slate-700 p-3"><button type="button" className="inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm text-red-300 hover:bg-red-950 disabled:opacity-40" onClick={() => { if (comments.length && window.confirm('모든 피드백을 삭제할까요?')) { setComments([]); setDraft(null); showToast({ message: '모든 피드백을 삭제했습니다.' }) } }} disabled={!comments.length}><Trash2 size={15} />전체 삭제</button><button type="button" className="inline-flex h-9 items-center gap-2 rounded-md bg-cyan-300 px-4 text-sm font-semibold text-slate-950 hover:bg-cyan-200 disabled:opacity-40" onClick={() => comments.length && void copyText(formatPrompt(comments), `피드백 ${comments.length}개를 복사했습니다.`)} disabled={!comments.length}><Copy size={15} />전체 복사</button></footer>
+        <footer className="flex items-center justify-between gap-2 border-t border-slate-700 p-3"><button type="button" className="inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm text-red-300 hover:bg-red-950 disabled:opacity-40" onClick={() => { if (comments.length && window.confirm('모든 피드백을 삭제할까요?')) { setComments([]); nextId.current = 1; setDraft(null); showToast({ message: '모든 피드백을 삭제했습니다.' }) } }} disabled={!comments.length}><Trash2 size={15} />전체 삭제</button><button type="button" className="inline-flex h-9 items-center gap-2 rounded-md bg-cyan-300 px-4 text-sm font-semibold text-slate-950 hover:bg-cyan-200 disabled:opacity-40" onClick={() => comments.length && void copyText(formatPrompt(comments), `피드백 ${comments.length}개를 복사했습니다.`)} disabled={!comments.length}><Copy size={15} />전체 복사</button></footer>
       </section>}
 
       {draft && <div className="pointer-events-auto absolute inset-0 grid place-items-center bg-slate-950/45 p-5 backdrop-blur-[2px]" onMouseDown={(event) => { if (event.target === event.currentTarget) setDraft(null) }}>
