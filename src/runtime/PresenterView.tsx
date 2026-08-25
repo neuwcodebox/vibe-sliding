@@ -64,6 +64,7 @@ export function PresenterView() {
   const [connectionCheckTime, setConnectionCheckTime] = useState(() => Date.now())
   const activeInkStroke = useRef<number | null>(null)
   const inkStrokesBySlideRef = useRef<Record<number, InkStroke[]>>({})
+  const notesRef = useRef<HTMLDivElement>(null)
   const suppressPointerControlFocus = useRef(false)
 
   useEffect(() => {
@@ -82,6 +83,10 @@ export function PresenterView() {
   }), [])
 
   useEffect(() => subscribeToAudienceHeartbeat(() => setLastAudienceHeartbeat(Date.now())), [])
+
+  useEffect(() => {
+    if (notesRef.current) notesRef.current.scrollTop = 0
+  }, [currentIndex])
 
   useEffect(() => {
     const interval = window.setInterval(() => setConnectionCheckTime(Date.now()), 1000)
@@ -391,7 +396,7 @@ export function PresenterView() {
                 </button>
               </div>
             </div>
-            <div className="presenter-notes" style={{ '--presenter-notes-font-size': `${noteFontSize}px` } as CSSProperties}>
+            <div ref={notesRef} className="presenter-notes" style={{ '--presenter-notes-font-size': `${noteFontSize}px` } as CSSProperties}>
               {notes.length > 0 ? notes.map((note, index) => <p key={index}>{note}</p>) : <p className="presenter-empty">이 슬라이드에는 등록된 대본이 없습니다.</p>}
             </div>
           </section>
